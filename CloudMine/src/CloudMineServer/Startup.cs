@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using CloudMineServer.Data;
 using CloudMineServer.Models;
 using CloudMineServer.Services;
+using CloudMineServer.Interface;
+using CloudMineServer.Classes;
 
 namespace CloudMineServer
 {
@@ -46,6 +48,8 @@ namespace CloudMineServer
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddTransient<ICloudMineApi, CloudMineApi>();
 
             services.AddMvc();
 

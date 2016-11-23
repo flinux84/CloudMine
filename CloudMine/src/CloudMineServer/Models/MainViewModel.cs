@@ -20,6 +20,12 @@ namespace CloudMineServer.Models
         public int FileSize { get; set; }
     }
 
+    public class FileItemSet
+    {
+        public int UserId { get; set; }
+        public List<FileItem> ListFileItems { get; set; }
+    }
+
     public class MainViewModel
     {
     }
