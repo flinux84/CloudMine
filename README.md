@@ -1,4 +1,5 @@
 # CloudMine
 School-project -  Cloud Storage
 ------------------------------
-See Projects for User Stories/Backlogg items.
+Projects -> Backlogg items - nerbrytna features
+Wiki -> Innehåller kravspecs - epics - user stories
