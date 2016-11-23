@@ -30,6 +30,8 @@ namespace CloudMineClient.Controllers
         public IActionResult Error()
         {
             return View();
+
+            //hejeje
         }
     }
 }
