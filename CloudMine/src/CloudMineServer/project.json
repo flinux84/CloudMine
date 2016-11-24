@@ -25,7 +25,8 @@
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
     "Microsoft.AspNetCore.StaticFiles": "1.1.0",
-    "Microsoft.AspNetCore.Mvc": "1.1.0"
+    "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0"
   },
     "tools": {
       "BundlerMinifier.Core": "2.0.238",
