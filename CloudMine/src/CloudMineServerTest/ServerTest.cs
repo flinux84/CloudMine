@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CloudMineServer.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +14,11 @@ namespace CloudMineServerTest
         [Fact]
         public void FirstTest()
         {
-            Assert.Equal(4, 3);
+
+            var hej = new FileItem();
+
+            throw new NotImplementedException("whweee");
+
         }
     }
 }
