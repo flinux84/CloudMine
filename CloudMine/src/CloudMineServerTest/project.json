@@ -4,8 +4,11 @@
   "dependencies": {
     "xunit": "2.2.0-beta4-build3444",
     "Microsoft.EntityFrameworkCore.InMemory": "1.1.0",
+    "Microsoft.AspNetCore.Routing": "1.1.0",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
-    "CloudMineServer": "1.0.0-*"
+    "CloudMineServer": "1.0.0-*",
+    "Microsoft.DotNet.InternalAbstractions": "1.0.1-beta-003206",
+    "xunit.runner.console": "2.1.0"
   },
   "frameworks": {
     "netcoreapp1.1": {
@@ -19,3 +22,4 @@
     }
   }
 }
+

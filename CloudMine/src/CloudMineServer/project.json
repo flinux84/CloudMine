@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-CloudMineServer-a45f24ef-ef61-4e74-bd3d-a61b12827396",
 
   "dependencies": {
@@ -25,12 +25,13 @@
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
     "Microsoft.AspNetCore.StaticFiles": "1.1.0",
-    "Microsoft.AspNetCore.Mvc": "1.1.0"
+    "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.DotNet.InternalAbstractions": "1.0.1-beta-003206"
   },
     "tools": {
       "BundlerMinifier.Core": "2.0.238",
       "Microsoft.VisualStudio.Web.CodeGeneration.Tools": {
-        "version": "1.0.0-preview2-final",
+        "version": "1.1.0-preview4-final",
         "imports": [
           "portable-net45+win8"
         ]

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace CloudMineServer.Controllers
 {
     [Route("api/[Controller]")]
-    [Authorize]
+   // [Authorize]
     public class Rest : Controller
     {
         #region Dependency Injection Constructor

@@ -13,6 +13,7 @@ namespace CloudMineServerTest
         [Fact]
         public void FirstTest()
         {
+            Assert.Equal(4, 3);
         }
     }
 }
