@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CloudMineServer.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ namespace CloudMineServerTest
         [Fact]
         public void FirstTest()
         {
+            var hej = new FileItem();
+
+            throw new NotImplementedException("whweee");
         }
     }
 }
