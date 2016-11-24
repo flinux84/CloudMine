@@ -1,4 +1,6 @@
 {
+  "userSecretsId": "aspnet-CloudMineServer-a45f24ef-ef61-4e74-bd3d-a61b12827396",
+
   "dependencies": {
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
     "Microsoft.AspNetCore.Mvc": "1.1.0",
@@ -22,13 +24,11 @@
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.1.0"
-
     }
-  },
 
+  },
   "tools": {
   },
-
   "frameworks": {
     "netcoreapp1.1": {
       "imports": [
@@ -37,18 +37,15 @@
       ]
     }
   },
-
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true
   },
-
   "runtimeOptions": {
     "configProperties": {
       "System.GC.Server": true
     }
   },
-
   "publishOptions": {
     "include": [
       "wwwroot",
@@ -57,9 +54,9 @@
       "web.config"
     ]
   },
-
   "scripts": {
     "prepublish": [ "bower install", "dotnet bundle" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
+
 }
