@@ -16,7 +16,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CloudMineServer.Interface;
 using CloudMineServer.Classes;
-
+using CloudMineServer.Middleware.TokenProvider;
+using Microsoft.Extensions.Options;
 
 namespace CloudMineServer
 {
@@ -74,7 +75,7 @@ namespace CloudMineServer
 
                 // Validate the JWT Issuer (iss) claim
                 ValidateIssuer = true,
-                ValidIssuer = "ExampleIssuer",
+                ValidIssuer = "CloudMine",
 
                 // Validate the JWT Audience (aud) claim
                 ValidateAudience = true,
@@ -111,7 +112,15 @@ namespace CloudMineServer
             app.UseStaticFiles();
 
             app.UseIdentity();
-
+            // Add JWT generation endpoint:
+            //var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+            var options = new TokenProviderOptions
+            {
+                Audience = "ExampleAudience",
+                Issuer = "CloudMine",
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
+            };
+            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>
