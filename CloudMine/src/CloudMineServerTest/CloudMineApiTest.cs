@@ -76,6 +76,7 @@ namespace CloudMineServer.Classes
 
         #region Testarea: CRUD
 
+        // Create
         [Fact]
         public async Task AddFileUsingAPI_add_file_and_get_true_sucess_save_to_db()
         {
@@ -96,6 +97,7 @@ namespace CloudMineServer.Classes
             }
         }
 
+        // Create
         [Fact]
         public async Task AddFileUsingAPI_add_file_and_get_false_catch_save_to_db()
         {
@@ -117,6 +119,7 @@ namespace CloudMineServer.Classes
             }
         }
 
+        // Read (All)
         [Fact]
         public async Task GetAllFilesUsingAPI_get_all_the_users_files_get_a_FileItemSet()
         {
@@ -138,6 +141,7 @@ namespace CloudMineServer.Classes
             }
         }
 
+        // Read (All)
         [Fact]
         public async Task GetAllFilesUsingAPI_FileItemSet_is_not_empty_return_sender_FileItemSet()
         {
@@ -156,6 +160,96 @@ namespace CloudMineServer.Classes
                 //Assert
                 var viewResult = Assert.IsType<FileItemSet>(result);
 
+            }
+        }
+
+        // Read (One)
+        [Fact]
+        public async Task GetFileByIdUsingAPI_send_int_id_get_FileItem_back()
+        {
+            //Arrange
+            var options = CreateNewContextOptions();
+            FillTheTempDataBase(options);
+            int FileItemId = 10;
+
+            using (var context = new ApplicationDbContext(options))
+            {
+                var service = new CloudMineApi(context);
+
+                //Act  
+                var result = await service.GetFileByIdUsingAPI(FileItemId);
+
+                //Assert
+                var viewResult = Assert.IsType<FileItem>(result);
+
+            }
+        }
+
+        // Update
+        [Fact]
+        public async Task UpDateByIdUsingAPI_send_int_id_and_FileItem_maching_id_return_true()
+        {
+            //Arrange
+            var options = CreateNewContextOptions();
+            FillTheTempDataBase(options);
+            var myFileItem = GetFileItemToEdit();
+            int FileItemId = 10;
+
+            using (var context = new ApplicationDbContext(options))
+            {
+                var service = new CloudMineApi(context);
+
+                //Act  
+                var result = await service.UpDateByIdUsingAPI(FileItemId, myFileItem);
+
+                //Assert
+                var viewResult = Assert.IsType<bool>(result);
+                Assert.True(result);
+            }
+        }
+
+        // Update
+        [Fact]
+        public async Task UpDateByIdUsingAPI_send_int_id_and_FileItem_that_dont_maching_id_return_false()
+        {
+            //Arrange
+            var options = CreateNewContextOptions();
+            FillTheTempDataBase(options);
+            var myFileItem = GetFileItemToEdit();
+            int FileItemId = 11;
+
+            using (var context = new ApplicationDbContext(options))
+            {
+                var service = new CloudMineApi(context);
+
+                //Act  
+                var result = await service.UpDateByIdUsingAPI(FileItemId, myFileItem);
+
+                //Assert
+                var viewResult = Assert.IsType<bool>(result);
+                Assert.False(result);
+            }
+        }
+
+        // Delete
+        [Fact]
+        public async Task DeleteByIdUsingAPI_send_int_Id_get_bool_true()
+        {
+            //Arrange
+            var options = CreateNewContextOptions();
+            FillTheTempDataBase(options);
+            int FileItemId = 10;
+
+            using (var context = new ApplicationDbContext(options))
+            {
+                var service = new CloudMineApi(context);
+
+                //Act  
+                var result = await service.DeleteByIdUsingAPI(FileItemId);
+
+                //Assert
+                var viewResult = Assert.IsType<bool>(result);
+                Assert.True(result);
             }
         }
 
