@@ -47,6 +47,8 @@ namespace CloudMineServer
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddSignalR(options => options.Hubs.EnableDetailedErrors = true);
+
             services.AddMvc();
 
             // Add application services.
@@ -75,8 +77,10 @@ namespace CloudMineServer
 
             app.UseIdentity();
 
-            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            app.UseSignalR();
 
+            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
