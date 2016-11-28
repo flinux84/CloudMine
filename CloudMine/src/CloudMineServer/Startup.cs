@@ -18,6 +18,7 @@ using CloudMineServer.Interface;
 using CloudMineServer.Classes;
 using CloudMineServer.Middleware.TokenProvider;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CloudMineServer
 {
@@ -57,7 +58,12 @@ namespace CloudMineServer
 
             services.AddMvc();
             //API VERSIONING
-            services.AddApiVersioning();
+            services.AddApiVersioning(
+            options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion( new DateTime( 2016, 11, 28 ) );
+            } );
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

@@ -1,4 +1,4 @@
-using CloudMineServer.Interface;
+﻿using CloudMineServer.Interface;
 using CloudMineServer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +10,8 @@ using System.Threading.Tasks;
 
 namespace CloudMineServer.Controllers
 {
-    [Route("api/[Controller]")]
-    //[Authorize]
     //API VERSIONING
+    [Authorize]
     [ApiVersion( "1.0" )]
     [Route( "api/v{version:apiVersion}/[controller]" )]
     public class Rest : Controller
