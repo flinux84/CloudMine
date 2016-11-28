@@ -8,42 +8,38 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CloudMineServer.Controllers
 {
+    /// <summary>
+    /// Temporary api controller for testing
+    /// Should force you to log in
+    /// To log in send this to http://serverurl/token
+    ///
+    /// POST /token
+    /// Content-Type: application/x-www-form-urlencoded
+    /// username = TEST & password = TEST123
+    /// 
+    /// You will get this response
+    /// 200 OK
+    /// Content-Type: application/json
+    /// {
+    ///   "access_token": "eyJhb...",
+    ///   "expires_in": 300
+    /// }
+    /// 
+    /// Use a header with 
+    /// key: Authorization
+    /// value: Bearer eyJhbGciO....
+    /// </summary> 
+
     [Authorize]
     [Produces("application/json")]
     [Route("api/TestAuth")]
     public class TestAuthController : Controller
     {
         // GET: api/TestAuth
-        [Authorize]
         [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/TestAuth/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-        
-        // POST: api/TestAuth
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-        
-        // PUT: api/TestAuth/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-        
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

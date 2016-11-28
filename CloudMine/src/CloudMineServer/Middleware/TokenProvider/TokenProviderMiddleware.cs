@@ -18,18 +18,18 @@ namespace CloudMineServer.Middleware.TokenProvider
     {
         private readonly RequestDelegate _next;
         private readonly TokenProviderOptions _options;
-        private readonly UserManager<ApplicationUser> _userManager;
+        //private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public TokenProviderMiddleware(
             RequestDelegate next,
             IOptions<TokenProviderOptions> options,
-            UserManager<ApplicationUser> userManager,
+            //UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
             _next = next;
             _options = options.Value;
-            _userManager = userManager;
+            //_userManager = userManager;
             _signInManager = signInManager;
         }
 
