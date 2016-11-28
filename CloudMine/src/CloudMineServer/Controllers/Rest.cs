@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace CloudMineServer.Controllers
 {
-    [Route("api/[Controller]")]
-   // [Authorize]
+    //API VERSIONING
+    [Authorize]
+    [ApiVersion( "1.0" )]
+    [Route( "api/v{version:apiVersion}/[controller]" )]
     public class Rest : Controller
     {
         #region Dependency Injection Constructor

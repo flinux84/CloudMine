@@ -1,0 +1,42 @@
+﻿@model CloudMineServer.Models.MainViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+<form enctype="multipart/form-data">
+    <input type="file" id="uploadFile" name="file" />  <a class="btn btn-primary" href="#" id="btnUpload">Ladda Upp!</a>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section scripts{
+
+    <script>
+
+    $(document).ready(function () {
+
+        $('#btnUpload').click(function () {
+            UploadFile($('#uploadFile')[0].files);
+            }
+        )
+    });
+
+    function UploadFileChunk(Chunk, FileName)
+    {
+        var FD = new FormData();
+        FD.append('file', Chunk, FileName);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAndSaveFiles", "Files")',
+            contentType: false,
+            processData: false,
+            data: FD
+        });
+    }
+    </script>
+}
