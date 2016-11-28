@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +18,7 @@ using CloudMineServer.Interface;
 using CloudMineServer.Classes;
 using CloudMineServer.Middleware.TokenProvider;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CloudMineServer
 {
@@ -56,6 +57,13 @@ namespace CloudMineServer
             services.AddTransient<ICloudMineApi, CloudMineApi>();
 
             services.AddMvc();
+            //API VERSIONING
+            services.AddApiVersioning(
+            options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion( new DateTime( 2016, 11, 28 ) );
+            } );
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
