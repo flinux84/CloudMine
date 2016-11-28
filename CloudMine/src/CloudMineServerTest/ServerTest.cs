@@ -14,9 +14,11 @@ namespace CloudMineServerTest
         [Fact]
         public void FirstTest()
         {
+
             var hej = new FileItem();
 
             throw new NotImplementedException("whweee");
+
         }
     }
 }
