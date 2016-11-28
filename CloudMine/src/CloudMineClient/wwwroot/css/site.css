@@ -21,3 +21,51 @@ textarea {
 @media screen and (max-width: 767px) {
 
 }
+
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    background-color: #008CBA;
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+}
+.submenu {
+    float: left;
+    padding: 20px;
+    background-color:grey;
+}
+.filelist {
+    padding: 20px;
+    float: left;
+    margin: 10px;
+    background-color:lightgray;
+}
+#search {
+    display:inline;
+}
+
+.filedetails {
+    float: right;
+    padding: 20px;
+    background-color:aquamarine
+}
+
+table.sortable thead {
+    background-color:#eee;
+    color:#666666;
+    font-weight: bold;
+    cursor: default;
+    width: 100%;
+}
+table.sortable th {
+    width: auto;
+    padding-right: 10px;
+}
