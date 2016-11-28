@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CloudMine</title>
+    <title>@ViewData["Title"]CloudMine</title>
 
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -18,21 +18,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">CloudMineClient</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Cloud Mine</a>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                </ul>
-            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
+                <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
+            </ul>
         </div>
     </div>
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2016 - CloudMineClient</p>
+            <p>&copy; 2016 - CloudMine</p>
         </footer>
     </div>
 
