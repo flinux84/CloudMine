@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -56,6 +56,8 @@ namespace CloudMineServer
             services.AddTransient<ICloudMineApi, CloudMineApi>();
 
             services.AddMvc();
+            //API VERSIONING
+            services.AddApiVersioning();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
