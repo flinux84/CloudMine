@@ -37,9 +37,12 @@
       "version": "1.1.0-preview4-final",
       "type": "build"
     },
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final",
     "Microsoft.AspNetCore.Mvc.Versioning": "1.0.3"},
 
   "tools": {
+    "BundlerMinifier.Core": "2.2.306",
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final",
     "Microsoft.VisualStudio.Web.CodeGeneration.Tools": {
       "version": "1.1.0-preview4-final",
       "imports": [
