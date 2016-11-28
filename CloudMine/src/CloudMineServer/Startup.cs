@@ -122,8 +122,9 @@ namespace CloudMineServer
             app.UseStaticFiles();
 
             app.UseIdentity();
-            // Add JWT generation endpoint:
+            app.UseWebSockets();
             app.UseSignalR();
+            // Add JWT generation endpoint:
 
             //var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
             var options = new TokenProviderOptions
