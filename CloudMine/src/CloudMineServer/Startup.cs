@@ -55,7 +55,7 @@ namespace CloudMineServer
                 .AddDefaultTokenProviders();
 
             services.AddTransient<ICloudMineApi, CloudMineApi>();
-
+            services.AddCors();
             services.AddSignalR(options => options.Hubs.EnableDetailedErrors = true);
 
             services.AddMvc();
@@ -118,9 +118,9 @@ namespace CloudMineServer
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            
+            //app.UseCors(builder => builder.AllowAnyOrigin)
             app.UseStaticFiles();
-
             app.UseIdentity();
             app.UseWebSockets();
             app.UseSignalR();

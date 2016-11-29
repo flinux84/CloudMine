@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Cors;
 
 namespace CloudMineServer.Services
 {
+    [EnableCors("AllowAnyOrigin")]
     public class CloudHub : Hub
     {
         public static List<string> ConnectedUsers;

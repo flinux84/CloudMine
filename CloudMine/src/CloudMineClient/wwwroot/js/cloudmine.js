@@ -3,6 +3,8 @@ $(document).ready(function () {
 
     var userName = prompt("Enter your name: ");
     var chat = $.connection.cloudHub;
+    $.connection.hub.url = 'http://localhost:36564/';
+
     chat.client.messageReceived = function (originatorUser, message) {
         $("#messages").append('<li><strong>' + originatorUser + '</strong>: ' + message);
     };
@@ -32,7 +34,7 @@ $(document).ready(function () {
     function addUser(user) {
         $("#userList").append('<li>' + user + '</li>');
     }
-
+    
     $.connection.hub.logging = true;
     $.connection.hub.start().done(function () {
         chat.server.connect(userName);
