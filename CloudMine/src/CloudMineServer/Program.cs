@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CloudMineServer
 {
@@ -19,6 +16,11 @@ namespace CloudMineServer
                 .Build();
 
             host.Run();
+
+            ////Set connection
+            //var connection = new HubConnection("http://127.0.0.1:8088/");
+            ////Make proxy to hub based on hub name on server
+            //var myHub = connection.CreateHubProxy("CloudHub");
         }
     }
 }

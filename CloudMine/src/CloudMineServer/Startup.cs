@@ -20,6 +20,7 @@ using CloudMineServer.Middleware.TokenProvider;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace CloudMineServer
 {
     public class Startup
@@ -55,6 +56,8 @@ namespace CloudMineServer
                 .AddDefaultTokenProviders();
 
             services.AddTransient<ICloudMineApi, CloudMineApi>();
+
+            services.AddSignalR(options => options.Hubs.EnableDetailedErrors = true);
 
             services.AddMvc();
             //API VERSIONING
@@ -120,7 +123,10 @@ namespace CloudMineServer
             app.UseStaticFiles();
 
             app.UseIdentity();
+            app.UseWebSockets();
+            app.UseSignalR();
             // Add JWT generation endpoint:
+
             //var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
             var options = new TokenProviderOptions
             {
@@ -130,7 +136,7 @@ namespace CloudMineServer
             };
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
-
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
