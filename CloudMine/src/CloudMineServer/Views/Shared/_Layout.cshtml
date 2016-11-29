@@ -30,9 +30,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">Admin</a></li>
                     <li><a asp-area="" asp-controller="Files" asp-action="Create">Upload</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
@@ -62,7 +60,7 @@
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
-        <script src="http://cloudmineserver.azurewebsites.net/signalr/hubs"</script>
+        <script src="signalr/hubs" asp-append-version="true"></script>
     </environment>
 
     @RenderSection("scripts", required: false)
