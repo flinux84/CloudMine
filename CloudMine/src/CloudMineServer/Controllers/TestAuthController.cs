@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using CloudMineServer.Models;
 
 namespace CloudMineServer.Controllers
 {
@@ -35,11 +37,18 @@ namespace CloudMineServer.Controllers
     [Route("api/TestAuth")]
     public class TestAuthController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public TestAuthController(UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
+        }
         // GET: api/TestAuth
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            return new string[] { user.Email, user.Id };
         }
     }
 }
