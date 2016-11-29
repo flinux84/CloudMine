@@ -55,12 +55,32 @@ namespace CloudMineServer.Classes
             return item;
         }
 
-        // Read (One)
-        public async Task<FileItem> GetFileByIdUsingAPI(int num)
+        // Read (One) - about to be deprecated
+        public async Task<FileItem> GetFileByIdUsingAPI(int id)
         {
-            var fi = await _context.dbFileItem.FirstOrDefaultAsync(x => x.Id == num);
+            var fi = await _context.dbFileItem.FirstOrDefaultAsync(x => x.Id == id);
 
             return fi;
+        }
+
+        // Read (One) Return FileItemSet with all chunks. TODO: Testa att den fungerar!
+        public async Task<FileItemSet> GetFileChunsByIdAndUserId(int Id, int UserId)
+        {
+            // Ta ut användarens alla filer
+            var ListUserFiles = await _context.dbFileItem.Where(x => x.UserId == UserId).ToListAsync();
+
+            // Hitta objekt som stämmer med id (id på det objektet som sak hämtas)
+            var fi = ListUserFiles.FirstOrDefault(x => x.Id == Id);
+
+            // En fil kan vara uppdelad i flera chunks med olika id, fast med samma FileChunkId. Ta ut fileChunkId
+            int fcId = fi.FileChunkId;
+            var ListOfFileItem= ListUserFiles.Where(x => x.FileChunkId == fcId).ToList();
+
+            // Skapa FileItemSet objekt. Lägg till lista av chunks till som filer i FileItemSet
+            FileItemSet returnObj = new FileItemSet() { UserId = UserId, ListFileItems = ListOfFileItem };
+
+            // Retunera skapat objekt
+            return returnObj;
         }
 
         // Update

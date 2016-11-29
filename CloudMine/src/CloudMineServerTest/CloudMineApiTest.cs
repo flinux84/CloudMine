@@ -38,7 +38,8 @@ namespace CloudMineServer.Classes
                 context.dbFileItem.Add(new Models.FileItem { Id = 10, Created = new DateTime(2010, 1, 01), DataType = "jpg", Description = "I realy know how to take pictures.", FileName = "My image", FileSize = 1, Private = false, UserId = 15, FileData = new byte[10] });
                 context.dbFileItem.Add(new Models.FileItem { Id = 33, Created = new DateTime(2011, 2, 10), DataType = "mp4", Description = "A real good song that i like to listen to.", FileName = "Good song", FileSize = 2, Private = true, UserId = 15, FileData = new byte[1010] });
                 context.dbFileItem.Add(new Models.FileItem { Id = 4455, Created = new DateTime(2015, 3, 20), DataType = "doc", Description = "Some time a take notes.", FileName = "Evening notes", FileSize = 3, Private = false, UserId = 30, FileData = new byte[101010] });
-
+                context.dbFileItem.Add(new Models.FileItem { Id = 6677, Created = new DateTime(2015, 3, 20), DataType = "pdf", Description = "x", FileName = "Bif file", FileSize = 3, Private = false, UserId = 30, FileData = new byte[101010], FileChunkId = 11, FileChunkIndex=0});
+                context.dbFileItem.Add(new Models.FileItem { Id = 7766, Created = new DateTime(2015, 3, 20), DataType = "pdf", Description = "x", FileName = "Bif file", FileSize = 3, Private = false, UserId = 30, FileData = new byte[101010], FileChunkId = 11, FileChunkIndex = 1 });
                 context.SaveChanges();
             }
         }
@@ -163,7 +164,7 @@ namespace CloudMineServer.Classes
             }
         }
 
-        // Read (One)
+        // Read (One) - about to be deprecated (Tänkt att ersättas av: GetFileChunsByIdAndUserId)
         [Fact]
         public async Task GetFileByIdUsingAPI_send_int_id_get_FileItem_back()
         {
@@ -181,6 +182,29 @@ namespace CloudMineServer.Classes
 
                 //Assert
                 var viewResult = Assert.IsType<FileItem>(result);
+
+            }
+        }
+
+        // Read One - Get all chuncks from same file
+        [Fact]
+        public async Task GetFileChunsByIdAndUserId_send_int_id_send_userId_get_FileItemSet_back()
+        {
+            //Arrange
+            var options = CreateNewContextOptions();
+            FillTheTempDataBase(options);
+            int userId = 30;
+            int filId = 6677;
+
+            using (var context = new ApplicationDbContext(options))
+            {
+                var service = new CloudMineApi(context);
+
+                //Act  
+                var result = await service.GetFileChunsByIdAndUserId(filId, userId);
+
+                //Assert
+                var viewResult = Assert.IsType<FileItemSet>(result);
 
             }
         }
