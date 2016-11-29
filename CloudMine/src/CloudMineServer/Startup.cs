@@ -20,6 +20,7 @@ using CloudMineServer.Middleware.TokenProvider;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace CloudMineServer
 {
     public class Startup
