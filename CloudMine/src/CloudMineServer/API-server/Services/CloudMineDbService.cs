@@ -11,6 +11,7 @@ namespace CloudMineServer.Classes
 {
     public class CloudMineDbService : ICloudMineDbService
     {
+
         #region Dependency Injection Constructor
 
         private readonly ApplicationDbContext _context;
