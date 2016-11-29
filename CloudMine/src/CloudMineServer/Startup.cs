@@ -54,8 +54,14 @@ namespace CloudMineServer
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddTransient<ICloudMineApi, CloudMineApi>();
-            services.AddCors();
+            services.AddTransient<ICloudMineDbService, CloudMineDbService>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAnyOrigin",
+                    builder => builder.AllowAnyOrigin());
+            });
+
             services.AddSignalR(options => options.Hubs.EnableDetailedErrors = true);
 
             services.AddMvc();
@@ -118,8 +124,8 @@ namespace CloudMineServer
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            
-            //app.UseCors(builder => builder.AllowAnyOrigin)
+
+            app.UseCors("AllowAnyOrigin");
             app.UseStaticFiles();
             app.UseIdentity();
             app.UseWebSockets();

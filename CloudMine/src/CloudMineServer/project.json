@@ -72,14 +72,14 @@
     }
   },
 
-  "publishOptions": {
-    "include": [
-      "wwwroot",
-      "**/*.cshtml",
-      "appsettings.json",
-      "web.config"
-    ]
-  },
+  //"publishOptions": {
+  //  "include": [
+  //    "wwwroot",
+  //    "**/*.cshtml",
+  //    "appsettings.json",
+  //    "web.config"
+  //  ]
+  //},
 
   "scripts": {
     "prepublish": [ "bower install", "dotnet bundle" ],

@@ -15,7 +15,7 @@ namespace CloudMineServer.Controllers
     {
         #region setup fake inerface
 
-        private static Interface.ICloudMineApi IFakeBusinessLayer()
+        private static Interface.ICloudMineDbService IFakeBusinessLayer()
         {
             var fc = new FakeClass();
             return fc;
@@ -53,7 +53,7 @@ namespace CloudMineServer.Controllers
             var viewResult = Assert.IsType<bool>(result);
         }
 
-        private class FakeClass : Interface.ICloudMineApi
+        private class FakeClass : Interface.ICloudMineDbService
         {
             public async Task<bool> AddFileUsingAPI(FileItemSet item)
             {
