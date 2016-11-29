@@ -1,4 +1,11 @@
-﻿function UploadFile(TargetFile) {
+﻿$(document).ready(function () {
+    $('#btnUpload').click(function () {
+        UploadFile($('#uploadFile')[0].files);
+    }
+    )
+});
+
+function UploadFile(TargetFile) {
 
     var FileChunk = [];
     var file = TargetFile[0];
@@ -27,17 +34,14 @@
 
 function UploadFileChunk(Chunk, FileName) {
     var FD = new FormData();
-    FD.append('file', Chunk, FileName);
+    FD.append('file', Chunk, FileName);    
     $.ajax({
         type: "POST",
-        url: '@Url.Action("GetAndSaveFiles", "Files")',
+        url: 'http://localhost:1234/api/filechunk/',
         contentType: false,
         processData: false,
         data: FD
     });
 }
 
-$('#btnUpload').click(function () {
-    UploadFile($('#uploadFile')[0].files);
-    }
-)
+
