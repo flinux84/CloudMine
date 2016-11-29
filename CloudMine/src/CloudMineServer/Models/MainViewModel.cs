@@ -18,6 +18,8 @@ namespace CloudMineServer.Models
         public bool Private { get; set; }
         public string DataType { get; set; }
         public int FileSize { get; set; }
+        public int FileChunkId { get; set; }
+        public int FileChunkIndex { get; set; }
     }
 
     public class FileItemSet
