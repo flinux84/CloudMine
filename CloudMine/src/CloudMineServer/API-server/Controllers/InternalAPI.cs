@@ -27,52 +27,52 @@ namespace CloudMineServer.Controllers
         //    return null;
         //}
 
-        [HttpGet]
-        public async Task<IActionResult> MergeAllAndReturn()
-        {
-            var fileitems = context.dbFileItem.ToList();
-            var fis = new FileItemSet();
+        //[HttpGet]
+        //public async Task<IActionResult> MergeAllAndReturn()
+        //{
+            //var fileitems = context.dbFileItem.ToList();
+            //var fis = new FileItemSet();
 
-            var sorted = fileitems.OrderBy(f => f.FileName);
+            //var sorted = fileitems.OrderBy(f => f.FileName);
 
-            List<byte> merged = new List<byte>();
+            //List<byte> merged = new List<byte>();
 
-            foreach (var item in sorted)
-            {
-                merged.AddRange(item.FileData);
-            }
+            //foreach (var item in sorted)
+            //{
+            //    merged.AddRange(item.FileData);
+            //}
 
-            var buffer = merged.ToArray();
-            var stream = new MemoryStream(buffer);
+            //var buffer = merged.ToArray();
+            //var stream = new MemoryStream(buffer);
 
-            return new FileStreamResult(stream, "application/octet-stream");
-        }
+            //return new FileStreamResult(stream, "application/octet-stream");
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> UploadFileChunk(string fileId)
-        {
-            for (int i = 0; i < Request.Form.Files.Count; i++)
-            {
-                var myFile = Request.Form.Files[i];
-                if (myFile != null && myFile.Length != 0)
-                {
-                    var length = myFile.Length;
-                    var size = myFile.FileName;
+        //[HttpPost]
+        //public async Task<IActionResult> UploadFileChunk(string fileId)
+        //{
+            //for (int i = 0; i < Request.Form.Files.Count; i++)
+            //{
+            //    var myFile = Request.Form.Files[i];
+            //    if (myFile != null && myFile.Length != 0)
+            //    {
+            //        var length = myFile.Length;
+            //        var size = myFile.FileName;
 
-                    var fitem = new FileItem() {
-                        FileName = myFile.FileName,
-                        FileData = StreamToArray(myFile.OpenReadStream()),
-                        FileChunkIndex = i
-                    };
+            //        var chunk = new DataChunk() {
+            //            FileName = myFile.FileName,
+            //            FileData = StreamToArray(myFile.OpenReadStream()),
+            //            FileChunkIndex = i
+            //        };
 
-                    context.dbFileItem.Add(fitem);
-                    context.SaveChanges();
-                }
-            }
+                    //context.DataChunks.Add(fitem);
+                    //context.SaveChanges();
+        //        }
+        //    }
 
 
-            return new ObjectResult("hejsan");
-        }
+        //    return new ObjectResult("hejsan");
+        //}
 
         private static byte[] StreamToArray(Stream input)
         {

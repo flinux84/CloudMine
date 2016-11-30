@@ -14,12 +14,15 @@ namespace CloudMineServer.Classes
 
         #region Dependency Injection Constructor
 
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _identity;
+        private readonly CloudDbRepository _context;
+
         private int AllowedStorage = 100;
 
-        public CloudMineDbService(ApplicationDbContext context)
+        public CloudMineDbService(ApplicationDbContext identityContext, CloudDbRepository context)
         {
             _context = context;
+            _identity = identityContext;
         }
 
 
@@ -50,42 +53,42 @@ namespace CloudMineServer.Classes
         {
             if (item.ListFileItems == null) //Listan borde vara null 
             {
-                item.ListFileItems = await _context.dbFileItem.Where(x => x.UserId == item.UserId).ToListAsync();
+                item.ListFileItems = await _context.FileItems.Where(x => x.UserId == item.UserId).ToListAsync();
             }
 
             return item;
         }
 
         // Read (One) - about to be deprecated
-        public async Task<FileItem> GetFileByIdUsingAPI(int id)
+        public async Task<FileItem> GetFileByIdUsingAPI(string id)
         {
-            var fi = await _context.dbFileItem.FirstOrDefaultAsync(x => x.Id == id);
+            var fi = await _context.FileItems.FirstOrDefaultAsync(x => x.Id == id);
 
             return fi;
         }
 
         // Read (One) Return FileItemSet with all chunks. TODO: Testa att den fungerar!
-        public async Task<FileItemSet> GetFileChunsByIdAndUserId(int Id, int UserId)
-        {
-            // Ta ut användarens alla filer
-            var ListUserFiles = await _context.dbFileItem.Where(x => x.UserId == UserId).ToListAsync();
+        //public async Task<FileItemSet> GetFileChunsByIdAndUserId(string Id, string UserId)
+        //{
+        //    // Ta ut användarens alla filer
+        //    var ListUserFiles = await _context.FileItems.Where(x => x.UserId == UserId).ToListAsync();
 
-            // Hitta objekt som stämmer med id (id på det objektet som sak hämtas)
-            var fi = ListUserFiles.FirstOrDefault(x => x.Id == Id);
+        //    // Hitta objekt som stämmer med id (id på det objektet som sak hämtas)
+        //    var fi = ListUserFiles.FirstOrDefault(x => x.Id == Id);
 
-            // En fil kan vara uppdelad i flera chunks med olika id, fast med samma FileChunkId. Ta ut fileChunkId
-            int fcId = fi.FileChunkId;
-            var ListOfFileItem= ListUserFiles.Where(x => x.FileChunkId == fcId).ToList();
+        //    // En fil kan vara uppdelad i flera chunks med olika id, fast med samma FileChunkId. Ta ut fileChunkId
+        //    int fcId = fi;
+        //    var ListOfFileItem = ListUserFiles.Where(x => x.FileChunkId == fcId).ToList();
 
-            // Skapa FileItemSet objekt. Lägg till lista av chunks till som filer i FileItemSet
-            FileItemSet returnObj = new FileItemSet() { UserId = UserId, ListFileItems = ListOfFileItem };
+        //    // Skapa FileItemSet objekt. Lägg till lista av chunks till som filer i FileItemSet
+        //    FileItemSet returnObj = new FileItemSet() { UserId = UserId, ListFileItems = ListOfFileItem };
 
-            // Retunera skapat objekt
-            return returnObj;
-        }
+        //    // Retunera skapat objekt
+        //    return returnObj;
+        //}
 
         // Update
-        public async Task<bool> UpDateByIdUsingAPI(int num, FileItem item)
+        public async Task<bool> UpDateByIdUsingAPI(string num, FileItem item)
         {
             if (num == item.Id)
             {
@@ -96,7 +99,7 @@ namespace CloudMineServer.Classes
         }
 
         // Delete
-        public async Task<bool> DeleteByIdUsingAPI(int num)
+        public async Task<bool> DeleteByIdUsingAPI(string num)
         {
             FileItem fi = await GetFileByIdUsingAPI(num);
             bool check = await Delete(fi);
@@ -160,7 +163,7 @@ namespace CloudMineServer.Classes
             // Hämta lista med användarens redan sparade filer.
             if (FIS.ListFileItems != null)
             {
-                chekSumFileSize = await _context.dbFileItem.Where(x => x.UserId == FIS.UserId).ToListAsync();
+                chekSumFileSize = await _context.FileItems.Where(x => x.UserId == FIS.UserId).ToListAsync();
 
                 // Lägg till redan sparade filers storlek. 
                 foreach (var item in chekSumFileSize)

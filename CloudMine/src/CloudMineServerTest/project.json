@@ -2,7 +2,6 @@
   "version": "1.1.0-*",
   "testRunner": "xunit",
   "dependencies": {
-    "CloudMineServer": "1.0.0-*",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Microsoft.AspNetCore.Razor.Tools": "1.1.0-preview4-final",
     "Microsoft.EntityFrameworkCore.Tools": "1.1.0-preview4-final",
