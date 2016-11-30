@@ -8,14 +8,20 @@ namespace CloudMineServer.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public class FileItem
     {
-        [Key]
-        // Generera GUID saltat med UserId och FileName, behöver då vara string.
-        public string Id { get; set; }
+        //public int Id { get; set; }
 
+        // Generera GUID saltat med UserId och FileName, behöver då vara string.
+        // Kanske generera md5-checksum och använda som id
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public Guid Id { get; set; }
+        
         // Användarens GUID
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         // Filnamnet
         public string FileName { get; set; }

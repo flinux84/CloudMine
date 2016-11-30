@@ -62,7 +62,7 @@ namespace CloudMineServer.Classes
         // Read (One) - about to be deprecated
         public async Task<FileItem> GetFileByIdUsingAPI(string id)
         {
-            var fi = await _context.FileItems.FirstOrDefaultAsync(x => x.Id == id);
+            var fi = await _context.FileItems.FirstOrDefaultAsync(x => x.Id.ToString() == id);
 
             return fi;
         }
@@ -90,7 +90,7 @@ namespace CloudMineServer.Classes
         // Update
         public async Task<bool> UpDateByIdUsingAPI(string num, FileItem item)
         {
-            if (num == item.Id)
+            if (num == item.Id.ToString())
             {
                 bool check = await Update(item);
                 return check;
