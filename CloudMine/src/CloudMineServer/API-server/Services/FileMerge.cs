@@ -25,7 +25,7 @@ namespace CloudMineServer.Classes
 
             string Searchpattern = Path.GetFileName(baseFileName) + partToken + "*";
             string[] FilesList = Directory.GetFiles(Path.GetDirectoryName(FileName), Searchpattern);
-
+                  
             if (FilesList.Count() == FileCount)
             {
                 // use a singleton to stop overlapping processes
@@ -53,11 +53,13 @@ namespace CloudMineServer.Classes
                         // merge each file chunk back into one contiguous file stream
                         foreach (var chunk in MergeOrder)
                         {
+                            var x = chunk;
+
                             try
                             {
-                                using (FileStream fileChunk =
-                                   new FileStream(chunk.FileName, FileMode.Open))
+                                using (FileStream fileChunk = new FileStream(chunk.FileName, FileMode.Open))
                                 {
+                                    
                                     fileChunk.CopyTo(fileStream);
                                 }
                             }

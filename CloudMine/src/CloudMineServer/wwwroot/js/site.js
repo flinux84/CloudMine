@@ -3,7 +3,7 @@ function UploadFile(TargetFile) {
 
     var FileChunk = [];
     var file = TargetFile[0];
-    var MaxFileSizeMB = 1;
+    var MaxFileSizeMB = 10;
     var BufferChunkSize = MaxFileSizeMB * (1024 * 1024);
     var ReadBuffer_Size = 1024;
     var FileStreamPos = 0;
@@ -12,6 +12,7 @@ function UploadFile(TargetFile) {
 
     while (FileStreamPos < Size) {
         FileChunk.push(file.slice(FileStreamPos, EndPos));
+        
         FileStreamPos = EndPos; // jump by the amount read
         EndPos = FileStreamPos + BufferChunkSize; // set next chunk length
     }
