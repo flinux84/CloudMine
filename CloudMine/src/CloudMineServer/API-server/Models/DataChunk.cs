@@ -11,7 +11,7 @@ namespace CloudMineServer.Models
         [Key]
 
         //GUID här med?
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         //klienten skickar namn på part, plocka ut index och sätt ("part 2.5" t.ex blir index 2 (av totalt 5))
         public int PartIndex { get; set; }

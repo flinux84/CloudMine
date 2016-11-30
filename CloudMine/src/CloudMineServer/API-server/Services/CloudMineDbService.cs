@@ -14,15 +14,15 @@ namespace CloudMineServer.Classes
 
         #region Dependency Injection Constructor
 
-        private readonly ApplicationDbContext _identity;
+        //private readonly ApplicationDbContext _identity;
         private readonly CloudDbRepository _context;
 
         private int AllowedStorage = 100;
 
-        public CloudMineDbService(ApplicationDbContext identityContext, CloudDbRepository context)
+        public CloudMineDbService(/*ApplicationDbContext identityContext,*/ CloudDbRepository context)
         {
             _context = context;
-            _identity = identityContext;
+            //_identity = identityContext;
         }
 
 
@@ -69,10 +69,10 @@ namespace CloudMineServer.Classes
             bool add = await Add(DC);
             if (!add)
             {
-                return "Ok";
+                return "error adding DataChunk";
             }
+            return "Ok";
 
-            return "error adding DataChunk";
         }
 
         // Read (All) METADATA
@@ -80,12 +80,12 @@ namespace CloudMineServer.Classes
         {
             var ListFileItems = await _context.FileItems.Where(x => x.UserId == userID).ToListAsync();
 
-            FileItemSet returnFileITem = new FileItemSet() {ListFileItems = ListFileItems };
-            
+            FileItemSet returnFileITem = new FileItemSet() { ListFileItems = ListFileItems };
+
             return returnFileITem;
         }
 
-        // Read (One) - about to be deprecated
+        // Read (One) 
         public async Task<FileItem> GetFileByIdUsingAPI(int id)
         {
             var fi = await _context.FileItems.FirstOrDefaultAsync(x => x.Id == id);
