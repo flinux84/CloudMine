@@ -12,10 +12,12 @@ namespace CloudMineServer.Models
     {
         [Key]
         // Generera GUID saltat med UserId och FileName, behöver då vara string.
-        public string Id { get; set; }
+        public int Id { get; set; }
+
+        public Guid FileItemId { get; set; }
 
         // Användarens GUID
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         // Filnamnet
         public string FileName { get; set; }
