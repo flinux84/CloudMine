@@ -57,6 +57,8 @@ namespace CloudMineServer
 
             services.AddTransient<ICloudMineDbService, CloudMineDbService>();
 
+            services.AddDbContext<CloudDbRepository>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAnyOrigin",
@@ -148,6 +150,9 @@ namespace CloudMineServer
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    name: "restAction",
+                    template: "api/{controller}/{action}/");
             });
         }
     }

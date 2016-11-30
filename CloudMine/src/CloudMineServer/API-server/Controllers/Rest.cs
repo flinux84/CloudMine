@@ -1,10 +1,13 @@
-﻿using CloudMineServer.Interface;
+﻿using CloudMineServer.Classes;
+using CloudMineServer.Interface;
 using CloudMineServer.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -67,10 +70,9 @@ namespace CloudMineServer.Controllers
         [HttpGet("{id}", Name = "GetRest")]
         public async Task<IActionResult> GetFileById(string id)
         {
-            int num;
-            if (int.TryParse(id, out num))
+            if (!string.IsNullOrWhiteSpace(id))
             {
-                FileItem item = await _businessLayer.GetFileByIdUsingAPI(num);
+                FileItem item = await _businessLayer.GetFileByIdUsingAPI(id);
                 if (item == null)
                 {
                     return new ObjectResult("object not found");
@@ -87,10 +89,9 @@ namespace CloudMineServer.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpDateById(string id, [FromBody] FileItem item)
         {
-            int num;
-            if (int.TryParse(id, out num))
+            if (!string.IsNullOrWhiteSpace(id))
             {
-                bool update = await _businessLayer.UpDateByIdUsingAPI(num, item);
+                bool update = await _businessLayer.UpDateByIdUsingAPI(id, item);
                 if (update)
                 {
                     return new ObjectResult("Success");
@@ -107,10 +108,9 @@ namespace CloudMineServer.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteByID(string id)
         {
-            int num;
-            if (int.TryParse(id, out num))
+            if (!string.IsNullOrWhiteSpace(id))
             {
-                bool update = await _businessLayer.DeleteByIdUsingAPI(num);
+                bool update = await _businessLayer.DeleteByIdUsingAPI(id);
                 if (update)
                 {
                     return new ObjectResult("object deleted");

@@ -13,6 +13,9 @@ namespace CloudMineServer.Classes
 {
     public class CloudMineApiTest
     {
+
+        //Namnbyte: från CloudMineApi till CloudMineDbService
+
         #region Create Test DataBase & Arrange
         private static DbContextOptions<ApplicationDbContext> CreateNewContextOptions()
         {
@@ -87,7 +90,7 @@ namespace CloudMineServer.Classes
 
             using (var context = new ApplicationDbContext(options))
             {
-                var service = new CloudMineApi(context);
+                var service = new CloudMineDbService(context);
 
                 //Act  
                 var result = await service.AddFileUsingAPI(fis);
@@ -109,7 +112,7 @@ namespace CloudMineServer.Classes
 
             using (var context = new ApplicationDbContext(options))
             {
-                var service = new CloudMineApi(context);
+                var service = new CloudMineDbService(context);
 
                 //Act  
                 var result = await service.AddFileUsingAPI(fis);
@@ -131,7 +134,7 @@ namespace CloudMineServer.Classes
 
             using (var context = new ApplicationDbContext(options))
             {
-                var service = new CloudMineApi(context);
+                var service = new CloudMineDbService(context);
 
                 //Act  
                 var result = await service.GetAllFilesUsingAPI(fis);
@@ -153,7 +156,7 @@ namespace CloudMineServer.Classes
 
             using (var context = new ApplicationDbContext(options))
             {
-                var service = new CloudMineApi(context);
+                var service = new CloudMineDbService(context);
 
                 //Act  
                 var result = await service.GetAllFilesUsingAPI(fis);
@@ -175,7 +178,7 @@ namespace CloudMineServer.Classes
 
             using (var context = new ApplicationDbContext(options))
             {
-                var service = new CloudMineApi(context);
+                var service = new CloudMineDbService(context);
 
                 //Act  
                 var result = await service.GetFileByIdUsingAPI(FileItemId);
@@ -198,7 +201,7 @@ namespace CloudMineServer.Classes
 
             using (var context = new ApplicationDbContext(options))
             {
-                var service = new CloudMineApi(context);
+                var service = new CloudMineDbService(context);
 
                 //Act  
                 var result = await service.GetFileChunsByIdAndUserId(filId, userId);
@@ -221,7 +224,7 @@ namespace CloudMineServer.Classes
 
             using (var context = new ApplicationDbContext(options))
             {
-                var service = new CloudMineApi(context);
+                var service = new CloudMineDbService(context);
 
                 //Act  
                 var result = await service.UpDateByIdUsingAPI(FileItemId, myFileItem);
@@ -244,7 +247,7 @@ namespace CloudMineServer.Classes
 
             using (var context = new ApplicationDbContext(options))
             {
-                var service = new CloudMineApi(context);
+                var service = new CloudMineDbService(context);
 
                 //Act  
                 var result = await service.UpDateByIdUsingAPI(FileItemId, myFileItem);
@@ -266,7 +269,7 @@ namespace CloudMineServer.Classes
 
             using (var context = new ApplicationDbContext(options))
             {
-                var service = new CloudMineApi(context);
+                var service = new CloudMineDbService(context);
 
                 //Act  
                 var result = await service.DeleteByIdUsingAPI(FileItemId);

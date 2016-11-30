@@ -1,5 +1,6 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="js/chat.js" />
+/// <reference path="js/fileuploader.js" />
 /// <reference path="js/site.js" />
 /// <reference path="js/sorttable.js" />
 /// <reference path="lib/bootstrap/dist/js/bootstrap.js" />

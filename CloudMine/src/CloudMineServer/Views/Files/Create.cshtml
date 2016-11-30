@@ -10,33 +10,9 @@
 </form>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a href="~/api/filechunk">Download my files again baby</a>
 </div>
 
 
-@section scripts{
-
-    <script>
-
-    $(document).ready(function () {
-
-        $('#btnUpload').click(function () {
-            UploadFile($('#uploadFile')[0].files);
-            }
-        )
-    });
-
-    function UploadFileChunk(Chunk, FileName)
-    {
-        var FD = new FormData();
-        FD.append('file', Chunk, FileName);
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("GetAndSaveFiles", "Files")',
-            contentType: false,
-            processData: false,
-            data: FD
-        });
-    }
-    </script>
-}
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/fileuploader.js" asp-append-version="true"></script>

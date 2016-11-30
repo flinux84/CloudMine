@@ -7,7 +7,7 @@ namespace CloudMineServer.Models
 {
     public class FileItemSet
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public List<FileItem> ListFileItems { get; set; }
     }
 }

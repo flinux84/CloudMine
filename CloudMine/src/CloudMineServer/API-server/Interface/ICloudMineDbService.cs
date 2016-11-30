@@ -11,9 +11,9 @@ namespace CloudMineServer.Interface
         #region API CRUD
         Task<bool> AddFileUsingAPI(FileItemSet item);
         Task<FileItemSet> GetAllFilesUsingAPI(FileItemSet item);
-        Task<FileItem> GetFileByIdUsingAPI(int num);
-        Task<bool> UpDateByIdUsingAPI(int num, FileItem item);
-        Task<bool> DeleteByIdUsingAPI(int num);
+        Task<FileItem> GetFileByIdUsingAPI(string num);
+        Task<bool> UpDateByIdUsingAPI(string num, FileItem item);
+        Task<bool> DeleteByIdUsingAPI(string num);
         #endregion
     }
 }

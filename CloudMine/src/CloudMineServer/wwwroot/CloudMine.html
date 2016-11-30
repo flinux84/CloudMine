@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="css/cloudmine.css" />
+</head>
+<body>
+    <script src="js/sorttable.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+            asp-fallback-src="lib/jquery/dist/jquery.min.js"
+            asp-fallback-test="window.jQuery">
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
+            asp-fallback-src="lib/bootstrap/dist/js/bootstrap.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+    </script>
+    <!--<script src="/js/site.min.js" asp-append-version="true"></script>-->
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.0.min.js"></script>
+    <hr />
+
+<div class="container">
+
+    <div class="navbar">
+        <div class="col-lg-4">
+            <form enctype="multipart/form-data">
+                <label for="uploadFile" class="custom-file-upload">
+                    Upload
+                </label>
+                <input id="uploadFile" type="file" multiple="multiple" />
+            </form>
+        </div>
+        <div class="col-lg-8">
+            <div class="input-group" id="search">
+                <input type="text" class="form-control" placeholder="Search by filename...">
+                <button type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row">
+        <aside class="submenu">
+            <h4>MyCloud</h4>
+            <h4>Other...</h4>
+            <h4>Other...</h4>
+            <h4>Other...</h4>
+            <h4>Other...</h4>
+            <h4>Other...</h4>
+        </aside>
+
+        <section class="filelist">
+            <table class="sortable">
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Filesize</th>
+                        <th>Upload Date</th>
+                        <th>Create Date</th>
+                        <th>Owner</th>
+                        <th>Bananas on pizza?</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tr>
+                    <td>
+                        Bodil.jpg
+                    </td>
+                    <td>
+                        560kb
+                    </td>
+                    <td>
+                        2016-11-28
+                    </td>
+                    <td>
+                        2016-10-01
+                    </td>
+                    <td>
+                        Me
+                    </td>
+                    <td>
+                        Yes!
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Greger.jpg
+                    </td>
+                    <td>
+                        960kb
+                    </td>
+                    <td>
+                        2016-12-20
+                    </td>
+                    <td>
+                        2016-11-01
+                    </td>
+                    <td>
+                        Me
+                    </td>
+                    <td>
+                        No!
+                    </td>
+                </tr>
+            </table>
+            <p>TableSection</p>
+            <br />
+            <p>TableSection</p>
+            <br />
+            <p>TableSection</p>
+            <br />
+            <p>TableSection</p>
+            <br />
+            <p>TableSection</p>
+            <br />
+        </section>
+
+        <section class="filedetails">
+            <!--@*detaljerad info om markerad fil, uppladdningsdatum m.m*@-->
+            <p>Details of the file yeah</p><br />
+            <p>Details of the file yeah</p><br />
+            <p>Details of the file yeah</p><br />
+            <p>Details of the file yeah</p><br />
+            <p>Details of the file yeah</p><br />
+            <p>Details of the file yeah</p><br />
+        </section>
+    </div>
+</div>
+
+
+
+    <br />
+    <h2><a href="~/Chat.html">Test SignalR - V2 - ASP.NET CORE</a></h2>
+</body>
+</html>
