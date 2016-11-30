@@ -11,7 +11,7 @@ namespace CloudMineServer.Models
         [Key]
 
         //GUID här med?
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         //klienten skickar namn på part, plocka ut index och sätt ("part 2.5" t.ex blir index 2 (av totalt 5))
         public int PartIndex { get; set; }
@@ -20,7 +20,7 @@ namespace CloudMineServer.Models
         public byte[] Data { get; set; }
 
         //Foreign key till FileItem för att matcha mot fil
-        public string FileItemId { get; set; }
+        public Guid FileItemId { get; set; }
 
         public FileItem FileItem { get; set; }
     }
