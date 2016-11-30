@@ -14,6 +14,7 @@ namespace CloudMineServer.API_server.Controllers
     [Route( "api/v{version:apiVersion}/FileItems" )]
     public class FileItemsController : Controller
     {
+        //TODO Ska bytas ut mot businessLayer
         private readonly CloudDbRepository _context;
 
         public FileItemsController(CloudDbRepository context)
