@@ -24,7 +24,7 @@ namespace CloudMineServer.Controllers
             _context = context;
             _environment = environment;
         }
-
+        //testing
         public IActionResult Index()
         {
             return View();
