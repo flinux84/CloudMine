@@ -7,6 +7,8 @@ using CloudMineServer.Data;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using CloudMineServer.Classes;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace CloudMineServer.Controllers
 {   
@@ -39,7 +41,11 @@ namespace CloudMineServer.Controllers
         {
             for (int i = 0; i < Request.Form.Files.Count; i++)
             {
-                var myFile = Request.Form.Files[i];
+                
+                var myFile = Request.Form.Files[i];                
+                byte[] buffer = new byte[myFile.Length];
+                myFile.OpenReadStream().Read(buffer, 0, 1024*1024);
+                
                 if (myFile != null && myFile.Length != 0)
                 {
                     var PathForSaving = Path.Combine(_environment.WebRootPath, "images");
@@ -48,6 +54,7 @@ namespace CloudMineServer.Controllers
                     {
                         using (var fileStream = new FileStream(Path.Combine(PathForSaving, myFile.FileName), FileMode.Create))
                         {
+                            
                             await myFile.CopyToAsync(fileStream);
                         }
                     }
