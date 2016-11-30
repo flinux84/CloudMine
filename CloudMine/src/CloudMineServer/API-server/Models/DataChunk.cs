@@ -13,8 +13,8 @@ namespace CloudMineServer.Models
         //GUID här med?
         public string Id { get; set; }
 
-        //Kommer från javascriptet där namnet på chunken får "part 1 av 5" t.ex
-        public string PartIndex { get; set; }
+        //klienten skickar namn på part, plocka ut index och sätt ("part 2.5" t.ex blir index 2 (av totalt 5))
+        public int PartIndex { get; set; }
 
         //ByteArray med datan
         public byte[] Data { get; set; }

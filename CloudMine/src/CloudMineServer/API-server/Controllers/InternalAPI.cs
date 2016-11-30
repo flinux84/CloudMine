@@ -15,8 +15,9 @@ namespace CloudMineServer.Controllers
     [Route("api/filechunk/")]
     public class InternalAPI : Controller
     {
-        private ApplicationDbContext context;
-        public InternalAPI(ApplicationDbContext context)
+        //Jag har testat denna innan vi ändrade databasen och det gick bra att spara chunks i databasen. förslagsvis kanske denna ska ligga i en och samma API, eller ska vi dela extern/intern api?
+        private CloudDbRepository context;
+        public InternalAPI(CloudDbRepository context)
         {
             this.context = context;
         }

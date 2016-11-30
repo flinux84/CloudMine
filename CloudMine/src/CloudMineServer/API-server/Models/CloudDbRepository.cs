@@ -11,7 +11,6 @@ namespace CloudMineServer.Models
     {
         public CloudDbRepository(DbContextOptions<CloudDbRepository> options) : base(options)
         {
-
         }
 
         public DbSet<FileItem> FileItems { get; set; }

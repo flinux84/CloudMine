@@ -57,6 +57,8 @@ namespace CloudMineServer
 
             services.AddTransient<ICloudMineDbService, CloudMineDbService>();
 
+            services.AddDbContext<CloudDbRepository>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAnyOrigin",
