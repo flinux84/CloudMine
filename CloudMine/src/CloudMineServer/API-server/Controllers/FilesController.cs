@@ -61,5 +61,7 @@ namespace CloudMineServer.Controllers
             }
             return View();
         }
+
+
     }
 }
