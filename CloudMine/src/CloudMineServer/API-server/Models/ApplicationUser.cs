@@ -9,7 +9,7 @@ namespace CloudMineServer.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        // Går inte med olika contexts?
-        //public ICollection<FileItem> FileItems;
+        // Size of users storage space in bytes
+        public int StorageSize { get; set; }
     }
 }
