@@ -17,7 +17,9 @@ namespace CloudMineServer.Models
         public byte[] Data { get; set; }
 
         //Foreign key till FileItem för att matcha mot fil
+
         public int FileItemId { get; set; }
+
         public FileItem FileItem { get; set; }
     }
 }

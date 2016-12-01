@@ -40,6 +40,7 @@ namespace CloudMineServer.Classes
             Guid guid = Guid.NewGuid();
 
             // Lägg till GuId till Metadata
+            //fi.FileItemId = guid;
             fi.Checksum = guid;
 
             // Lägg till metadata till db
@@ -93,25 +94,37 @@ namespace CloudMineServer.Classes
             return fi;
         }
 
-        // Read (One) Return FileItemSet with all chunks. TODO: Testa att den fungerar!
-        //public async Task<FileItemSet> GetFileChunsByIdAndUserId(string Id, string UserId)
-        //{
-        //    // Ta ut användarens alla filer
-        //    var ListUserFiles = await _context.FileItems.Where(x => x.UserId == UserId).ToListAsync();
+        // Read One with file with filechunks
+        public async Task<FileItem> GetSpecificFilItemAndDataChunks(int id, string userId) // /*, Guid userId*/
+        {
+            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
+            var fi = IQuerybleFileItem.FirstOrDefault(x => x.Id == id);
+            return fi;
 
-        //    // Hitta objekt som stämmer med id (id på det objektet som sak hämtas)
-        //    var fi = ListUserFiles.FirstOrDefault(x => x.Id == Id);
+            //var fi = _context.FileItems.FirstOrDefault(x => x.Id == id);
+            //var ListDC = await _context.DataChunks.Where(x => x.FileItemId == fi.Checksum).ToListAsync();
+            //var returnFI = new FileItem() { DataChunk = ListDC };
+            //return returnFI;
+        }
 
-        //    // En fil kan vara uppdelad i flera chunks med olika id, fast med samma FileChunkId. Ta ut fileChunkId
-        //    int fcId = fi;
-        //    var ListOfFileItem = ListUserFiles.Where(x => x.FileChunkId == fcId).ToList();
+        // Read All with file with filechunks
+        public async Task<List<FileItem>> GetAllFilItemAndDataChunks(string userId)
+        {
+            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
+            return await IQuerybleFileItem.ToListAsync();
 
-        //    // Skapa FileItemSet objekt. Lägg till lista av chunks till som filer i FileItemSet
-        //    FileItemSet returnObj = new FileItemSet() { UserId = UserId, ListFileItems = ListOfFileItem };
+            //var FileItemList = new List<FileItem>();
+            //var ListFI = await _context.FileItems.Where(x => x.UserId == userId).ToListAsync();
+            //foreach (var item in ListFI)
+            //{
+            //    var dc = await _context.DataChunks.Where(x => x.FileItemId == item.FileItemId).ToListAsync();
+            //    var fi = new FileItem() { DataChunk = dc };
+            //    FileItemList.Add(fi);
+            //}
 
-        //    // Retunera skapat objekt
-        //    return returnObj;
-        //}
+            //return FileItemList;
+        }
+
 
         // Update
         public async Task<bool> UpDateByIdUsingAPI(int num, FileItem item)
