@@ -49,6 +49,8 @@ namespace CloudMineServer.Migrations
 
                     b.Property<string>("SecurityStamp");
 
+                    b.Property<int>("StorageSize");
+
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")

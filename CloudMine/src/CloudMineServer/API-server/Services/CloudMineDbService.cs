@@ -1,6 +1,7 @@
 ﻿using CloudMineServer.Data;
 using CloudMineServer.Interface;
 using CloudMineServer.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,14 @@ namespace CloudMineServer.Classes
         #region Dependency Injection Constructor
 
         private readonly CloudDbRepository _context;
+        private readonly ApplicationDbContext _appDbContext;
 
         private int AllowedStorage = 100; // TODO: Sätta en gräns för hur stort utrymme 
 
-        public CloudMineDbService(CloudDbRepository context)
+        public CloudMineDbService(CloudDbRepository context, ApplicationDbContext appDbContext)
         {
             _context = context;
+            _appDbContext = appDbContext;
         }
 
         #endregion
@@ -30,12 +33,11 @@ namespace CloudMineServer.Classes
         // Användaren vill lägga till en ny fil, lägg till metadata till db. 
         public async Task<bool> InitCreateFileItem(FileItem fi)
         {
-            // TODO: Kolla size innan add! 
-            //bool checkSize = CheckStorageSpace(fi);
-            //if (!checkSize)
-            //{
-            //    return false;
-            //}
+            bool checkSize = await CheckStorageSpace(fi);
+            if (!checkSize)
+            {
+                return false;
+            }
 
             // Skapa sträng som ska retuneras
             string GuidToString = "";
@@ -178,6 +180,8 @@ namespace CloudMineServer.Classes
         
         private async Task<bool> CheckStorageSpace(FileItem FI)
         {
+            var user = await _appDbContext.Users.Where(u => u.Id == FI.UserId).SingleOrDefaultAsync();
+            int storageSize = user.StorageSize;
             int check = 0;
 
             var allUserFileItem = _context.FileItems.Where(x => x.UserId == FI.UserId);
@@ -187,7 +191,7 @@ namespace CloudMineServer.Classes
                 check += FileItem.FileSize;
             }
 
-            if (check < AllowedStorage)
+            if (check < storageSize)
             {
                 return true;
             }
