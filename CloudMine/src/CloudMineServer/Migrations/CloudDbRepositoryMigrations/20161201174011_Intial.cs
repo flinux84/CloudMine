@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CloudMineServer.Migrations.CloudDbRepositoryMigrations
 {
-    public partial class Initial : Migration
+    public partial class Intial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,7 +22,7 @@ namespace CloudMineServer.Migrations.CloudDbRepositoryMigrations
                     FileSize = table.Column<int>(nullable: false),
                     Private = table.Column<bool>(nullable: false),
                     Uploaded = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: false)
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

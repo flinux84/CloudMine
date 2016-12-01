@@ -34,6 +34,23 @@ namespace CloudMineServer.Classes
             return builder.Options;
         }
 
+        private static DbContextOptions<ApplicationDbContext> CreateNewApplicationDbContextOptions()
+        {
+            // Create a fresh service provider, and therefore a fresh 
+            // InMemory database instance.
+            var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
+
+            // Create a new options instance telling the context to use an
+            // InMemory database and the new service provider.
+            var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            builder.UseInMemoryDatabase()
+                   .UseInternalServiceProvider(serviceProvider);
+
+            return builder.Options;
+        }
+
         private void FillTheTempDataBase(DbContextOptions<CloudDbRepository> options)
         {
             using (var context = new CloudDbRepository(options))
@@ -77,6 +94,7 @@ namespace CloudMineServer.Classes
         //    FileItemSet fis = new FileItemSet() { UserId = 88, ListFileItems = fiList };
         //    return fis;
         //}
+
         //private static FileItemSet GetBadFileItemSetToTestMethod()
         //{
         //    //List<FileItem> fiList = new List<FileItem>();
@@ -107,21 +125,22 @@ namespace CloudMineServer.Classes
         {
             //Arrange
             var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
 
             var fis = new FileItem() { Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" };
 
-
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
             {
-                var service = new CloudMineDbService(context);
+                var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
                 var result = await service.InitCreateFileItem(fis);
 
                 //Assert
-                var viewResult = Assert.IsType<string>(result);
+                var viewResult = Assert.IsType<bool>(result);
                 Assert.Equal(1, context.FileItems.Count());
-                Assert.Equal(viewResult, context.FileItems.FirstOrDefault().Checksum.ToString());
+                Assert.True(viewResult);
             }
         }
 
@@ -132,22 +151,24 @@ namespace CloudMineServer.Classes
         {
             //Arrange
             var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
+
             AddInitFileItemToDb(options);
             Guid myGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
 
             var ds = new DataChunk() { Id = 0, FileItemId = 1, Data = new byte[10], PartName = "1" };
 
-
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
             {
-                var service = new CloudMineDbService(context);
+                var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
                 var result = await service.AddFileUsingAPI(ds);
 
                 //Assert
-                var viewResult = Assert.IsType<string>(result);
-                Assert.Equal("Ok", viewResult);
+                var viewResult = Assert.IsType<bool>(result);
+                Assert.True(viewResult);
                 Assert.Equal(1, context.DataChunks.FirstOrDefault().FileItemId);
                 Assert.Equal(1, context.FileItems.Count());
             }
@@ -183,12 +204,14 @@ namespace CloudMineServer.Classes
         {
             //Arrange
             var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
             AddInitFileItemToDb(options);
             string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
 
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
             {
-                var service = new CloudMineDbService(context);
+                var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
                 var result = await service.GetAllFilesUsingAPI(userGuid);
@@ -228,12 +251,14 @@ namespace CloudMineServer.Classes
         {
             //Arrange
             var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
             AddInitFileItemToDb(options);
             int FileItemId = 1;
 
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
             {
-                var service = new CloudMineDbService(context);
+                var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
                 var result = await service.GetFileByIdUsingAPI(FileItemId);
@@ -273,13 +298,15 @@ namespace CloudMineServer.Classes
         {
             //Arrange
             var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
             AddInitFileItemToDb(options);
             var myFileItem = new FileItem() { Id = 1, Private = false, FileSize = 111, FileName = "EDIT", Description = "edit", DataType = "jpg" };
             int FileItemId = 1;
 
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
             {
-                var service = new CloudMineDbService(context);
+                var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
                 var result = await service.UpDateByIdUsingAPI(FileItemId, myFileItem);
@@ -322,15 +349,17 @@ namespace CloudMineServer.Classes
         {
             //Arrange
             var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
             AddInitFileItemToDb(options);
 
             var myFileItem = new FileItem() { Id = 1, Private = false, FileSize = 111, FileName = "EDIT", Description = "edit", DataType = "jpg" };
 
             int FileItemId = 1;
 
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
             {
-                var service = new CloudMineDbService(context);
+                var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
                 var result = await service.DeleteByIdUsingAPI(FileItemId);
@@ -355,15 +384,16 @@ namespace CloudMineServer.Classes
         {
             //Arrange
             var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
             AddInitFileItemToDb(options);
             AddDataChunksToDB(options);
             int FileItemId = 1;
             string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
-            Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
 
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
             {
-                var service = new CloudMineDbService(context);
+                var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
                 var result = await service.GetSpecificFilItemAndDataChunks(FileItemId, userGuid);
@@ -373,8 +403,8 @@ namespace CloudMineServer.Classes
                 Assert.Equal(1, context.DataChunks.FirstOrDefault().FileItemId);
                 Assert.Equal(1, context.DataChunks.FirstOrDefault().Id);
 
-                var viewResult = Assert.IsType<FileItem>(result);
-                Assert.Equal(2, viewResult.DataChunks.Count());
+                var viewResult = Assert.IsType<Uri>(result);
+                
             }
         }
 
@@ -410,6 +440,7 @@ namespace CloudMineServer.Classes
         {
             //Arrange
             var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
             AddInitFileItemToDb(options);
 
             AddDataChunksToDB(options);
@@ -417,10 +448,10 @@ namespace CloudMineServer.Classes
             string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
 
 
-
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
             {
-                var service = new CloudMineDbService(context);
+                var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
                 var result = await service.GetAllFilItemAndDataChunks(userGuid);

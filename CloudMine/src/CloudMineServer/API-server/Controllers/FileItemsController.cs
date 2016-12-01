@@ -74,7 +74,7 @@ namespace CloudMineServer.API_server.Controllers {
 
             var metaDataID = await _context.InitCreateFileItem( fileItem );
 
-            if(metaDataID != "" ) {
+            if(metaDataID) {
                 return CreatedAtAction( "GetFileItem", new { id = fileItem.Id }, fileItem );    
             }
 

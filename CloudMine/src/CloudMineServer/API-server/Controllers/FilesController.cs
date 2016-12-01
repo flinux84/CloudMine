@@ -9,6 +9,7 @@ using System.IO;
 using CloudMineServer.Classes;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using CloudMineServer.Services;
 
 namespace CloudMineServer.Controllers
 {   
@@ -62,8 +63,7 @@ namespace CloudMineServer.Controllers
                     {
                         throw;
                     }
-                    FileMerge Items = new FileMerge();
-                    Items.MergeFile(path);
+
                 }
             }
             return View();

@@ -8,8 +8,8 @@ using CloudMineServer.Data;
 namespace CloudMineServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161201110909_Initial")]
-    partial class Initial
+    [Migration("20161201173843_gregda")]
+    partial class gregda
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,6 +49,8 @@ namespace CloudMineServer.Migrations
                     b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("SecurityStamp");
+
+                    b.Property<int>("StorageSize");
 
                     b.Property<bool>("TwoFactorEnabled");
 

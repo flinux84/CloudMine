@@ -8,8 +8,8 @@ using CloudMineServer.Models;
 namespace CloudMineServer.Migrations.CloudDbRepositoryMigrations
 {
     [DbContext(typeof(CloudDbRepository))]
-    [Migration("20161201122424_GuidToString")]
-    partial class GuidToString
+    [Migration("20161201174011_Intial")]
+    partial class Intial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
