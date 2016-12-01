@@ -83,35 +83,25 @@ namespace CloudMineServer.API_server.Controllers {
 
         }
 
-        //// POST: api/FileItems/5
-        ////TODO l�gga till en location i return-objektet som man kan skicka fildatan till, kanske ska g�ras p� businesslayer?
+        // POST: api/FileItems/5
         //[HttpPost( "{id}" )]
-        //public async Task<IActionResult> PostDataChunk( [FromRoute] string id, [FromBody] DataChunk dataChunk ) {
-        //    //TODO skicka fildatan till businesslayer och f� n�got kul tillbaka :P
+        //public async Task<IActionResult> PostDataChunk( [FromRoute] int id, [FromBody] DataChunk dataChunk ) {
 
-        //    //if (!ModelState.IsValid)
-        //    //{
-        //    //    return BadRequest(ModelState);
-        //    //}
+        //    if( !ModelState.IsValid ) {
+        //        return BadRequest( ModelState );
+        //    }
 
-        //    //_context.FileItems.Add(fileItem);
-        //    //try
-        //    //{
-        //    //    await _context.SaveChangesAsync();
-        //    //}
-        //    //catch (DbUpdateException)
-        //    //{
-        //    //    if (FileItemExists(fileItem.Id))
-        //    //    {
-        //    //        return new StatusCodeResult(StatusCodes.Status409Conflict);
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        throw;
-        //    //    }
-        //    //}
+        //    //Hitta metadatan som chunksen tillhör
+        //    var file = await _context.GetFileByIdUsingAPI( id );
+        //    file.DataChunks.Add( dataChunk );
+        //    dataChunk.FileItem = file;
 
-        //    return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
+        //    string chunksAdded = await _context.AddFileUsingAPI( dataChunk );
+
+        //    if( chunksAdded == "Ok" )
+        //        return CreatedAtAction( "GetFileItem", new { id = dataChunk.FileItemId }, dataChunk );
+        //    else
+        //        return BadRequest( "Error adding datachunks." );
         //}
 
         // DELETE: api/FileItems/5
