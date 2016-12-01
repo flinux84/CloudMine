@@ -30,7 +30,7 @@ namespace CloudMineServer.Models
         public int FileSize { get; set; }
 
         // Användaren
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         // Går inte med olika contexts?
         //public ApplicationUser User { get; set; }
         
