@@ -40,7 +40,7 @@ namespace CloudMineServer.Classes
             Guid guid = Guid.NewGuid();
 
             // Lägg till GuId till Metadata
-            fi.FileItemId = guid;
+            fi.Checksum = guid;
 
             // Lägg till metadata till db
             bool add = await Add(fi);
@@ -88,7 +88,7 @@ namespace CloudMineServer.Classes
         // Read (One) 
         public async Task<FileItem> GetFileByIdUsingAPI(int id)
         {
-            var fi = await _context.FileItems.FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            var fi = await _context.FileItems.FirstOrDefaultAsync(x => x.Id == id);
 
             return fi;
         }
@@ -116,7 +116,7 @@ namespace CloudMineServer.Classes
         // Update
         public async Task<bool> UpDateByIdUsingAPI(int num, FileItem item)
         {
-            if (num == item.Id.ToString())
+            if (num == item.Id)
             {
                 bool check = await Update(item);
                 return check;
