@@ -13,12 +13,12 @@ namespace CloudMineServer.API_server.Controllers {
     {
         //TODO Ska bytas ut mot businessLayer
         private readonly ICloudMineDbService _context;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public FileItemsController( ICloudMineDbService context, UserManager<ApplicationUser> _userManager )
+        public FileItemsController( ICloudMineDbService context, UserManager<ApplicationUser> userManager )
         {
             _context = context;
-            userManager = _userManager;
+            _userManager = userManager;
         }
 
         // GET: api/FileItems
@@ -26,7 +26,7 @@ namespace CloudMineServer.API_server.Controllers {
         public async Task<FileItemSet> GetFileItems()
         {
             //a345204b - c91a - 42e4 - 87a0 - 03eb585090b1
-            Guid g = new Guid( userManager.GetUserId( User ) );
+            Guid g = new Guid( _userManager.GetUserId( User ) );
             return await _context.GetAllFilesUsingAPI( g );
         }
 
