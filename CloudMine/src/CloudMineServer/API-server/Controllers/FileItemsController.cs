@@ -1,5 +1,6 @@
 using CloudMineServer.Interface;
 using CloudMineServer.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -30,24 +31,21 @@ namespace CloudMineServer.API_server.Controllers {
             return await _context.GetAllFilesUsingAPI( g );
         }
 
-        //// GET: api/FileItems/5
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetFileItem([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        // GET: api/FileItems/5
+        [HttpGet( "{id}" )]
+        public async Task<IActionResult> GetFileItem( [FromRoute] int id ) {
+            if( !ModelState.IsValid ) {
+                return BadRequest( ModelState );
+            }
 
-        //    var fileItem = await _context.FileItems.SingleOrDefaultAsync(m => m.Id == id);
+            var fileItem = await _context.GetFileByIdUsingAPI( id ); //FileItems.SingleOrDefaultAsync( m => m.Id == id );
 
-        //    if (fileItem == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if( fileItem == null ) {
+                return NotFound();
+            }
 
-        //    return Ok(fileItem);
-        //}
+            return Ok( fileItem );
+        }
 
         //// PUT: api/FileItems/5
         //[HttpPut("{id}")]
@@ -83,26 +81,34 @@ namespace CloudMineServer.API_server.Controllers {
 
         //    return NoContent();
         //}
-        //// POST: api/FileItems
-        //[HttpPost]
-        //public async Task<IActionResult> PostFileItem( [FromBody] FileItem fileItem ) {
-        //    if( !ModelState.IsValid ) {
-        //        return BadRequest( ModelState );
-        //    }
 
-        //    _context.FileItems.Add( fileItem );
-        //    try {
-        //        await _context.SaveChangesAsync();
-        //    } catch( DbUpdateException ) {
-        //        if( FileItemExists( fileItem.Id ) ) {
-        //            return new StatusCodeResult( StatusCodes.Status409Conflict );
-        //        } else {
-        //            throw;
-        //        }
-        //    }
+        // POST: api/FileItems
+        [HttpPost]
+        public async Task<IActionResult> PostFileItem( [FromBody] FileItem fileItem ) {
+            if( !ModelState.IsValid ) {
+                return BadRequest( ModelState );
+            }
+            Guid g = new Guid( _userManager.GetUserId( User ) );
+            fileItem.UserId = g;
 
-        //    return CreatedAtAction( "GetFileItem", new { id = fileItem.Id }, fileItem );
-        //}
+            var metaDataID = await _context.InitCreateFileItem( fileItem ); //.FileItems.Add( fileItem );
+
+            if(metaDataID != "" ) {
+                return CreatedAtAction( "GetFileItem", new { id = metaDataID }, fileItem );    
+            }
+
+            return new StatusCodeResult( StatusCodes.Status409Conflict );
+            //try {
+            //    await _context.SaveChangesAsync();
+            //} catch( DbUpdateException ) {
+            //    if( FileItemExists( fileItem.Id ) ) {
+            //        return new StatusCodeResult( StatusCodes.Status409Conflict );
+            //    } else {
+            //        throw;
+            //    }
+            //}
+
+        }
 
         //// POST: api/FileItems/5
         ////TODO l�gga till en location i return-objektet som man kan skicka fildatan till, kanske ska g�ras p� businesslayer?
