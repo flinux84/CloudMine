@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using CloudMineServer.Data;
 
-namespace CloudMineServer.Data.Migrations
+namespace CloudMineServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161129082347_chunksForModel")]
-    partial class chunksForModel
+    [Migration("20161201110909_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -65,36 +65,6 @@ namespace CloudMineServer.Data.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("CloudMineServer.Models.FileItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("Created");
-
-                    b.Property<string>("DataType");
-
-                    b.Property<string>("Description");
-
-                    b.Property<int>("FileChunkId");
-
-                    b.Property<int>("FileChunkIndex");
-
-                    b.Property<byte[]>("FileData");
-
-                    b.Property<string>("FileName");
-
-                    b.Property<int>("FileSize");
-
-                    b.Property<bool>("Private");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("dbFileItem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>

@@ -40,7 +40,7 @@ namespace CloudMineServer.Classes
             Guid guid = Guid.NewGuid();
 
             // Lägg till GuId till Metadata
-            fi.FileItemId = guid;
+            fi.Checksum = guid;
 
             // Lägg till metadata till db
             bool add = await Add(fi);
