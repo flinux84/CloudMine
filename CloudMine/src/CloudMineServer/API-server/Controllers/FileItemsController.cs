@@ -26,9 +26,7 @@ namespace CloudMineServer.API_server.Controllers {
         [HttpGet]
         public async Task<FileItemSet> GetFileItems()
         {
-            //a345204b - c91a - 42e4 - 87a0 - 03eb585090b1
-            Guid g = new Guid( _userManager.GetUserId( User ) );
-            return await _context.GetAllFilesUsingAPI( g );
+            return await _context.GetAllFilesUsingAPI( _userManager.GetUserId( User ) );
         }
 
         // GET: api/FileItems/5
@@ -47,40 +45,24 @@ namespace CloudMineServer.API_server.Controllers {
             return Ok( fileItem );
         }
 
-        //// PUT: api/FileItems/5
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutFileItem([FromRoute] int id, [FromBody] FileItem fileItem)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        // PUT: api/FileItems/5
+        [HttpPut( "{id}" )]
+        public async Task<IActionResult> PutFileItem( [FromRoute] int id, [FromBody] FileItem fileItem ) {
+            if( !ModelState.IsValid ) {
+                return BadRequest( ModelState );
+            }
 
-        //    if (id != fileItem.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+            if( id != fileItem.Id ) {
+                return BadRequest();
+            }
 
-        //    _context.Entry(fileItem).State = EntityState.Modified;
+            bool updated = await _context.UpDateByIdUsingAPI( id, fileItem );
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!FileItemExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
+            if( updated )
+                return NoContent();
+            else
+                return BadRequest( "Data was not received properly." );
+        }
 
         // POST: api/FileItems
         [HttpPost]
@@ -88,25 +70,16 @@ namespace CloudMineServer.API_server.Controllers {
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
             }
-            Guid g = new Guid( _userManager.GetUserId( User ) );
-            fileItem.UserId = g;
+            //Uppdatera userId på fileItem innan vi skickar den till business layer
+            fileItem.UserId = _userManager.GetUserId( User );
 
-            var metaDataID = await _context.InitCreateFileItem( fileItem ); //.FileItems.Add( fileItem );
+            var metaDataID = await _context.InitCreateFileItem( fileItem );
 
             if(metaDataID != "" ) {
-                return CreatedAtAction( "GetFileItem", new { id = metaDataID }, fileItem );    
+                return CreatedAtAction( "GetFileItem", new { id = fileItem.Id }, fileItem );    
             }
 
-            return new StatusCodeResult( StatusCodes.Status409Conflict );
-            //try {
-            //    await _context.SaveChangesAsync();
-            //} catch( DbUpdateException ) {
-            //    if( FileItemExists( fileItem.Id ) ) {
-            //        return new StatusCodeResult( StatusCodes.Status409Conflict );
-            //    } else {
-            //        throw;
-            //    }
-            //}
+            return new StatusCodeResult( StatusCodes.Status400BadRequest );
 
         }
 
@@ -141,30 +114,24 @@ namespace CloudMineServer.API_server.Controllers {
         //    return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
         //}
 
-        //// DELETE: api/FileItems/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteFileItem([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        // DELETE: api/FileItems/5
+        [HttpDelete( "{id}" )]
+        public async Task<IActionResult> DeleteFileItem( [FromRoute] int id ) {
+            if( !ModelState.IsValid ) {
+                return BadRequest( ModelState );
+            }
 
-        //    var fileItem = await _context.FileItems.SingleOrDefaultAsync(m => m.Id == id);
-        //    if (fileItem == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.FileItems.Remove(fileItem);
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(fileItem);
-        //}
-
-        //private bool FileItemExists(int id)
-        //{
-        //    return _context.FileItems.Any(e => e.Id == id);
-        //}
+            //Kolla om filen finns först
+            var fileItem = await _context.GetFileByIdUsingAPI( id ); // .FileItems.SingleOrDefaultAsync( m => m.Id == id );
+            if( fileItem == null ) {
+                return NotFound();
+            }
+            //Ta bort filen
+            bool deleted = await _context.DeleteByIdUsingAPI( id );
+            if( deleted )
+                return Ok( fileItem );
+            else
+                return BadRequest( "Error while removing file" );
+        }
     }
 }
