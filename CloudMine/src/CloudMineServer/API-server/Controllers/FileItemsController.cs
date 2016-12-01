@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CloudMineServer.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CloudMineServer.API_server.Controllers
 {
@@ -82,34 +83,56 @@ namespace CloudMineServer.API_server.Controllers
 
             return NoContent();
         }
-
         // POST: api/FileItems
         [HttpPost]
-        public async Task<IActionResult> PostFileItem([FromBody] FileItem fileItem)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
+        public async Task<IActionResult> PostFileItem( [FromBody] FileItem fileItem ) {
+            if( !ModelState.IsValid ) {
+                return BadRequest( ModelState );
             }
 
-            _context.FileItems.Add(fileItem);
-            try
-            {
+            _context.FileItems.Add( fileItem );
+            try {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (FileItemExists(fileItem.Id))
-                {
-                    return new StatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                else
-                {
+            } catch( DbUpdateException ) {
+                if( FileItemExists( fileItem.Id ) ) {
+                    return new StatusCodeResult( StatusCodes.Status409Conflict );
+                } else {
                     throw;
                 }
             }
 
-            return CreatedAtAction("GetFileItem", new { id = fileItem.Id }, fileItem);
+            return CreatedAtAction( "GetFileItem", new { id = fileItem.Id }, fileItem );
+        }
+
+        // POST: api/FileItems/5
+        //TODO l�gga till en location i return-objektet som man kan skicka fildatan till, kanske ska g�ras p� businesslayer?
+        [HttpPost( "{id}" )]
+        public async Task<IActionResult> PostDataChunk( [FromRoute] string id, [FromBody] DataChunk dataChunk ) {
+            //TODO skicka fildatan till businesslayer och f� n�got kul tillbaka :P
+
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+
+            //_context.FileItems.Add(fileItem);
+            //try
+            //{
+            //    await _context.SaveChangesAsync();
+            //}
+            //catch (DbUpdateException)
+            //{
+            //    if (FileItemExists(fileItem.Id))
+            //    {
+            //        return new StatusCodeResult(StatusCodes.Status409Conflict);
+            //    }
+            //    else
+            //    {
+            //        throw;
+            //    }
+            //}
+
+            return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
         }
 
         // DELETE: api/FileItems/5
