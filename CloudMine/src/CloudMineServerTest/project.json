@@ -11,7 +11,8 @@
       "version": "1.1.0"
     },
     "xunit": "2.2.0-beta4-build3444",
-    "Microsoft.EntityFrameworkCore.InMemory": "1.1.0"
+    "Microsoft.EntityFrameworkCore.InMemory": "1.1.0",
+    "CloudMineServer": "1.0.0-*"
   },
   "frameworks": {
     "netcoreapp1.1": {
