@@ -13,7 +13,7 @@ namespace CloudMineServer.Interface
         Task<string> InitCreateFileItem(FileItem fi);
 
         Task<string> AddFileUsingAPI(DataChunk item);
-        Task<FileItemSet> GetAllFilesUsingAPI(Guid item);
+        Task<FileItemSet> GetAllFilesUsingAPI(string item);
         Task<FileItem> GetFileByIdUsingAPI(int num);
         Task<bool> UpDateByIdUsingAPI(int num, FileItem item);
         Task<bool> DeleteByIdUsingAPI(int num);
