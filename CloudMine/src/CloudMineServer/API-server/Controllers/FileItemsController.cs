@@ -12,7 +12,6 @@ namespace CloudMineServer.API_server.Controllers {
     [Route( "api/v{version:apiVersion}/FileItems" )]
     public class FileItemsController : Controller
     {
-        //TODO Ska bytas ut mot businessLayer
         private readonly ICloudMineDbService _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -36,7 +35,7 @@ namespace CloudMineServer.API_server.Controllers {
                 return BadRequest( ModelState );
             }
 
-            var fileItem = await _context.GetFileByIdUsingAPI( id ); //FileItems.SingleOrDefaultAsync( m => m.Id == id );
+            var fileItem = await _context.GetFileByIdUsingAPI( id );
 
             if( fileItem == null ) {
                 return NotFound();
@@ -112,7 +111,7 @@ namespace CloudMineServer.API_server.Controllers {
             }
 
             //Kolla om filen finns först
-            var fileItem = await _context.GetFileByIdUsingAPI( id ); // .FileItems.SingleOrDefaultAsync( m => m.Id == id );
+            var fileItem = await _context.GetFileByIdUsingAPI( id );
             if( fileItem == null ) {
                 return NotFound();
             }
