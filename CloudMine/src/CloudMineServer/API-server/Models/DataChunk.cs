@@ -9,20 +9,15 @@ namespace CloudMineServer.Models
 {
     public class DataChunk
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
-        //public Guid DataChunkId { get; set; }
-
-        public int PartIndex { get; set; }
+        public string PartName { get; set; }
 
         //ByteArray med datan
         public byte[] Data { get; set; }
 
         //Foreign key till FileItem för att matcha mot fil
         public int FileItemId { get; set; }
-
         public FileItem FileItem { get; set; }
     }
 }

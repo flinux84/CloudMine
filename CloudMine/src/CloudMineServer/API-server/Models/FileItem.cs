@@ -12,16 +12,9 @@ namespace CloudMineServer.Models
 
     public class FileItem
     {
-        //public int Id { get; set; }
+        public int Id { get; set; }
 
-        // Generera GUID saltat med UserId och FileName, behöver då vara string.
-        // Kanske generera md5-checksum och använda som id
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid Id { get; set; }
-        
-        // Användarens GUID
-        public Guid UserId { get; set; }
+        public Guid Checksum { get; set; }
 
         // Filnamnet
         public string FileName { get; set; }
@@ -41,7 +34,12 @@ namespace CloudMineServer.Models
         //Filstorlek på hela filen
         public int FileSize { get; set; }
 
+        // Användaren
+        public Guid UserId { get; set; }
+        // Går inte med olika contexts?
+        //public ApplicationUser User { get; set; }
+        
         //Fildatan för filen. Kan vara en, kan vara många.
-        public virtual ICollection<DataChunk> DataChunk { get; set; }
+        public virtual ICollection<DataChunk> DataChunks { get; set; }
     }
 }
