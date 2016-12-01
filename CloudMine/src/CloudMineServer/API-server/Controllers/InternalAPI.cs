@@ -9,13 +9,15 @@ using CloudMineServer.Models;
 using CloudMineServer.Interface;
 using System;
 using System.Linq;
+using CloudMineServer.Classes;
+using CloudMineServer.Services;
 
 namespace CloudMineServer.Controllers
 {
     [Route("api/filechunk/")]
     public class InternalAPI : Controller
     {
-        //Jag har testat denna innan vi ändrade databasen och det gick bra att spara chunks i databasen. förslagsvis kanske denna ska ligga i en och samma API, eller ska vi dela extern/intern api?
+        //Linus testa-runt-klass
         private CloudDbRepository context;
         public InternalAPI(CloudDbRepository context)
         {
@@ -29,45 +31,45 @@ namespace CloudMineServer.Controllers
         //}
 
         //[HttpGet]
-        //public async Task<IActionResult> MergeAllAndReturn()
+        //public async Task<IActionResult> Return(string filename)
         //{
-            //var fileitems = context.dbFileItem.ToList();
-            //var fis = new FileItemSet();
+        //    var fileitem = new FileItem();
+        //    fileitem.FileName = "StorageExplorer.exe";
+        //    fileitem.DataChunks = context.DataChunks.Where(s => s.PartName.StartsWith("Storage")).ToList();
+        //    FileMerge merge = new FileMerge();
+        //    var retur = merge.MakeFile(fileitem);
 
-            //var sorted = fileitems.OrderBy(f => f.FileName);
-
-            //List<byte> merged = new List<byte>();
-
-            //foreach (var item in sorted)
-            //{
-            //    merged.AddRange(item.FileData);
-            //}
-
-            //var buffer = merged.ToArray();
-            //var stream = new MemoryStream(buffer);
-
-            //return new FileStreamResult(stream, "application/octet-stream");
+        //    //return new VirtualFileResult(retur.AbsolutePath, "application/octet-stream");
+        //    return new PhysicalFileResult(retur.AbsolutePath, "application/octet-stream");
+        //    //return new PhysicalFileResult(retur.AbsolutePath, "application/octet-stream");
+        //    //return new FileStreamResult(stream, "application/octet-stream");
         //}
 
         //[HttpPost]
-        //public async Task<IActionResult> UploadFileChunk(string fileId)
+        //public async Task<IActionResult> UploadFileChunk()
         //{
-            //for (int i = 0; i < Request.Form.Files.Count; i++)
-            //{
-            //    var myFile = Request.Form.Files[i];
-            //    if (myFile != null && myFile.Length != 0)
-            //    {
-            //        var length = myFile.Length;
-            //        var size = myFile.FileName;
+        //    for (int i = 0; i < Request.Form.Files.Count; i++)
+        //    {
+        //        var myFile = Request.Form.Files[i];
+        //        if (myFile != null && myFile.Length != 0)
+        //        {
 
-            //        var chunk = new DataChunk() {
-            //            FileName = myFile.FileName,
-            //            FileData = StreamToArray(myFile.OpenReadStream()),
-            //            FileChunkIndex = i
-            //        };
+        //            var chunk = new DataChunk() {
+        //                PartName = myFile.FileName,
+        //                Data = StreamToArray(myFile.OpenReadStream()),
+        //                FileItemId = 2
+        //            };
 
-                    //context.DataChunks.Add(fitem);
-                    //context.SaveChanges();
+        //            context.DataChunks.Add(chunk);
+        //            try
+        //            {
+        //                context.SaveChanges();
+        //            } catch (Exception e)
+        //            {
+
+        //                throw new Exception(e.Message);
+        //            }
+                    
         //        }
         //    }
 
@@ -75,23 +77,23 @@ namespace CloudMineServer.Controllers
         //    return new ObjectResult("hejsan");
         //}
 
-        private static byte[] StreamToArray(Stream input)
-        {
-            byte[] buffer = new byte[16 * 1024];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
-            }
-        }
+        //private static byte[] StreamToArray(Stream input)
+        //{
+        //    byte[] buffer = new byte[16 * 1024];
+        //    using (MemoryStream ms = new MemoryStream())
+        //    {
+        //        int read;
+        //        while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+        //        {
+        //            ms.Write(buffer, 0, read);
+        //        }
+        //        return ms.ToArray();
+        //    }
+        //}
 
-        private void MergeFileChunks(List<FileItem> chunkedfile)
-        {
+        //private void MergeFileChunks(List<FileItem> chunkedfile)
+        //{
 
-        }
+        //}
     }
 }

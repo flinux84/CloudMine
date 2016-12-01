@@ -1,86 +1,103 @@
-﻿using System;
+﻿using CloudMineServer.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace CloudMineServer.Classes
+namespace CloudMineServer.Services
 {
+    /// <summary>
+    /// Takes a FileItem with datachunks and restores them to a file and returns path for the file
+    /// </summary>
     public class FileMerge
     {
-        public bool MergeFile(string FileName)
+        private const string partToken = ".part_";
+        private string trailingToken = "";
+        private int fileIndex = 0;
+
+        public Uri MakeFile(FileItem fileitem)
         {
+            var baseFileName = fileitem.FileName;
+            string[] filesList = fileitem.DataChunks.Select(d => d.PartName).ToArray();
 
-            bool rslt = false;
-            // parse out the different tokens from the filename according to the convention
-            string partToken = ".part_";
-            string baseFileName = FileName.Substring(0, FileName.IndexOf(partToken));
-            string trailingTokens = FileName.Substring(FileName.IndexOf(partToken) + partToken.Length);
-            int FileIndex = 0;
-            int FileCount = 0;
-            int.TryParse(trailingTokens.Substring(0, trailingTokens.IndexOf(".")), out FileIndex);
-            int.TryParse(trailingTokens.Substring(trailingTokens.IndexOf(".") + 1), out FileCount);
+            var chunkPartName = filesList.FirstOrDefault();
+            trailingToken = chunkPartName.Substring(chunkPartName.IndexOf(partToken) + partToken.Length);
 
-            // get a list of all file parts in the temp folder
+            int fileCount = 0;
+            int.TryParse(trailingToken.Substring(trailingToken.IndexOf(".") + 1), out fileCount);
 
-            string Searchpattern = Path.GetFileName(baseFileName) + partToken + "*";
-            string[] FilesList = Directory.GetFiles(Path.GetDirectoryName(FileName), Searchpattern);
-                  
-            if (FilesList.Count() == FileCount)
+            if (filesList.Count() == fileCount)
             {
-                // use a singleton to stop overlapping processes
+                // Singleton så att den inte kan överlappa merge
                 if (!MergeFileManager.Instance.InUse(baseFileName))
                 {
                     MergeFileManager.Instance.AddFile(baseFileName);
-                    if (File.Exists(baseFileName))
-                        File.Delete(baseFileName);
-                    List<SortedFile> MergeList = new List<SortedFile>();
-                    foreach (string File in FilesList)
-                    {
-                        SortedFile sFile = new SortedFile();
-                        sFile.FileName = File;
-                        baseFileName = File.Substring(0, File.IndexOf(partToken));
-                        trailingTokens = File.Substring(File.IndexOf(partToken) + partToken.Length);
-                        int.TryParse(trailingTokens.
-                           Substring(0, trailingTokens.IndexOf(".")), out FileIndex);
-                        sFile.FileOrder = FileIndex;
-                        MergeList.Add(sFile);
-                    }
-                    // sort by the file-part number to ensure we merge back in the correct order
-                    var MergeOrder = MergeList.OrderBy(s => s.FileOrder).ToList();
-                    using (FileStream fileStream = new FileStream(baseFileName, FileMode.Create))
-                    {
-                        // merge each file chunk back into one contiguous file stream
-                        foreach (var chunk in MergeOrder)
-                        {
-                            var x = chunk;
 
-                            try
-                            {
-                                using (FileStream fileChunk = new FileStream(chunk.FileName, FileMode.Open))
-                                {
-                                    
-                                    fileChunk.CopyTo(fileStream);
-                                }
-                            }
-                            catch
-                            {
-                                throw;
-                            }
-                        }
-                    }
-                    rslt = true;
-                    // unlock the file from singleton
+                    //Sortera med index så vi kan merga ihop rätt
+                    List<SortedFile> MergeOrder = SortMergeList(filesList);
+
+                    //Skapa filen igen genom att merga ihop chunksen till en filestream som skrivs till Temp-mappen
+                    FileInfo fi = MergeSortedChunks(fileitem, baseFileName, MergeOrder);
+
+                    //Frigör MergeFileManager och ta bort från listan
                     MergeFileManager.Instance.RemoveFile(baseFileName);
-                    foreach (string x in FilesList)
+                    foreach (string x in filesList)
                     {
                         File.Delete(x);
                     }
+
+                    //Returnera url till filen på servern
+                    return new Uri(fi.FullName);
                 }
             }
-            return rslt;
-
+            return new Uri("error");
         }
+
+        private static FileInfo MergeSortedChunks(FileItem fileitem, string baseFileName, List<SortedFile> MergeOrder)
+        {
+            FileInfo fi = new FileInfo("Temp/" + baseFileName);
+
+            using (FileStream fileStream = fi.Create())
+            {
+                foreach (var chunk in MergeOrder)
+                {
+                    var data = fileitem.DataChunks.FirstOrDefault(c => c.PartName == chunk.FileName);
+                    try
+                    {
+                        using (MemoryStream fileChunk = new MemoryStream(data.Data))
+                        {
+                            fileChunk.CopyTo(fileStream);
+                        }
+                    } catch
+                    {
+                        throw;
+                    }
+                }
+            }
+            return fi;
+        }
+
+        private List<SortedFile> SortMergeList(string[] filesList)
+        {
+            List<SortedFile> mergeList = new List<SortedFile>();
+
+            foreach (var file in filesList)
+            {
+                trailingToken = file.Substring(file.IndexOf(partToken) + partToken.Length);
+                int.TryParse(trailingToken.Substring(0, trailingToken.IndexOf(".")), out fileIndex);
+
+                SortedFile sFile = new SortedFile();
+                sFile.FileName = file;
+                sFile.FileOrder = fileIndex;
+                mergeList.Add(sFile);
+            }
+
+            // sorterar chunks så vi har dem i rätt ordning innan vi klistrar ihop
+            var MergeOrder = mergeList.OrderBy(s => s.FileOrder).ToList();
+            return MergeOrder;
+        }
+
+       
         public class MergeFileManager
         {
             private static MergeFileManager instance;
@@ -91,12 +108,10 @@ namespace CloudMineServer.Classes
                 try
                 {
                     MergeFileList = new List<string>();
-                }
-                catch { }
+                } catch { }
             }
 
-            public static MergeFileManager Instance
-            {
+            public static MergeFileManager Instance {
                 get
                 {
                     if (instance == null)
@@ -127,3 +142,7 @@ namespace CloudMineServer.Classes
         }
     }
 }
+
+
+//TODO: Linus: välj in-memory merge eller disk-merge beroende på filstorlek.
+//TODO: Linus: kasta exception om saknade chunks, eller namnet inte stämmer överens med fileitem.FileNamn.
