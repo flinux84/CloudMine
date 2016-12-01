@@ -31,7 +31,7 @@ namespace CloudMineServer.Classes
         #region CRUD
 
         // Användaren vill lägga till en ny fil, lägg till metadata till db. 
-        public async Task<string> InitCreateFileItem(FileItem fi)
+        public async Task<bool> InitCreateFileItem(FileItem fi)
         {
             // Skapa sträng som ska retuneras
             string GuidToString = "";
@@ -50,29 +50,31 @@ namespace CloudMineServer.Classes
             if (add)
             {
                 GuidToString = guid.ToString();
-                return GuidToString;
+                //return GuidToString;
+                return true;
             }
 
             // Om save inte går, retunera ""
-            return GuidToString;
+            //return GuidToString;
+            return false;
         }
 
         // Create
-        public async Task<string> AddFileUsingAPI(DataChunk DC)
+        public async Task<bool> AddFileUsingAPI(DataChunk DC)
         {
 
             // TODO: kolla size också innan add! bool checkSize = CheckStorageSpace();
             //if (!checkSize)
             //{
-            //    return "Not enough storage";
+            //    return false;
             //}
 
             bool add = await Add(DC);
             if (!add)
             {
-                return "error adding DataChunk";
+                return false;
             }
-            return "Ok";
+            return true;
 
         }
 

@@ -9,14 +9,18 @@ namespace CloudMineServer.Interface
     public interface ICloudMineDbService
     {
         #region API CRUD
-
-        Task<string> InitCreateFileItem(FileItem fi);
-
-        Task<string> AddFileUsingAPI(DataChunk item);
+        Task<bool> InitCreateFileItem(FileItem fi);
+        Task<bool> AddFileUsingAPI(DataChunk item);
         Task<FileItemSet> GetAllFilesUsingAPI(string item);
         Task<FileItem> GetFileByIdUsingAPI(int num);
         Task<bool> UpDateByIdUsingAPI(int num, FileItem item);
         Task<bool> DeleteByIdUsingAPI(int num);
         #endregion
+
+        #region get FileItem & Chunks
+        Task<FileItem> GetSpecificFilItemAndDataChunks(int id, string userId);
+        Task<List<FileItem>> GetAllFilItemAndDataChunks(string userId);
+        #endregion
+
     }
 }

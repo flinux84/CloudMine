@@ -77,6 +77,7 @@ namespace CloudMineServer.Classes
         //    FileItemSet fis = new FileItemSet() { UserId = 88, ListFileItems = fiList };
         //    return fis;
         //}
+
         //private static FileItemSet GetBadFileItemSetToTestMethod()
         //{
         //    //List<FileItem> fiList = new List<FileItem>();
