@@ -40,7 +40,8 @@ namespace CloudMineServer.Classes
             Guid guid = Guid.NewGuid();
 
             // Lägg till GuId till Metadata
-            fi.FileItemId = guid;
+            //fi.FileItemId = guid;
+            fi.Checksum = guid;
 
             // Lägg till metadata till db
             bool add = await Add(fi);
@@ -78,7 +79,7 @@ namespace CloudMineServer.Classes
         // Read (All) METADATA
         public async Task<FileItemSet> GetAllFilesUsingAPI(Guid userID)
         {
-            var ListFileItems = await _context.FileItems.Where(x => x.UserId == userID).ToListAsync();
+            var ListFileItems = await _context.FileItems.Where(x => x.Checksum == userID).ToListAsync();
 
             FileItemSet returnFileITem = new FileItemSet() { ListFileItems = ListFileItems };
 
@@ -94,34 +95,34 @@ namespace CloudMineServer.Classes
         }
 
         // Read One with file with filechunks
-        public async Task<FileItem> GetSpecificFilItemAndDataChunks(int id) // /*, Guid userId*/
+        public async Task<FileItem> GetSpecificFilItemAndDataChunks(int id, Guid userId) // /*, Guid userId*/
         {
-            //var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunk); //.Where(x => x.UserId == userId);
-            //var fi = IQuerybleFileItem.FirstOrDefault(x => x.Id == id);
-            //return fi;
+            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
+            var fi = IQuerybleFileItem.FirstOrDefault(x => x.Id == id);
+            return fi;
 
-            var fi = _context.FileItems.FirstOrDefault(x => x.Id == id);
-            var ListDC = await _context.DataChunks.Where(x => x.FileItemId == fi.FileItemId).ToListAsync();
-            var returnFI = new FileItem() { DataChunk = ListDC };
-            return returnFI;
+            //var fi = _context.FileItems.FirstOrDefault(x => x.Id == id);
+            //var ListDC = await _context.DataChunks.Where(x => x.FileItemId == fi.Checksum).ToListAsync();
+            //var returnFI = new FileItem() { DataChunk = ListDC };
+            //return returnFI;
         }
 
         // Read All with file with filechunks
         public async Task<List<FileItem>> GetAllFilItemAndDataChunks(Guid userId)
         {
-            //var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunk).Where(x => x.UserId == userId);
-            //return await IQuerybleFileItem.ToListAsync();
+            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
+            return await IQuerybleFileItem.ToListAsync();
 
-            var FileItemList = new List<FileItem>();
-            var ListFI = await _context.FileItems.Where(x => x.UserId == userId).ToListAsync();
-            foreach (var item in ListFI)
-            {
-                var dc = await _context.DataChunks.Where(x => x.FileItemId == item.FileItemId).ToListAsync();
-                var fi = new FileItem() { DataChunk = dc };
-                FileItemList.Add(fi);
-            }
+            //var FileItemList = new List<FileItem>();
+            //var ListFI = await _context.FileItems.Where(x => x.UserId == userId).ToListAsync();
+            //foreach (var item in ListFI)
+            //{
+            //    var dc = await _context.DataChunks.Where(x => x.FileItemId == item.FileItemId).ToListAsync();
+            //    var fi = new FileItem() { DataChunk = dc };
+            //    FileItemList.Add(fi);
+            //}
 
-            return FileItemList;
+            //return FileItemList;
         }
 
 

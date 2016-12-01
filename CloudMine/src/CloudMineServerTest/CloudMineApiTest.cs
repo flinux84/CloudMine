@@ -53,7 +53,7 @@ namespace CloudMineServer.Classes
             {
                 Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
                 Guid userGuid = new Guid("111cf2f2-c675-4e27-ac7a-9f8e43f64334");
-                context.FileItems.Add(new FileItem { Id = 1, FileItemId = FileItemGuid, UserId = userGuid, DataChunk = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
+                context.FileItems.Add(new FileItem { Id = 1, Checksum = FileItemGuid, UserId = userGuid, DataChunks = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
                 context.SaveChanges();
             }
         }
@@ -62,13 +62,12 @@ namespace CloudMineServer.Classes
         {
             using (var context = new CloudDbRepository(options))
             {
-                Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
-                context.DataChunks.Add(new DataChunk { Id = 0, FileItemId = FileItemGuid, Data = new byte[10], PartIndex = 1 });
-                context.DataChunks.Add(new DataChunk { Id = 0, FileItemId = FileItemGuid, Data = new byte[01], PartIndex = 2 });
+                context.DataChunks.Add(new DataChunk { Id = 0, FileItemId = 1, Data = new byte[10], PartName = "1" });
+                context.DataChunks.Add(new DataChunk { Id = 0, FileItemId = 1, Data = new byte[01], PartName = "2" });
+
                 context.SaveChanges();
             }
         }
-
 
         //private static FileItemSet GetFileItemSetToTestMethod()
         //{
@@ -108,7 +107,9 @@ namespace CloudMineServer.Classes
         {
             //Arrange
             var options = CreateNewContextOptions();
+
             var fis = new FileItem() { Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" };
+
 
             using (var context = new CloudDbRepository(options))
             {
@@ -120,7 +121,7 @@ namespace CloudMineServer.Classes
                 //Assert
                 var viewResult = Assert.IsType<string>(result);
                 Assert.Equal(1, context.FileItems.Count());
-                Assert.Equal(viewResult, context.FileItems.FirstOrDefault().FileItemId.ToString());
+                Assert.Equal(viewResult, context.FileItems.FirstOrDefault().Checksum.ToString());
             }
         }
 
@@ -133,7 +134,9 @@ namespace CloudMineServer.Classes
             var options = CreateNewContextOptions();
             AddInitFileItemToDb(options);
             Guid myGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
-            var ds = new DataChunk() { Id = 0, FileItemId = myGuid, Data = new byte[10], PartIndex = 1 };
+
+            var ds = new DataChunk() { Id = 0, FileItemId = 1, Data = new byte[10], PartName = "1" };
+
 
             using (var context = new CloudDbRepository(options))
             {
@@ -145,7 +148,7 @@ namespace CloudMineServer.Classes
                 //Assert
                 var viewResult = Assert.IsType<string>(result);
                 Assert.Equal("Ok", viewResult);
-                Assert.Equal(myGuid, context.DataChunks.FirstOrDefault().FileItemId);
+                Assert.Equal(1, context.DataChunks.FirstOrDefault().FileItemId);
                 Assert.Equal(1, context.FileItems.Count());
             }
         }
@@ -182,7 +185,6 @@ namespace CloudMineServer.Classes
             var options = CreateNewContextOptions();
             AddInitFileItemToDb(options);
             Guid userGuid = new Guid("111cf2f2-c675-4e27-ac7a-9f8e43f64334");
-
 
             using (var context = new CloudDbRepository(options))
             {
@@ -252,7 +254,6 @@ namespace CloudMineServer.Classes
         //    FillTheTempDataBase(options);
         //    int userId = 30;
         //    int filId = 6677;
-
         //    using (var context = new ApplicationDbContext(options))
         //    {
         //        var service = new CloudMineDbService(context);
@@ -291,6 +292,7 @@ namespace CloudMineServer.Classes
             }
         }
 
+
         //// Update
         //[Fact]
         //public async Task UpDateByIdUsingAPI_send_int_id_and_FileItem_that_dont_maching_id_return_false()
@@ -321,6 +323,9 @@ namespace CloudMineServer.Classes
             //Arrange
             var options = CreateNewContextOptions();
             AddInitFileItemToDb(options);
+
+            var myFileItem = new FileItem() { Id = 1, Private = false, FileSize = 111, FileName = "EDIT", Description = "edit", DataType = "jpg" };
+
             int FileItemId = 1;
 
             using (var context = new CloudDbRepository(options))
@@ -333,6 +338,7 @@ namespace CloudMineServer.Classes
                 //Assert
                 var viewResult = Assert.IsType<bool>(result);
                 Assert.True(result);
+
                 Assert.Equal(0, context.FileItems.Count());
             }
         }
@@ -360,17 +366,43 @@ namespace CloudMineServer.Classes
                 var service = new CloudMineDbService(context);
 
                 //Act  
-                var result = await service.GetSpecificFilItemAndDataChunks(FileItemId);
+                var result = await service.GetSpecificFilItemAndDataChunks(FileItemId, userGuid);
 
                 //Assert
                 Assert.Equal(2, context.DataChunks.Count());
-                Assert.Equal(FileItemGuid, context.DataChunks.FirstOrDefault().FileItemId);
+                Assert.Equal(1, context.DataChunks.FirstOrDefault().FileItemId);
                 Assert.Equal(1, context.DataChunks.FirstOrDefault().Id);
 
                 var viewResult = Assert.IsType<FileItem>(result);
-                Assert.Equal(2, viewResult.DataChunk.Count());
+                Assert.Equal(2, viewResult.DataChunks.Count());
             }
         }
+
+
+
+        //// Update
+        //[Fact]
+        //public async Task UpDateByIdUsingAPI_send_int_id_and_FileItem_that_dont_maching_id_return_false()
+        //{
+        //    //Arrange
+        //    var options = CreateNewContextOptions();
+        //    FillTheTempDataBase(options);
+        //    var myFileItem = GetFileItemToEdit();
+        //    int FileItemId = 11;
+
+        //    using (var context = new ApplicationDbContext(options))
+        //    {
+        //        var service = new CloudMineDbService(context);
+
+        //        //Act  
+        //        var result = await service.UpDateByIdUsingAPI(FileItemId, myFileItem);
+
+        //        //Assert
+        //        var viewResult = Assert.IsType<bool>(result);
+        //        Assert.False(result);
+        //    }
+        //}
+
 
         // GetAllFilItemAndDataChunks
         [Fact]
@@ -379,10 +411,12 @@ namespace CloudMineServer.Classes
             //Arrange
             var options = CreateNewContextOptions();
             AddInitFileItemToDb(options);
+
             AddDataChunksToDB(options);
-          
+
             Guid userGuid = new Guid("111cf2f2-c675-4e27-ac7a-9f8e43f64334");
-        
+
+
 
             using (var context = new CloudDbRepository(options))
             {
@@ -392,9 +426,13 @@ namespace CloudMineServer.Classes
                 var result = await service.GetAllFilItemAndDataChunks(userGuid);
 
                 //Assert
+
                 Assert.Equal(2, context.DataChunks.Count());
                 var viewResult = Assert.IsType<List<FileItem>>(result);
-                Assert.Equal(2, viewResult.FirstOrDefault().DataChunk.Count());
+                Assert.Equal(2, viewResult.FirstOrDefault().DataChunks.Count());
+
+
+
             }
         }
 

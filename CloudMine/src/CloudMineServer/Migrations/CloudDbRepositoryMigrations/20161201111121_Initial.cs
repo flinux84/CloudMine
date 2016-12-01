@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace CloudMineServer.Migrations
+namespace CloudMineServer.Migrations.CloudDbRepositoryMigrations
 {
-    public partial class cloud : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,14 +13,16 @@ namespace CloudMineServer.Migrations
                 name: "FileItems",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Checksum = table.Column<Guid>(nullable: false),
                     DataType = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     FileName = table.Column<string>(nullable: true),
                     FileSize = table.Column<int>(nullable: false),
                     Private = table.Column<bool>(nullable: false),
                     Uploaded = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(nullable: true)
+                    UserId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,10 +33,11 @@ namespace CloudMineServer.Migrations
                 name: "DataChunks",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Data = table.Column<byte[]>(nullable: true),
-                    FileItemId = table.Column<string>(nullable: true),
-                    PartIndex = table.Column<int>(nullable: false)
+                    FileItemId = table.Column<int>(nullable: false),
+                    PartName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,7 +47,7 @@ namespace CloudMineServer.Migrations
                         column: x => x.FileItemId,
                         principalTable: "FileItems",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
