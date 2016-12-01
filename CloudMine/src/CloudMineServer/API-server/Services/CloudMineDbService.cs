@@ -79,7 +79,7 @@ namespace CloudMineServer.Classes
         // Read (All) METADATA
         public async Task<FileItemSet> GetAllFilesUsingAPI(string userID)
         {
-            var ListFileItems = await _context.FileItems.Where(x => x.Checksum == userID).ToListAsync();
+            var ListFileItems = await _context.FileItems.Where(x => x.UserId == userID).ToListAsync();
 
             FileItemSet returnFileITem = new FileItemSet() { ListFileItems = ListFileItems };
 
@@ -95,7 +95,7 @@ namespace CloudMineServer.Classes
         }
 
         // Read One with file with filechunks
-        public async Task<FileItem> GetSpecificFilItemAndDataChunks(int id, Guid userId) // /*, Guid userId*/
+        public async Task<FileItem> GetSpecificFilItemAndDataChunks(int id, string userId) // /*, Guid userId*/
         {
             var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
             var fi = IQuerybleFileItem.FirstOrDefault(x => x.Id == id);
@@ -108,7 +108,7 @@ namespace CloudMineServer.Classes
         }
 
         // Read All with file with filechunks
-        public async Task<List<FileItem>> GetAllFilItemAndDataChunks(Guid userId)
+        public async Task<List<FileItem>> GetAllFilItemAndDataChunks(string userId)
         {
             var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
             return await IQuerybleFileItem.ToListAsync();

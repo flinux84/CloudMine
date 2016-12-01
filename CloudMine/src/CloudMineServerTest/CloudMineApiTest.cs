@@ -52,7 +52,7 @@ namespace CloudMineServer.Classes
             using (var context = new CloudDbRepository(options))
             {
                 Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
-                Guid userGuid = new Guid("111cf2f2-c675-4e27-ac7a-9f8e43f64334");
+                string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
                 context.FileItems.Add(new FileItem { Id = 1, Checksum = FileItemGuid, UserId = userGuid, DataChunks = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
                 context.SaveChanges();
             }
@@ -184,7 +184,7 @@ namespace CloudMineServer.Classes
             //Arrange
             var options = CreateNewContextOptions();
             AddInitFileItemToDb(options);
-            Guid userGuid = new Guid("111cf2f2-c675-4e27-ac7a-9f8e43f64334");
+            string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
 
             using (var context = new CloudDbRepository(options))
             {
@@ -358,7 +358,7 @@ namespace CloudMineServer.Classes
             AddInitFileItemToDb(options);
             AddDataChunksToDB(options);
             int FileItemId = 1;
-            Guid userGuid = new Guid("111cf2f2-c675-4e27-ac7a-9f8e43f64334");
+            string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
             Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
 
             using (var context = new CloudDbRepository(options))
@@ -414,7 +414,7 @@ namespace CloudMineServer.Classes
 
             AddDataChunksToDB(options);
 
-            Guid userGuid = new Guid("111cf2f2-c675-4e27-ac7a-9f8e43f64334");
+            string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
 
 
 
@@ -426,12 +426,9 @@ namespace CloudMineServer.Classes
                 var result = await service.GetAllFilItemAndDataChunks(userGuid);
 
                 //Assert
-
                 Assert.Equal(2, context.DataChunks.Count());
                 var viewResult = Assert.IsType<List<FileItem>>(result);
                 Assert.Equal(2, viewResult.FirstOrDefault().DataChunks.Count());
-
-
 
             }
         }
