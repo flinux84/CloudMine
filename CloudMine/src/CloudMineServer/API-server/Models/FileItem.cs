@@ -1,23 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CloudMineServer.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     public class FileItem
     {
-        [Key]
-        // Generera GUID saltat med UserId och FileName, behöver då vara string.
         public int Id { get; set; }
 
-        public Guid FileItemId { get; set; }
-
-        // Användarens GUID
-        public Guid UserId { get; set; }
+        public Guid Checksum { get; set; }
 
         // Filnamnet
         public string FileName { get; set; }
@@ -37,7 +29,12 @@ namespace CloudMineServer.Models
         //Filstorlek på hela filen
         public int FileSize { get; set; }
 
+        // Användaren
+        public string UserId { get; set; }
+        // Går inte med olika contexts?
+        //public ApplicationUser User { get; set; }
+        
         //Fildatan för filen. Kan vara en, kan vara många.
-        public virtual ICollection<DataChunk> DataChunk { get; set; }
+        public virtual ICollection<DataChunk> DataChunks { get; set; }
     }
 }

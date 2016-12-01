@@ -5,13 +5,12 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using CloudMineServer.Models;
 
-namespace CloudMineServer.Migrations
+namespace CloudMineServer.Migrations.CloudDbRepositoryMigrations
 {
     [DbContext(typeof(CloudDbRepository))]
-    [Migration("20161130085704_cloud")]
-    partial class cloud
+    partial class CloudDbRepositoryModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
@@ -19,14 +18,14 @@ namespace CloudMineServer.Migrations
 
             modelBuilder.Entity("CloudMineServer.Models.DataChunk", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<byte[]>("Data");
 
-                    b.Property<string>("FileItemId");
+                    b.Property<int>("FileItemId");
 
-                    b.Property<int>("PartIndex");
+                    b.Property<string>("PartName");
 
                     b.HasKey("Id");
 
@@ -37,8 +36,10 @@ namespace CloudMineServer.Migrations
 
             modelBuilder.Entity("CloudMineServer.Models.FileItem", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("Checksum");
 
                     b.Property<string>("DataType");
 
@@ -62,8 +63,9 @@ namespace CloudMineServer.Migrations
             modelBuilder.Entity("CloudMineServer.Models.DataChunk", b =>
                 {
                     b.HasOne("CloudMineServer.Models.FileItem", "FileItem")
-                        .WithMany("DataChunk")
-                        .HasForeignKey("FileItemId");
+                        .WithMany("DataChunks")
+                        .HasForeignKey("FileItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }

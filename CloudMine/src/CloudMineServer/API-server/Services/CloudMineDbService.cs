@@ -40,7 +40,7 @@ namespace CloudMineServer.Classes
             Guid guid = Guid.NewGuid();
 
             // Lägg till GuId till Metadata
-            fi.FileItemId = guid;
+            fi.Checksum = guid;
 
             // Lägg till metadata till db
             bool add = await Add(fi);
@@ -76,7 +76,7 @@ namespace CloudMineServer.Classes
         }
 
         // Read (All) METADATA
-        public async Task<FileItemSet> GetAllFilesUsingAPI(Guid userID)
+        public async Task<FileItemSet> GetAllFilesUsingAPI(string userID)
         {
             var ListFileItems = await _context.FileItems.Where(x => x.UserId == userID).ToListAsync();
 
