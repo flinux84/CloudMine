@@ -14,17 +14,14 @@ namespace CloudMineServer.Classes
 
         #region Dependency Injection Constructor
 
-        //private readonly ApplicationDbContext _identity;
         private readonly CloudDbRepository _context;
 
-        private int AllowedStorage = 100;
+        private int AllowedStorage = 100; // TODO: Sätta en gräns för hur stort utrymme 
 
-        public CloudMineDbService(/*ApplicationDbContext identityContext,*/ CloudDbRepository context)
+        public CloudMineDbService(CloudDbRepository context)
         {
             _context = context;
-            //_identity = identityContext;
         }
-
 
         #endregion
 
@@ -33,6 +30,13 @@ namespace CloudMineServer.Classes
         // Användaren vill lägga till en ny fil, lägg till metadata till db. 
         public async Task<bool> InitCreateFileItem(FileItem fi)
         {
+            // TODO: Kolla size innan add! 
+            //bool checkSize = CheckStorageSpace(fi);
+            //if (!checkSize)
+            //{
+            //    return false;
+            //}
+
             // Skapa sträng som ska retuneras
             string GuidToString = "";
 
@@ -40,7 +44,6 @@ namespace CloudMineServer.Classes
             Guid guid = Guid.NewGuid();
 
             // Lägg till GuId till Metadata
-            //fi.FileItemId = guid;
             fi.Checksum = guid;
 
             // Lägg till metadata till db
@@ -59,16 +62,9 @@ namespace CloudMineServer.Classes
             return false;
         }
 
-        // Create
+        // Create Add DataChunk
         public async Task<bool> AddFileUsingAPI(DataChunk DC)
         {
-
-            // TODO: kolla size också innan add! bool checkSize = CheckStorageSpace();
-            //if (!checkSize)
-            //{
-            //    return false;
-            //}
-
             bool add = await Add(DC);
             if (!add)
             {
@@ -88,7 +84,7 @@ namespace CloudMineServer.Classes
             return returnFileITem;
         }
 
-        // Read (One) 
+        // Read (One) METADATA
         public async Task<FileItem> GetFileByIdUsingAPI(int id)
         {
             var fi = await _context.FileItems.FirstOrDefaultAsync(x => x.Id == id);
@@ -96,39 +92,7 @@ namespace CloudMineServer.Classes
             return fi;
         }
 
-        // Read One with file with filechunks
-        public async Task<FileItem> GetSpecificFilItemAndDataChunks(int id, string userId) // /*, Guid userId*/
-        {
-            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
-            var fi = IQuerybleFileItem.FirstOrDefault(x => x.Id == id);
-            return fi;
-
-            //var fi = _context.FileItems.FirstOrDefault(x => x.Id == id);
-            //var ListDC = await _context.DataChunks.Where(x => x.FileItemId == fi.Checksum).ToListAsync();
-            //var returnFI = new FileItem() { DataChunk = ListDC };
-            //return returnFI;
-        }
-
-        // Read All with file with filechunks
-        public async Task<List<FileItem>> GetAllFilItemAndDataChunks(string userId)
-        {
-            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
-            return await IQuerybleFileItem.ToListAsync();
-
-            //var FileItemList = new List<FileItem>();
-            //var ListFI = await _context.FileItems.Where(x => x.UserId == userId).ToListAsync();
-            //foreach (var item in ListFI)
-            //{
-            //    var dc = await _context.DataChunks.Where(x => x.FileItemId == item.FileItemId).ToListAsync();
-            //    var fi = new FileItem() { DataChunk = dc };
-            //    FileItemList.Add(fi);
-            //}
-
-            //return FileItemList;
-        }
-
-
-        // Update
+        // Update METADATA
         public async Task<bool> UpDateByIdUsingAPI(int num, FileItem item)
         {
             if (num == item.Id)
@@ -139,7 +103,7 @@ namespace CloudMineServer.Classes
             return false;
         }
 
-        // Delete
+        // Delete 
         public async Task<bool> DeleteByIdUsingAPI(int num)
         {
             FileItem fi = await GetFileByIdUsingAPI(num);
@@ -147,6 +111,29 @@ namespace CloudMineServer.Classes
             return check;
         }
 
+        #endregion
+
+        #region FilItem & DataChunks
+
+        // Read One with file with filechunks
+        public async Task<Uri> GetSpecificFilItemAndDataChunks(int id, string userId)
+        {
+            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
+            var fi = await IQuerybleFileItem.FirstOrDefaultAsync(x => x.Id == id);
+
+            Services.FileMerge FM = new Services.FileMerge();
+
+            var returnUri = FM.MakeFile(fi);
+
+            return returnUri;
+        }
+
+        // Read All with file with filechunks
+        public async Task<List<FileItem>> GetAllFilItemAndDataChunks(string userId)
+        {
+            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
+            return await IQuerybleFileItem.ToListAsync();
+        }
         #endregion
 
         #region Add, Update, Delete
@@ -188,40 +175,25 @@ namespace CloudMineServer.Classes
         #endregion
 
         #region Internal Helper
-        // Kolla storlek på tillgängligt utrymme. Förutsatt att size tas ut på klienten. Alt skulle vara att kolla size på bit array, på serven, (*).
-        //private async Task<bool> CheckStorageSpace(FileItemSet FIS)
-        //{
-        //    List<FileItem> chekSumFileSize = new List<FileItem>();
-        //    int countSize = 0;
+        
+        private async Task<bool> CheckStorageSpace(FileItem FI)
+        {
+            int check = 0;
 
-        //    // Kolla total storlek på fil som skickas.
-        //    foreach (var file in FIS.ListFileItems)
-        //    {
-        //        countSize += file.FileSize;
-        //        //(*) int s = file.FileData.Length;
-        //    }
+            var allUserFileItem = _context.FileItems.Where(x => x.UserId == FI.UserId);
 
-        //    // Hämta lista med användarens redan sparade filer.
-        //    if (FIS.ListFileItems != null)
-        //    {
-        //        chekSumFileSize = await _context.FileItems.Where(x => x.UserId == FIS.UserId).ToListAsync();
+            foreach (var FileItem in allUserFileItem)
+            {
+                check += FileItem.FileSize;
+            }
 
-        //        // Lägg till redan sparade filers storlek. 
-        //        foreach (var item in chekSumFileSize)
-        //        {
-        //            countSize += item.FileSize;
-        //        }
-        //    }
+            if (check < AllowedStorage)
+            {
+                return true;
+            }
 
-        //    // Om totalen mindre än tillåten storlek retunera true
-        //    if (countSize <= AllowedStorage)
-        //    {
-        //        return true;
-        //    }
-
-        //    // Annars om mer än tillåten storlek retunera false
-        //    return false;
-        //}
+            return false;
+        }
         #endregion
     }
 }

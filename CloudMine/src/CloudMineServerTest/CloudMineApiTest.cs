@@ -120,9 +120,9 @@ namespace CloudMineServer.Classes
                 var result = await service.InitCreateFileItem(fis);
 
                 //Assert
-                var viewResult = Assert.IsType<string>(result);
+                var viewResult = Assert.IsType<bool>(result);
                 Assert.Equal(1, context.FileItems.Count());
-                Assert.Equal(viewResult, context.FileItems.FirstOrDefault().Checksum.ToString());
+                Assert.True(viewResult);
             }
         }
 
@@ -147,8 +147,8 @@ namespace CloudMineServer.Classes
                 var result = await service.AddFileUsingAPI(ds);
 
                 //Assert
-                var viewResult = Assert.IsType<string>(result);
-                Assert.Equal("Ok", viewResult);
+                var viewResult = Assert.IsType<bool>(result);
+                Assert.True(viewResult);
                 Assert.Equal(1, context.DataChunks.FirstOrDefault().FileItemId);
                 Assert.Equal(1, context.FileItems.Count());
             }
@@ -360,7 +360,6 @@ namespace CloudMineServer.Classes
             AddDataChunksToDB(options);
             int FileItemId = 1;
             string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
-            Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
 
             using (var context = new CloudDbRepository(options))
             {
@@ -374,8 +373,8 @@ namespace CloudMineServer.Classes
                 Assert.Equal(1, context.DataChunks.FirstOrDefault().FileItemId);
                 Assert.Equal(1, context.DataChunks.FirstOrDefault().Id);
 
-                var viewResult = Assert.IsType<FileItem>(result);
-                Assert.Equal(2, viewResult.DataChunks.Count());
+                var viewResult = Assert.IsType<Uri>(result);
+                
             }
         }
 
