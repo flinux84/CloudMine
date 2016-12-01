@@ -129,7 +129,7 @@ namespace CloudMineServer.API_server.Controllers {
             //Ta bort filen
             bool deleted = await _context.DeleteByIdUsingAPI( id );
             if( deleted )
-                return Ok( fileItem );
+                return Ok( fileItem ); //Returnerar objektet ifall man kanske skulle vilja ha en ångra sig funktionalitet?
             else
                 return BadRequest( "Error while removing file" );
         }
