@@ -1,56 +1,74 @@
-﻿body {
-}
-
-.container {
-    width:700px;
+﻿.container {
+    min-width: 620px;
     border: 1px solid black;
+    padding: 20px 10px 10px 10px;
     border-radius: 25px;
+    color: white;
+    background-color:#001a33;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+h4 {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+span {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
 input[type="file"] {
     display: none;
 }
 
-.custom-file-upload {
-    background-color: #008CBA;
-    border: 1px solid #ccc;
+.uploadbutton {
+    background-color: aliceblue;
+    border-radius:20px;
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
-    color: white;
+    color: black;
     text-align: center;
     text-decoration: none;
     font-size: 16px;
+    box-shadow: lightgrey 2px 2px;
 }
 .submenu {
-    float: left;
-    padding: 20px;
-    background-color:grey;
+    padding: 10px;
+    background-color:aliceblue;
+    color: black;
+    border-radius: 20px;
 }
+
 .filelist {
-    padding: 20px;
-    float: left;
-    background-color:lightgray;
+    padding: 10px;
+    background-color:aliceblue;
+    border-radius: 20px;
+    color:black;
 }
 
-.filedetails {
-    float: right;
-    padding: 20px;
-    background-color:aquamarine
+.filetable {
+    min-width: 550px;
+    width:100%;
 }
 
-table.sortable thead {
-    background-color:#eee;
-    color:#666666;
-    font-weight: bold;
-    cursor: default;
-    width: 100%;
-}
-table.sortable th {
+.filetable th {
     width: auto;
     padding-right: 10px;
+    cursor: default;
+    font-size:1.2em;
+    color:black;
+    background-color:aliceblue;
 }
 
+.filetable tr:nth-child(odd) {
+    height:35px;
+    background-color:#001a33;
+    color:white;
+    border-radius:20px;
+}
+.filetable tr:nth-child(even) {
+    height:35px;
+    background-color:lightcyan;
+    border-radius:20px;
+}
 
 .custom-file-upload {
     background-color: #008CBA;
@@ -63,31 +81,16 @@ table.sortable th {
     text-decoration: none;
     font-size: 16px;
 }
-.submenu {
-    float: left;
-    padding: 20px;
-    background-color:grey;
-}
-.filelist {
-    padding: 20px;
-    float: left;
-    margin: 10px;
-    background-color:lightgray;
-}
+
 #search {
     display:inline;
 }
 
-.filedetails {
-    float: right;
-    padding: 20px;
-    background-color:aquamarine
+#progress {
+    width:100px;
+    height:100px;
+    position:absolute;
+    margin-top:10px;
+    left:25%;
 }
 
-table.sortable thead {
-    background-color:#eee;
-    color:#666666;
-    font-weight: bold;
-    cursor: default;
-    width: 100%;
-}
