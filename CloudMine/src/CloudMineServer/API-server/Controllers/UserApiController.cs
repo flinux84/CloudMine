@@ -81,9 +81,8 @@ namespace CloudMineServer.API_server.Controllers
 
             userInfo.StorageSize = user.StorageSize;
 
-            int usedSpace = 0;
-            fileItems.ListFileItems.ForEach(f => usedSpace += f.FileSize);
-            userInfo.UsedStorage = usedSpace;
+            userInfo.UsedStorage = 0;
+            fileItems.ListFileItems.ForEach(f => userInfo.UsedStorage += f.FileSize);
 
             return userInfo;
         }
