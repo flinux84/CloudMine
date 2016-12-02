@@ -108,7 +108,7 @@ namespace CloudMineServer.Classes
         // Delete 
         public async Task<bool> DeleteByIdUsingAPI(int num)
         {
-            FileItem fi = await GetFileByIdUsingAPI(num);
+            var fi = await _context.FileItems.Include(x => x.DataChunks).FirstOrDefaultAsync(x => x.Id == num);
             bool check = await Delete(fi);
             return check;
         }
@@ -182,8 +182,15 @@ namespace CloudMineServer.Classes
         {
             var user = await _appDbContext.Users.Where(u => u.Id == FI.UserId).SingleOrDefaultAsync();
             int storageSize = user.StorageSize;
-            int check = 0;
+            int check = FI.FileSize;
 
+            // Kolla först så filen som ska laddas upp inte i sig är större än tillåtet.
+            if (check > storageSize)
+            {
+                return false;
+            }
+
+            // Räkna ihop användarens tidigare storlek på filer
             var allUserFileItem = _context.FileItems.Where(x => x.UserId == FI.UserId);
 
             foreach (var FileItem in allUserFileItem)
@@ -191,7 +198,7 @@ namespace CloudMineServer.Classes
                 check += FileItem.FileSize;
             }
 
-            if (check < storageSize)
+            if (check <= storageSize)
             {
                 return true;
             }
