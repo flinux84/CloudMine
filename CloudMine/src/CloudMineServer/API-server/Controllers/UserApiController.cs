@@ -39,7 +39,7 @@ namespace CloudMineServer.API_server.Controllers
             var result = await _userManager.CreateAsync(user, userRegistration.Password);
             if (result.Succeeded)
             {
-                return CreatedAtAction("Get", new { id = user.Id }, new { UserName = user.UserName });
+                return CreatedAtAction("Get", new { userName = user.UserName }, new UserInfo { UserName = user.UserName, StorageSize = user.StorageSize });
             }
 
             return BadRequest();
