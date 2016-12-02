@@ -133,25 +133,31 @@ namespace CloudMineServer.API_server.Controllers {
         }
 
         // POST: api/FileItems/5
-        //[HttpPost( "{id}" )]
-        //public async Task<IActionResult> PostDataChunk( [FromRoute] int id, [FromBody] DataChunk dataChunk ) {
+        [HttpPost( "{id}" )]
+        public async Task<IActionResult> PostDataChunk( [FromRoute] int id, [FromBody] DataChunk dataChunk ) {
 
-        //    if( !ModelState.IsValid ) {
-        //        return BadRequest( ModelState );
-        //    }
+            if( !ModelState.IsValid ) {
+                return BadRequest( ModelState );
+            }
 
-        //    //Hitta metadatan som chunksen tillhör
-        //    var file = await _context.GetFileByIdUsingAPI( id );
-        //    file.DataChunks.Add( dataChunk );
-        //    dataChunk.FileItem = file;
+            //Hitta metadatan som chunksen tillhör
+            var file = await _context.GetFileByIdUsingAPI( id );
+            file.DataChunks = new List<DataChunk>();
+            file.DataChunks.Add( dataChunk );
 
-        //    string chunksAdded = await _context.AddFileUsingAPI( dataChunk );
+            bool chunksAdded = await _context.AddFileUsingAPI( dataChunk );
 
-        //    if( chunksAdded == "Ok" )
-        //        return CreatedAtAction( "GetFileItem", new { id = dataChunk.FileItemId }, dataChunk );
-        //    else
-        //        return BadRequest( "Error adding datachunks." );
-        //}
+            if( chunksAdded ) {
+                dataChunk.FileItem = file;
+                bool fileUpdated = await _context.UpDateByIdUsingAPI( file.Id, file );
+                if( fileUpdated ) {
+                    return CreatedAtAction( "GetFileItem", new { id = dataChunk.FileItemId }, file );
+                } else
+                    return BadRequest( "Error updating fileitem with datachunk relation." );
+            }
+            else
+                return BadRequest( "Error adding datachunks." );
+        }
 
         // DELETE: api/FileItems/5
         [HttpDelete( "{id}" )]
