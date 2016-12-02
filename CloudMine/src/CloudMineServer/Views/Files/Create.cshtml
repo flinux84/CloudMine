@@ -5,14 +5,128 @@
 }
 
 <h2>Create</h2>
-<form enctype="multipart/form-data">
+@*<form enctype="multipart/form-data">
     <input type="file" id="uploadFile" name="file" />  <a class="btn btn-primary" href="#" id="btnUpload">Ladda Upp!</a>
 </form>
 
 <div>
     <a href="~/api/filechunk">Download my files again baby</a>
+</div>*@
+
+
+
+<div>
+    <form action="">
+        <input type="file" name="file" id="selectedfile" />
+        <label for="file">Filename</label>
+        <input type="text" name="FileName" id="FileName" />
+        <br />
+        <label for="fileName">Description</label>
+        <input type="text" name="Description" id="description" />
+        <br />
+        <br />
+        Private: <input type="radio" name="Private" value="Private" />
+        <br />
+        Public: <input type="radio" name="Public" value="Public" />
+        <br />
+        <input type="submit" value="Loax plz" />
+
+
+
+    </form>
 </div>
 
+@section scripts{
 
+    <script>
+
+        //Detta sätter filnamnet automatiskt när man väljer fil.
+        $("#selectedfile").change(function(e){
+            $("#FileName").val($("#selectedfile").val().split('\\').pop().split('/').pop());
+        });
+
+        //Egen funktion som jag har skapat för att sätta nullvärde på oskriven text i formuläret, tror inte vi kommer behöva denna.
+        $.fn.SerializeToJson = function () {
+            var object = {};
+            var array = this.serializeArray();
+            $.each(array,function(){
+                if (object[this.name] !== undefined)
+                {
+                    if (!object[this.name].push)
+                        {
+                            object[this.name]= [object[this.name]];
+                        }
+                    object[this.name].push(this.value || null);
+                }
+            else
+            {
+                object[this.name] = this.value || null;
+            }
+        });
+        return object;
+        };
+
+        //hämtar tiden då filen laddas upp.
+        function GetTime() {
+            var time = new Date();
+            time.getHours();
+            time.getMinutes();
+            time.getSeconds();
+            return time;
+        };
+
+
+
+
+
+        var FileName;
+        var Description;
+        var Uploaded = GetTime();
+        var Private;
+        var Datatype;
+        var Filesize;
+
+        //Tänkte först serialisera hela formuläret med en gång, men det blir knas om man sedan ska ange nya värden till nya objekt, använder därför getElementById
+        var ObjectInfo = [];
+        var ObjectElement = {};
+        $(document).ready(function () {
+            $('form').submit(function () {
+                //var theInput = (JSON.stringify($('form').SerializeToJson()));
+                //var theTime = (JSON.stringify(GetTime()));
+                //$.extend(theInput, theTime);
+                FileName = document.getElementById("FileName").value;
+                ObjectElement.fileName = FileName;
+                Description = document.getElementById("description").value;
+                ObjectElement.description = Description;
+
+                ObjectElement.uploaded = Uploaded;
+
+
+
+                theInput = JSON.stringify(ObjectElement);
+                console.log(theInput);
+
+                return false;
+            })
+        });
+
+        //Här är det tänkt att skicka metadata av filen som "ska" laddas upp.
+        function SendData(ObjectInfo)
+        {
+            var FD = new FormData();
+            FD.append(ObjectInfo);
+            $.ajax({
+                type: "POST",
+                url: 'http://www.localhost:25952/api/v1.0/FileItems/',
+                contentType: 'application/json; charset=utf-8',
+                processData: false,
+                dataType: 'json',
+                data: FD
+            });
+        }
+
+
+</script>
+}
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/js/fileuploader.js" asp-append-version="true"></script>
