@@ -139,21 +139,9 @@ namespace CloudMineServer.API_server.Controllers {
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
             }
-
-            //Hitta metadatan som chunksen tillhör
-            var file = await _context.GetFileByIdUsingAPI( id );
-            file.DataChunks = new List<DataChunk>();
-            file.DataChunks.Add( dataChunk );
-
-            bool chunksAdded = await _context.AddFileUsingAPI( dataChunk );
-
-            if( chunksAdded ) {
-                dataChunk.FileItem = file;
-                bool fileUpdated = await _context.UpDateByIdUsingAPI( file.Id, file );
-                if( fileUpdated ) {
-                    return CreatedAtAction( "GetFileItem", new { id = dataChunk.FileItemId }, file );
-                } else
-                    return BadRequest( "Error updating fileitem with datachunk relation." );
+            
+            if( await _context.AddFileUsingAPI( dataChunk ) ) {
+                    return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
             }
             else
                 return BadRequest( "Error adding datachunks." );
