@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 namespace CloudMineServer.API_server.Controllers
 {
     [Produces("application/json")]
-    [Route("api/v{version:apiVersion}/Users")]
     [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/Users")]
     public class UserApiController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -45,20 +45,17 @@ namespace CloudMineServer.API_server.Controllers
             return BadRequest();
         }
 
-        //[HttpGet("{userEmail}")]
-        [HttpGet]
+        [HttpGet("{userEmail}")]
         [Authorize]
-        public async Task<UserInfo> GetUserInfo(/*[FromRoute]string userEmail*/)
+        public async Task<UserInfo> GetUserInfo([FromRoute]string userEmail)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             return await GetUserInfo(user);
         }
 
         // TODO: Should probably be available for admin role only
-        // TODO: 
         //[Authorize]
         [HttpGet]
-        [Route("All")]
         public async Task<List<UserInfo>> GetUsersInfos()
         {
             var users = _userManager.Users.ToList();
