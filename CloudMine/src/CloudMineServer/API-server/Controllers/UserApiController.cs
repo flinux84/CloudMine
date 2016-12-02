@@ -45,16 +45,18 @@ namespace CloudMineServer.API_server.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{userEmail}")]
         [Authorize]
-        public async Task<UserInfo> GetUserInfo([FromRoute]string userEmail)
+        [HttpGet("{userEmail}")]
+        public async Task<IActionResult> GetUserInfo([FromRoute]string userEmail)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            return await GetUserInfo(user);
+            if(user.Email == userEmail)
+                return Ok(await GetUserInfo(user));
+            return BadRequest("Wrong email");
         }
 
         // TODO: Should probably be available for admin role only
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         public async Task<List<UserInfo>> GetUsersInfos()
         {
@@ -69,6 +71,31 @@ namespace CloudMineServer.API_server.Controllers
             }
             return allUserInfos;
         }
+
+
+        [Authorize]
+        [HttpPut("{userEmail}")]
+        public async Task<IActionResult> PutUserInfo([FromRoute]string userEmail, [FromBody]UserInfo userInfo)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user.Email != userEmail)
+                return BadRequest();
+
+            var oldUserInfo = await GetUserInfo(user);
+            if (oldUserInfo.UsedStorage > userInfo.StorageSize)
+                return BadRequest("Cant shrink storage to less than your used storage!");
+            
+            user.StorageSize = userInfo.StorageSize;
+            return Ok(userInfo);
+        }
+        //[HttpDelete]
+        //public async Task<UserInfo> DeleteUser([FromRoute]string userEmail)
+        //{
+
+        //}
+
+
+
 
         private async Task<UserInfo> GetUserInfo(ApplicationUser user)
         {
