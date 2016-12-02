@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using CloudMineServer.API_server.Models;
 
 namespace CloudMineServer.API_server.Controllers {
     [Produces("application/json")]
@@ -28,19 +29,24 @@ namespace CloudMineServer.API_server.Controllers {
             _userManager = userManager;
             _urlHelper = urlHelperFactory.GetUrlHelper( actionContextAccessor.ActionContext );
         }
-
+        
         // GET: api/FileItems
         [HttpGet( Name = "GetFileItems" )]
-        public async Task<IEnumerable<FileItem>> GetFileItems(int pageNo = 1, int pageSize = maxPageSize) {
+        public async Task<IEnumerable<FileItem>> GetFileItems( string sort = "id", string order = "asc", int pageNo = 1, int pageSize = maxPageSize) {
+
+            //Get all FileItems from a user
+            FileItemSet fileItemSet = await _context.GetAllFilesUsingAPI( _userManager.GetUserId( User ) );
+            IList<FileItem> fileItems = fileItemSet.ListFileItems;
+
             //reset pagesize if higher than maxPageSize
             if( pageSize > maxPageSize )
                 pageSize = maxPageSize;
 
-            //metadata för paging
-            FileItemSet fileItemSet = await _context.GetAllFilesUsingAPI( _userManager.GetUserId( User ) );
-            IList<FileItem> fileItems = fileItemSet.ListFileItems;
+            //sort fileItems
+            var sortedFileItems = fileItems.ApplySorting( sort, order );
 
-            int totalFileItems = fileItems.Count;
+            //metadata för paging
+            int totalFileItems = sortedFileItems.Count;
             int totalPages = (int)Math.Ceiling( (double)totalFileItems / pageSize );
             
             //Previous link
@@ -49,6 +55,7 @@ namespace CloudMineServer.API_server.Controllers {
                     pageNo = pageNo - 1,
                     pageSize = pageSize
                 } );
+
             //Next link
             var nextPageLink = pageNo == totalPages ? string.Empty : _urlHelper.Link( "GetFileItems",
                 new {
@@ -68,7 +75,7 @@ namespace CloudMineServer.API_server.Controllers {
 
             Response.Headers.Add( "X-PageInfo", JsonConvert.SerializeObject( pageHeader ) );
 
-            return fileItems.Skip( ( pageNo - 1 ) * pageSize ).Take( pageSize );            
+            return sortedFileItems.Skip( ( pageNo - 1 ) * pageSize ).Take( pageSize );            
         }
 
         // GET: api/FileItems/5
