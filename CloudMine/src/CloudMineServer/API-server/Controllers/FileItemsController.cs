@@ -3,8 +3,13 @@ using CloudMineServer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace CloudMineServer.API_server.Controllers {
     [Produces("application/json")]
@@ -14,18 +19,56 @@ namespace CloudMineServer.API_server.Controllers {
     {
         private readonly ICloudMineDbService _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUrlHelper _urlHelper;
+        private const int maxPageSize = 20;
 
-        public FileItemsController( ICloudMineDbService context, UserManager<ApplicationUser> userManager )
+        public FileItemsController( ICloudMineDbService context, UserManager<ApplicationUser> userManager, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor )
         {
             _context = context;
             _userManager = userManager;
+            _urlHelper = urlHelperFactory.GetUrlHelper( actionContextAccessor.ActionContext );
         }
 
         // GET: api/FileItems
-        [HttpGet]
-        public async Task<FileItemSet> GetFileItems()
-        {
-            return await _context.GetAllFilesUsingAPI( _userManager.GetUserId( User ) );
+        [HttpGet( Name = "GetFileItems" )]
+        public async Task<IEnumerable<FileItem>> GetFileItems(int pageNo = 1, int pageSize = maxPageSize) {
+            //reset pagesize if higher than maxPageSize
+            if( pageSize > maxPageSize )
+                pageSize = maxPageSize;
+
+            //metadata för paging
+            FileItemSet fileItemSet = await _context.GetAllFilesUsingAPI( _userManager.GetUserId( User ) );
+            IList<FileItem> fileItems = fileItemSet.ListFileItems;
+
+            int totalFileItems = fileItems.Count;
+            int totalPages = (int)Math.Ceiling( (double)totalFileItems / pageSize );
+            
+            //Previous link
+            var prevPageLink = pageNo == 1 ? string.Empty : _urlHelper.Link( "GetFileItems",
+                new {
+                    pageNo = pageNo - 1,
+                    pageSize = pageSize
+                } );
+            //Next link
+            var nextPageLink = pageNo == totalPages ? string.Empty : _urlHelper.Link( "GetFileItems",
+                new {
+                    pageNo = pageNo + 1,
+                    pageSize = pageSize
+                } );
+
+            //page header info
+            var pageHeader = new {
+                pageNo = pageNo,
+                pageSize = pageSize,
+                totalFileItems = totalFileItems,
+                totalPages = totalPages,
+                prevPageLink = prevPageLink,
+                nextPageLink = nextPageLink
+            };
+
+            Response.Headers.Add( "X-PageInfo", JsonConvert.SerializeObject( pageHeader ) );
+
+            return fileItems.Skip( ( pageNo - 1 ) * pageSize ).Take( pageSize );            
         }
 
         // GET: api/FileItems/5
@@ -70,7 +113,7 @@ namespace CloudMineServer.API_server.Controllers {
                 return BadRequest( ModelState );
             }
             //Uppdatera userId på fileItem innan vi skickar den till business layer
-            fileItem.UserId = _userManager.GetUserId( User );
+            fileItem.UserId = _userManager.GetUserId( HttpContext.User );
 
             var metaDataID = await _context.InitCreateFileItem( fileItem );
 
