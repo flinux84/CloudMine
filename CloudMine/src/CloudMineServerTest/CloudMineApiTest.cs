@@ -385,7 +385,7 @@ namespace CloudMineServer.Classes
 
         // GetSpecificFilItemAndDataChunks. Return URI 
         [Fact]
-        public async Task GetSpecificFilItemAndDataChunks_send_id_and_userId_get_FileItem()
+        public async Task GetSpecificFilItemAndDataChunks_send_id_and_userId_get_URI()
         {
             //Arrange
             var options = CreateNewContextOptions();
@@ -408,6 +408,36 @@ namespace CloudMineServer.Classes
                 Assert.Equal(11, context.DataChunks.FirstOrDefault().FileItemId);
                 Assert.Equal(11, context.DataChunks.FirstOrDefault().Id);
                 var viewResults = Assert.IsType<Uri>(result);
+
+            }
+        }
+
+        // GetSpecificFilItemAndDataChunks. Return FileItem with include DataChunks
+        [Fact]
+        public async Task GetFiAndDc_send_id_and_userId_get_FileItem()
+        {
+            //Arrange
+            var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
+            FillTheTempDataBase(options);
+            AddDataChunksToExistingFileItemToDB(options);
+            int FileItemId = 11;
+            string userGuid = "User-1a-guid-tostring";
+
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
+            using (var context = new CloudDbRepository(options))
+            {
+                var service = new CloudMineDbService(context, appDbContext);
+
+                //Act  
+                var result = await service.GetFiAndDc(FileItemId, userGuid);
+
+                //Assert
+                Assert.Equal(2, context.DataChunks.Count());
+                Assert.Equal(11, context.DataChunks.FirstOrDefault().FileItemId);
+                Assert.Equal(11, context.DataChunks.FirstOrDefault().Id);
+                var viewResults = Assert.IsType<FileItem>(result);
+                Assert.Equal(2, viewResults.DataChunks.Count());
 
             }
         }
