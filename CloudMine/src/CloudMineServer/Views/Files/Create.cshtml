@@ -17,19 +17,21 @@
 
 <div>
     <form action="">
-        <input type="file" name="file" id="selectedfile" />
+        <input type="file" name="file" id="selectedfile" value="Choose file" />
+        <br />
         <label for="file">Filename</label>
         <input type="text" name="FileName" id="FileName" />
         <br />
         <label for="fileName">Description</label>
         <input type="text" name="Description" id="description" />
         <br />
+        
+        Private: <input type="radio" name="filesharing" id="priv" checked value="Private" />
         <br />
-        Private: <input type="radio" name="Private" value="Private" />
+        Public: <input type="radio" name="filesharing" id="publ" value="Public" />
         <br />
-        Public: <input type="radio" name="Public" value="Public" />
         <br />
-        <input type="submit" value="Loax plz" />
+        <input type="submit" value="Upload File" />
 
 
 
@@ -45,7 +47,7 @@
             $("#FileName").val($("#selectedfile").val().split('\\').pop().split('/').pop());
         });
 
-        //Egen funktion som jag har skapat för att sätta nullvärde på oskriven text i formuläret, tror inte vi kommer behöva denna.
+        //Skapade denna för att sätta nullvärde på oskriven text i formuläret, tror inte vi kommer behöva denna.
         $.fn.SerializeToJson = function () {
             var object = {};
             var array = this.serializeArray();
@@ -66,7 +68,7 @@
         return object;
         };
 
-        //hämtar tiden då filen laddas upp.
+        //tidsstämpel då filen laddas upp.
         function GetTime() {
             var time = new Date();
             time.getHours();
@@ -75,37 +77,76 @@
             return time;
         };
 
+        //får filändelsen txt, jpeg, osv
+        function GetFileExtension() {
+            var extension = document.getElementById("selectedfile").value;
+            return extension.split('.').pop();
+        }
+
+        //Läser av hur många chunks som behöver skickas beroende på vad vi sätter för storleksgräns.
+        function theSizeOfChunks(TargetFile) {
+            var file = TargetFile[0];
+            var Size = file.size;
+            var MaxFileSizeMB = 1;
+            var BufferChunkSize = MaxFileSizeMB * (1024 * 1024);
+            var TotalParts = Math.ceil(Size / BufferChunkSize);
+            return TotalParts;
+        }
+        //Läser av storleken på filen
+        function theSizeOfFile(TargetFile) {
+            var file = TargetFile[0];
+            var Size = file.size;
+            return Size;
+        }
 
 
-
-
+        jQuery.sha1 = sha1;
+        var Id = null;
+        var Checksum;
         var FileName;
         var Description;
         var Uploaded = GetTime();
-        var Private;
+        var Private = true;
         var Datatype;
         var Filesize;
+        var Userid = null;
+        var DataChunks;
 
         //Tänkte först serialisera hela formuläret med en gång, men det blir knas om man sedan ska ange nya värden till nya objekt, använder därför getElementById
         var ObjectInfo = [];
         var ObjectElement = {};
         $(document).ready(function () {
             $('form').submit(function () {
-                //var theInput = (JSON.stringify($('form').SerializeToJson()));
-                //var theTime = (JSON.stringify(GetTime()));
-                //$.extend(theInput, theTime);
+                
+                ObjectElement.id = Id;
+                Checksum = $.sha1($('#selectedfile')[0].files);
+                ObjectElement.checksum = Checksum;
                 FileName = document.getElementById("FileName").value;
                 ObjectElement.fileName = FileName;
                 Description = document.getElementById("description").value;
                 ObjectElement.description = Description;
-
                 ObjectElement.uploaded = Uploaded;
-
-
-
+                if (document.getElementById("publ").checked == true)
+                {
+                    Private = false;
+                    ObjectElement.private = Private;
+                }
+                else {
+                    ObjectElement.private = Private;
+                }                               
+                Datatype = GetFileExtension();
+                ObjectElement.dataType = Datatype;
+                Filesize = theSizeOfFile($('#selectedfile')[0].files);
+                ObjectElement.fileSize = Filesize;
+                ObjectElement.userId = Userid;
+                DataChunks = theSizeOfChunks($('#selectedfile')[0].files);
+                ObjectElement.dataChunks = DataChunks;
                 theInput = JSON.stringify(ObjectElement);
                 console.log(theInput);
-
+                ObjectInfo.push(theInput);
+                console.log(ObjectInfo);
+                SendData(ObjectInfo);
+                //location.reload();
                 return false;
             })
         });
@@ -113,20 +154,23 @@
         //Här är det tänkt att skicka metadata av filen som "ska" laddas upp.
         function SendData(ObjectInfo)
         {
-            var FD = new FormData();
-            FD.append(ObjectInfo);
+            //var FD = new FormData();
+            //FD.append(ObjectInfo);
+            var FD = ObjectInfo;
             $.ajax({
                 type: "POST",
-                url: 'http://www.localhost:25952/api/v1.0/FileItems/',
-                contentType: 'application/json; charset=utf-8',
-                processData: false,
+                //url: 'http://localhost:57260/api/v1.0/FileItems/PostFileItem',
+                url: 'http://www.localhost:57260/api/v1.0/FileItems/',
+                contentType: 'application/json',
+                //processData: false,
                 dataType: 'json',
                 data: FD
             });
         }
 
 
-</script>
+    </script>
 }
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/js/fileuploader.js" asp-append-version="true"></script>
+<script src="~/js/checksum.js" asp-append-version="true"></script>
