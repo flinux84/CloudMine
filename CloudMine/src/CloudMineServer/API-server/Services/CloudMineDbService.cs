@@ -18,8 +18,6 @@ namespace CloudMineServer.Classes
         private readonly CloudDbRepository _context;
         private readonly ApplicationDbContext _appDbContext;
 
-        private int AllowedStorage = 100; // TODO: Sätta en gräns för hur stort utrymme 
-
         public CloudMineDbService(CloudDbRepository context, ApplicationDbContext appDbContext)
         {
             _context = context;
@@ -46,7 +44,10 @@ namespace CloudMineServer.Classes
             Guid guid = Guid.NewGuid();
 
             // Lägg till GuId till Metadata
-            fi.Checksum = guid;
+            // fi.Checksum = guid;
+
+            // Lägg till datum som filen laddas upp
+            fi.Uploaded = DateTime.Now;
 
             // Lägg till metadata till db
             bool add = await Add(fi);
@@ -108,7 +109,7 @@ namespace CloudMineServer.Classes
         // Delete 
         public async Task<bool> DeleteByIdUsingAPI(int num)
         {
-            FileItem fi = await GetFileByIdUsingAPI(num);
+            var fi = await _context.FileItems.Include(x => x.DataChunks).FirstOrDefaultAsync(x => x.Id == num);
             bool check = await Delete(fi);
             return check;
         }
@@ -117,7 +118,7 @@ namespace CloudMineServer.Classes
 
         #region FilItem & DataChunks
 
-        // Read One with file with filechunks
+        // Read One with file with filechunks return URI
         public async Task<Uri> GetSpecificFilItemAndDataChunks(int id, string userId)
         {
             var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
@@ -128,6 +129,16 @@ namespace CloudMineServer.Classes
             var returnUri = FM.MakeFile(fi);
 
             return returnUri;
+        }
+
+
+        // Read One with file with filechunks return FileItem. No Merge on Server
+        public async Task<FileItem> GetFiAndDc(int id, string userId)
+        {
+            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
+            var fi = await IQuerybleFileItem.FirstOrDefaultAsync(x => x.Id == id);
+
+            return fi;
         }
 
         // Read All with file with filechunks
@@ -182,8 +193,15 @@ namespace CloudMineServer.Classes
         {
             var user = await _appDbContext.Users.Where(u => u.Id == FI.UserId).SingleOrDefaultAsync();
             int storageSize = user.StorageSize;
-            int check = 0;
+            int check = FI.FileSize;
 
+            // Kolla först så filen som ska laddas upp inte i sig är större än tillåtet.
+            if (check > storageSize)
+            {
+                return false;
+            }
+
+            // Räkna ihop användarens tidigare storlek på filer
             var allUserFileItem = _context.FileItems.Where(x => x.UserId == FI.UserId);
 
             foreach (var FileItem in allUserFileItem)
@@ -191,7 +209,7 @@ namespace CloudMineServer.Classes
                 check += FileItem.FileSize;
             }
 
-            if (check < storageSize)
+            if (check <= storageSize)
             {
                 return true;
             }
