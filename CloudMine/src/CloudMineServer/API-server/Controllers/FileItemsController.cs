@@ -11,11 +11,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using CloudMineServer.API_server.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CloudMineServer.API_server.Controllers {
     [Produces("application/json")]
     [ApiVersion( "1.0" )]
     [Route( "api/v{version:apiVersion}/FileItems" )]
+    [Authorize]
     public class FileItemsController : Controller
     {
         private readonly ICloudMineDbService _context;
