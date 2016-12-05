@@ -70,7 +70,7 @@ namespace CloudMineServer.Classes
             {
                 Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
                 string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
-                context.FileItems.Add(new FileItem { Id = 1, Checksum = FileItemGuid, UserId = userGuid, DataChunks = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
+                context.FileItems.Add(new FileItem { Id = 1, UserId = userGuid, DataChunks = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
                 context.SaveChanges();
             }
         }
