@@ -68,24 +68,15 @@ namespace CloudMineServer.Classes
         // Kolla om chunken finns redan
         public async Task<bool> CheckChecksum(string userId, string checksum)
         {
-            var ListFileItems = await _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId).ToListAsync();
-            if (ListFileItems != null)
+            var ListFileItems = await _context.FileItems.Include(fi => fi.DataChunks).Where(x => x.UserId == userId).Select(x => x.DataChunks).ToListAsync();
+            var checkSums = ListFileItems.SelectMany(fi => fi).Select(dc => dc.Checksum);
+
+            if (checkSums == null)
+                return false;
+            foreach(var c in checkSums)
             {
-                foreach (var FI in ListFileItems)
-                {
-                    if (FI.DataChunks != null)
-                    {
-                        foreach (var DC in FI.DataChunks)
-                        {
-                            bool checksumExist = DC.Checksum.Equals(checksum); 
-                            if (checksumExist)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
+                if (c == checksum)
+                    return true;
             }
             return false;
         }
