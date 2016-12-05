@@ -141,7 +141,7 @@ namespace CloudMineServer.Classes
             return fi;
         }
 
-        // Read All with file with filechunks
+        // Read All with file with filechunks. No Merge on Server
         public async Task<List<FileItem>> GetAllFilItemAndDataChunks(string userId)
         {
             var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
