@@ -56,10 +56,10 @@ namespace CloudMineServer.Classes
         {
             using (var context = new CloudDbRepository(options))
             {
-                context.FileItems.Add(new Models.FileItem { Id = 11, UserId = "User-1a-guid-tostring", Checksum = new Guid("10000000-0000-0000-0000-000000000000"), DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 2, Uploaded = new DateTime(2016, 12, 02) });
-                context.FileItems.Add(new Models.FileItem { Id = 22, UserId = "User-2a-guid-tostring", Checksum = new Guid("20000000-0000-0000-0000-000000000000"), DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
-                context.FileItems.Add(new Models.FileItem { Id = 33, UserId = "User-3a-guid-tostring", Checksum = new Guid("30000000-0000-0000-0000-000000000000"), DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
-                context.FileItems.Add(new Models.FileItem { Id = 44, UserId = "User-4a-guid-tostring", Checksum = new Guid("40000000-0000-0000-0000-000000000000"), DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 11, UserId = "User-1a-guid-tostring", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 2, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 22, UserId = "User-2a-guid-tostring", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 33, UserId = "User-3a-guid-tostring", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 44, UserId = "User-4a-guid-tostring", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
                 context.SaveChanges();
             }
         }
@@ -70,7 +70,7 @@ namespace CloudMineServer.Classes
             {
                 Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
                 string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
-                context.FileItems.Add(new FileItem { Id = 1, Checksum = FileItemGuid, UserId = userGuid, DataChunks = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
+                context.FileItems.Add(new FileItem { Id = 1, UserId = userGuid, DataChunks = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
                 context.SaveChanges();
             }
         }

@@ -13,6 +13,8 @@ namespace CloudMineServer.Models
 
         public string PartName { get; set; }
 
+        public string Checksum { get; set; }
+
         //ByteArray med datan
         public byte[] Data { get; set; }
 
