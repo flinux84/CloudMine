@@ -103,6 +103,21 @@ function theSizeOfFile(TargetFile) {
     return Size;
 }
 
+function GetSHA1(theTarget) {
+    var test = theTarget[0];    
+    var reader = new FileReader();    
+    reader.onload = function (event) {
+        var binary = event.target.result;        
+        var testing = $.sha1(binary);
+        CarryOn(testing);
+
+    };
+    reader.readAsArrayBuffer(test);
+    
+    console.log("Loading");
+
+}
+
 
 jQuery.sha1 = sha1;
 var Id;
@@ -115,53 +130,59 @@ var Datatype;
 var Filesize;
 var Userid = null;
 var DataChunks;
-
-//Tänkte först serialisera hela formuläret med en gång, men det blir knas om man sedan ska ange nya värden till nya objekt, använder därför getElementById
 var ObjectInfo = [];
 var ObjectElement = {};
+
+//Tänkte först serialisera hela formuläret med en gång, men det blir knas om man sedan ska ange nya värden till nya objekt, använder därför getElementById
+
+
+
+
 $(document).ready(function () {
-    $('form').submit(function () {
+    $('#engage').click(function () {
                 
         ObjectElement.id = Id;
-        //Checksum = $.sha1($('#selectedfile')[0].files);
-        Checksum = "1517f9ff-62c2-4b3b-98ec-9d3a0abd63cd";
-        //Checksum = null;
-        ObjectElement.checksum = Checksum;
-        FileName = document.getElementById("FileName").value;
-        ObjectElement.fileName = FileName;
-        Description = document.getElementById("description").value;
-        ObjectElement.description = Description;
-        ObjectElement.uploaded = Uploaded;
-        if (document.getElementById("publ").checked == true)
-        {
-            Private = false;
-            ObjectElement.private = Private;
-        }
-        else {
-            ObjectElement.private = Private;
-        }                               
-        Datatype = GetFileExtension();
-        ObjectElement.dataType = Datatype;
-        Filesize = theSizeOfFile($('#selectedfile')[0].files);
-        ObjectElement.fileSize = Filesize;
-        ObjectElement.userId = Userid;
-        //DataChunks = theSizeOfChunks($('#selectedfile')[0].files);
-        //console.log(DataChunks);
-        DataChunks = null;
-        ObjectElement.dataChunks = DataChunks;
-        theInput = JSON.stringify(ObjectElement);
-        console.log(theInput);
-        SendData(theInput);
-        //Uint8Array
-                
-        //console.log(theInput);
-        //ObjectInfo.push(theInput);
-        //console.log(ObjectInfo);
-        //SendData(ObjectInfo);
-        //location.reload();
-        return false;
-    })
+        Checksum = GetSHA1($('#selectedfile')[0].files);
+    });
 });
+
+function CarryOn(hash) {
+    //Checksum = $.sha1($('#selectedfile')[0].files);    
+    //var hej = $.sha1("apa");    
+    Checksum = "1517f9ff-62c2-4b3b-98ec-9d3a0abd63cd";
+    //Checksum = null;
+    //Checksum = hash;
+    //console.log("exec");
+    ObjectElement.checksum = Checksum;
+    FileName = document.getElementById("FileName").value;
+    ObjectElement.fileName = FileName;
+    Description = document.getElementById("description").value;
+    ObjectElement.description = Description;
+    ObjectElement.uploaded = Uploaded;
+    if (document.getElementById("publ").checked == true) {
+        Private = false;
+        ObjectElement.private = Private;
+    }
+    else {
+        ObjectElement.private = Private;
+    }
+    Datatype = GetFileExtension();
+    ObjectElement.dataType = Datatype;
+    Filesize = theSizeOfFile($('#selectedfile')[0].files);
+    ObjectElement.fileSize = Filesize;
+    ObjectElement.userId = Userid;
+    //DataChunks = theSizeOfChunks($('#selectedfile')[0].files);
+    
+    DataChunks = null;
+    ObjectElement.dataChunks = DataChunks;
+    theInput = JSON.stringify(ObjectElement);
+    console.log(theInput);
+    SendData(theInput);
+    //Uint8Array
+
+    return false;
+};
+
 
 //Här är det tänkt att skicka metadata av filen som "ska" laddas upp.
 function SendData(theInput) {
@@ -169,13 +190,10 @@ function SendData(theInput) {
     //FD.append(ObjectInfo);
     var FD = theInput;
     $.ajax({
-        type: "POST",
-        //url: 'http://localhost:57260/api/v1.0/FileItems/PostFileItem',
-        url: 'http://localhost:65062/api/v1.0/FileItems/',
-        contentType: 'application/json',
-        
-        dataType: 'json',
-        //data: JSON.stringify(FD),
+        type: "POST",        
+        url: 'http://localhost:56875/api/v1.0/FileItems/',
+        contentType: 'application/json',        
+        dataType: 'json',        
         data: FD,
         error: function (e) {
             console.log(e);
@@ -183,15 +201,10 @@ function SendData(theInput) {
         success: function (result, status, jqHXR) {
             var jsonUpdateData = result;
             Datatype: "json",
-            console.log("Buddha")
+            console.log("Buddha");
             SliceAndDiceThemFiles(($('#selectedfile')[0].files));
             console.log(jsonUpdateData);
-            //switch (result) {
-            //    case true:
-            //        processResponse(result);
-            //        break;
-            //    default:
-            //        resultDiv.html(result);
+            
 
         }
 
@@ -200,4 +213,4 @@ function SendData(theInput) {
     };
 
 
-//$(document).ready(bar.animate(1.0));
+
