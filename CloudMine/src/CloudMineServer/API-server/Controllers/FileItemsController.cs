@@ -30,6 +30,13 @@ namespace CloudMineServer.API_server.Controllers {
             _urlHelper = urlHelperFactory.GetUrlHelper( actionContextAccessor.ActionContext );
         }
 
+        //GET: api/FileItems/checksum/id
+        [HttpGet( "checksum/{id}" )]
+        public async Task<bool> CheckCheckSum(string id ) {
+
+            return false;
+        }
+
         // GET: api/FileItems
         [HttpGet( Name = "GetFileItems" )]
         public async Task<IEnumerable<FileItem>> GetFileItems( string filename = null, string description = null, string filetype = null, string sort = "id", string order = "asc", int pageNo = 1, int pageSize = maxPageSize ) {
