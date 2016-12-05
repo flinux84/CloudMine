@@ -84,7 +84,7 @@ namespace CloudMineServer.API_server.Controllers {
         }
 
         // GET: api/FileItems/5
-        [HttpGet( "{id}" )]
+        [HttpGet( "{id:int}" )]
         public async Task<IActionResult> GetFileItem( [FromRoute] int id ) {
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
@@ -100,7 +100,7 @@ namespace CloudMineServer.API_server.Controllers {
         }
 
         // PUT: api/FileItems/5
-        [HttpPut( "{id}" )]
+        [HttpPut( "{id:int}" )]
         public async Task<IActionResult> PutFileItem( [FromRoute] int id, [FromBody] FileItem fileItem ) {
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
@@ -138,7 +138,7 @@ namespace CloudMineServer.API_server.Controllers {
         }
 
         // POST: api/FileItems/5
-        [HttpPost( "{id}" )]
+        [HttpPost( "{id:int}" )]
         public async Task<IActionResult> PostDataChunk( [FromRoute] int id, [FromBody] DataChunk dataChunk ) {
 
             if( !ModelState.IsValid ) {
@@ -152,7 +152,7 @@ namespace CloudMineServer.API_server.Controllers {
         }
 
         // DELETE: api/FileItems/5
-        [HttpDelete( "{id}" )]
+        [HttpDelete( "{id:int}" )]
         public async Task<IActionResult> DeleteFileItem( [FromRoute] int id ) {
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
