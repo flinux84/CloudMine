@@ -9,7 +9,7 @@ namespace CloudMineServer.Models
     {
         public int Id { get; set; }
 
-        public Guid Checksum { get; set; }
+        public string Checksum { get; set; }
 
         // Filnamnet
         public string FileName { get; set; }

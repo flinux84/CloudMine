@@ -65,6 +65,22 @@ namespace CloudMineServer.Classes
             return false;
         }
 
+        // Kolla om chunken finns redan
+        public async Task<bool> CheckChecksum(string userId, string checksum)
+        {
+            var ListFileItems = await _context.FileItems.Include(fi => fi.DataChunks).Where(x => x.UserId == userId).Select(x => x.DataChunks).ToListAsync();
+            var checkSums = ListFileItems.SelectMany(fi => fi).Select(dc => dc.Checksum);
+
+            if (checkSums == null)
+                return false;
+            foreach(var c in checkSums)
+            {
+                if (c == checksum)
+                    return true;
+            }
+            return false;
+        }
+
         // Create Add DataChunk
         public async Task<bool> AddFileUsingAPI(DataChunk DC)
         {
@@ -188,7 +204,7 @@ namespace CloudMineServer.Classes
         #endregion
 
         #region Internal Helper
-        
+
         private async Task<bool> CheckStorageSpace(FileItem FI)
         {
             var user = await _appDbContext.Users.Where(u => u.Id == FI.UserId).SingleOrDefaultAsync();

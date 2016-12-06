@@ -8,3 +8,26 @@
     <h4>Admin-portal - no fancy views here</h4>
     <a href="~/Chat.html">Chat-Test</a>
 </div>
+
+<div>
+    <form action="">
+        <input type="file" name="file" id="selectedfile" value="Choose file" />
+        <br />
+        <label for="file">Filename</label>
+        <input type="text" name="FileName" id="FileName" />
+        <br />
+        <label for="fileName">Description</label>
+        <input type="text" name="Description" id="description" />
+        <br />
+
+        Private: <input type="radio" name="filesharing" id="priv" checked value="Private" />
+        <br />
+        Public: <input type="radio" name="filesharing" id="publ" value="Public" />
+        <br />
+        <br />
+        <input type="submit" value="Upload File" />
+
+    </form>
+</div>
+
+<script src="~/js/checksum.js" asp-append-version="true"></script>
