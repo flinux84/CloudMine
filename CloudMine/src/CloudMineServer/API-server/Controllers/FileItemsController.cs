@@ -33,8 +33,8 @@ namespace CloudMineServer.API_server.Controllers {
         //GET: api/FileItems/checksum/id
         [HttpGet( "checksum/{id}" )]
         public async Task<bool> CheckCheckSum(string id ) {
-
-            return false;
+            bool checksumExists = await _context.CheckChecksum( _userManager.GetUserId( User ), id );
+            return checksumExists;
         }
 
         // GET: api/FileItems
