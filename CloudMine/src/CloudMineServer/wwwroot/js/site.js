@@ -1,12 +1,17 @@
-﻿//var bar = new ProgressBar.Circle(progress, {
-//    strokeWidth: 6,
-//    easing: 'easeInOut',
-//    duration: 1400,
-//    color: 'lightblue',
-//    trailColor: '#eee',
-//    trailWidth: 1,
-//    svgStyle: null
-//});
+﻿var progressFileLabel;
+var progresslabel;
+var uploadbutton;
+var uploadzone;
 
-
-//$(document).ready(bar.animate(1.0));
+$(document).ready(function () {
+    dropzone = $("#dropzone");
+    uploadbutton = $("upload");
+    dragAndDrop(dropzone);
+    progressDiv = $("#progressDiv");
+    progressBar = $("progress-bar");
+    progressFileLabel = $("#filelabel");
+    var status = createProgressbar(progressDiv, progressBar, progressFileLabel);
+    console.log = "banan";
+    //status.finished();
+    //status.updateProgress(50, "banan.jpg");
+});

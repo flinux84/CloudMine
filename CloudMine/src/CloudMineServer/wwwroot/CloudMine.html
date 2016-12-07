@@ -5,12 +5,11 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="css/cloudmine.css" />
-    <link rel="stylesheet" href="css/site.css" />
 </head>
 <body>
-    <script src="js/progressbar.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
+    <script src="js/progressbar.js"></script>
     <script src="js/site.js"></script>
     <script src="js/draganddrop.js"></script>
     <hr />
@@ -46,9 +45,6 @@
                 <h4><span class="glyphicon glyphicon-time"> Cloud</span></h4>
                 <h4><span class="glyphicon glyphicon-trash"> Cloud</span></h4>
             </aside>
-            <div id="progress">
-
-            </div>
         </div>
         <div class="col-lg-10">
             <section class="filelist">
@@ -203,11 +199,17 @@
                 <br />
             </section>
         </div>
-
-
-
     </div>
+    
+    <!--Progress-div som visas när en upload startar-->
+    <div id="progressDiv">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar">
 
+            </div>
+        </div>
+        <div id="filelabel"></div>
+    </div>
     <br />
 </body>
 </html>
