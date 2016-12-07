@@ -56,10 +56,10 @@ namespace CloudMineServer.Classes
         {
             using (var context = new CloudDbRepository(options))
             {
-                context.FileItems.Add(new Models.FileItem { Id = 11, UserId = "User-1a-guid-tostring", Checksum = new Guid("10000000-0000-0000-0000-000000000000"), DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 2, Uploaded = new DateTime(2016, 12, 02) });
-                context.FileItems.Add(new Models.FileItem { Id = 22, UserId = "User-2a-guid-tostring", Checksum = new Guid("20000000-0000-0000-0000-000000000000"), DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
-                context.FileItems.Add(new Models.FileItem { Id = 33, UserId = "User-3a-guid-tostring", Checksum = new Guid("30000000-0000-0000-0000-000000000000"), DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
-                context.FileItems.Add(new Models.FileItem { Id = 44, UserId = "User-4a-guid-tostring", Checksum = new Guid("40000000-0000-0000-0000-000000000000"), DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 11, UserId = "User-1a-guid-tostring", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 2, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 22, UserId = "User-2a-guid-tostring", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 33, UserId = "User-3a-guid-tostring", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 44, UserId = "User-4a-guid-tostring", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
                 context.SaveChanges();
             }
         }
@@ -70,7 +70,7 @@ namespace CloudMineServer.Classes
             {
                 Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
                 string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
-                context.FileItems.Add(new FileItem { Id = 1, Checksum = FileItemGuid, UserId = userGuid, DataChunks = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
+                context.FileItems.Add(new FileItem { Id = 1, UserId = userGuid, DataChunks = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
                 context.SaveChanges();
             }
         }
@@ -79,8 +79,8 @@ namespace CloudMineServer.Classes
         {
             using (var context = new CloudDbRepository(options))
             {
-                context.DataChunks.Add(new DataChunk { Id = 11, FileItemId = 1, Data = new byte[10], PartName = "AudioInterface.png.part_1.2" });
-                context.DataChunks.Add(new DataChunk { Id = 22, FileItemId = 1, Data = new byte[01], PartName = "AudioInterface.png.part_2.2" });
+                context.DataChunks.Add(new DataChunk { Id = 11, FileItemId = 1, Checksum = "aa11-checksum-fil", Data = new byte[10], PartName = "AudioInterface.png.part_1.2" });
+                context.DataChunks.Add(new DataChunk { Id = 22, FileItemId = 1, Checksum = "bb122-checksum-fil", Data = new byte[01], PartName = "AudioInterface.png.part_2.2" });
 
                 context.SaveChanges();
             }
@@ -474,5 +474,92 @@ namespace CloudMineServer.Classes
 
         #endregion
 
+        #region check checksum
+
+        //check if checksum exist. There is no exisisting datachunk with this checksum. User has fileitem saved, user has datachunks saved.
+        [Fact]
+        public async Task CheckChecksum_send_userId_and_checksum_to_see_if_checksum_exist()
+        {
+            //Arrange
+            var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
+            FillTheTempDataBase(options);
+            AddDataChunksToExistingFileItemToDB(options);
+            string TestUserID = "User-1a-guid-tostring"; // this user exist and has fileitem with datachunks saved. 
+            string TestDatachunkChecksum = "cc33-checksum-fil"; //aa11-checksum-fil & bb22-checksum-fil exist.
+
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
+            using (var context = new CloudDbRepository(options))
+            {
+                var service = new CloudMineDbService(context, appDbContext);
+
+                //Act  
+                var result = await service.CheckChecksum(TestUserID, TestDatachunkChecksum);
+
+                //Assert
+                Assert.Equal(2, context.DataChunks.Count());
+                var viewResult = Assert.IsType<bool>(result);
+                Assert.False(viewResult);
+
+            }
+        }
+
+        //check if checksum exist. User has not added any chunks so there's not even any datachunks.
+        [Fact]
+        public async Task CheckChecksum_check_if_checksum_exist_there_are_no_datachunks_saved()
+        {
+            //Arrange
+            var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
+            FillTheTempDataBase(options);
+            AddDataChunksToExistingFileItemToDB(options);
+            string TestUserID = "User-2a-guid-tostring"; // this user exist and has fileitem but no datachunks saved. 
+            string TestDatachunkChecksum = "aa11-checksum-fil"; //aa11-checksum-fil exsist but in another users datachunk
+
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
+            using (var context = new CloudDbRepository(options))
+            {
+                var service = new CloudMineDbService(context, appDbContext);
+
+                //Act  
+                var result = await service.CheckChecksum(TestUserID, TestDatachunkChecksum);
+
+                //Assert
+                Assert.Equal(2, context.DataChunks.Count());
+                var viewResult = Assert.IsType<bool>(result);
+                Assert.False(viewResult);
+
+            }
+        }
+
+        //check if checksum exist. The checksum does exsist, expected return is true.
+        [Fact]
+        public async Task CheckChecksum_the_checksum_exsists_return_true()
+        {
+            //Arrange
+            var options = CreateNewContextOptions();
+            var appDbOptions = CreateNewApplicationDbContextOptions();
+            FillTheTempDataBase(options);
+            AddDataChunksToExistingFileItemToDB(options);
+            string TestUserID = "User-1a-guid-tostring"; // this user exist and has fileitem and datachunks saved. 
+            string TestDatachunkChecksum = "aa11-checksum-fil"; //aa11-checksum-fil & bb22-checksum-fil exist.
+
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
+            using (var context = new CloudDbRepository(options))
+            {
+                var service = new CloudMineDbService(context, appDbContext);
+
+                //Act  
+                var result = await service.CheckChecksum(TestUserID, TestDatachunkChecksum);
+
+                //Assert
+                Assert.Equal(2, context.DataChunks.Count());
+                var viewResult = Assert.IsType<bool>(result);
+                Assert.False(viewResult);
+
+            }
+        }
+
+        #endregion 
     }
 }

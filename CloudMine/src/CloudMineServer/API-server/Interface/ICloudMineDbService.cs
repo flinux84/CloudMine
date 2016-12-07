@@ -1,4 +1,4 @@
-﻿using CloudMineServer.Models;
+using CloudMineServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,7 @@ namespace CloudMineServer.Interface
         Task<FileItem> GetFileByIdUsingAPI(int num);
         Task<bool> UpDateByIdUsingAPI(int num, FileItem item);
         Task<bool> DeleteByIdUsingAPI(int num);
+        Task<bool> CheckChecksum( string userId, string checksum );
         #endregion
 
         #region get FileItem & Chunks

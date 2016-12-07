@@ -12,29 +12,35 @@ using System.Threading.Tasks;
 using System.Linq;
 using CloudMineServer.API_server.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
 
 namespace CloudMineServer.API_server.Controllers {
-    [Produces("application/json")]
+    [Produces( "application/json" )]
     [ApiVersion( "1.0" )]
     [Route( "api/v{version:apiVersion}/FileItems" )]
     [Authorize]
-    public class FileItemsController : Controller
-    {
+    public class FileItemsController : Controller {
         private readonly ICloudMineDbService _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUrlHelper _urlHelper;
         private const int maxPageSize = 20;
 
-        public FileItemsController( ICloudMineDbService context, UserManager<ApplicationUser> userManager, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor )
-        {
+        public FileItemsController( ICloudMineDbService context, UserManager<ApplicationUser> userManager, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor ) {
             _context = context;
             _userManager = userManager;
             _urlHelper = urlHelperFactory.GetUrlHelper( actionContextAccessor.ActionContext );
         }
-        
+
+        //GET: api/FileItems/checksum/id
+        [HttpGet( "checksum/{id}" )]
+        public async Task<bool> CheckCheckSum( string id ) {
+            bool checksumExists = await _context.CheckChecksum( _userManager.GetUserId( User ), id );
+            return checksumExists;
+        }
+
         // GET: api/FileItems
         [HttpGet( Name = "GetFileItems" )]
-        public async Task<IEnumerable<FileItem>> GetFileItems( string sort = "id", string order = "asc", int pageNo = 1, int pageSize = maxPageSize) {
+        public async Task<IEnumerable<FileItem>> GetFileItems( string filename = null, string description = null, string filetype = null, string sort = "id", string order = "asc", int pageNo = 1, int pageSize = maxPageSize ) {
 
             //Get all FileItems from a user
             FileItemSet fileItemSet = await _context.GetAllFilesUsingAPI( _userManager.GetUserId( User ) );
@@ -44,13 +50,18 @@ namespace CloudMineServer.API_server.Controllers {
             if( pageSize > maxPageSize )
                 pageSize = maxPageSize;
 
+            //search string
+            fileItems = fileItems.Where( x => ( filename == null || x.FileName.Contains( filename ) ) )
+                .Where( x => ( description == null || x.Description.Contains( description ) ) )
+                .Where( x => ( filetype == null || x.DataType.Contains( filetype ) ) ).ToList();
+
             //sort fileItems
             var sortedFileItems = fileItems.ApplySorting( sort, order );
 
             //metadata för paging
             int totalFileItems = sortedFileItems.Count;
             int totalPages = (int)Math.Ceiling( (double)totalFileItems / pageSize );
-            
+
             //Previous link
             var prevPageLink = pageNo == 1 ? string.Empty : _urlHelper.Link( "GetFileItems",
                 new {
@@ -77,11 +88,11 @@ namespace CloudMineServer.API_server.Controllers {
 
             Response.Headers.Add( "X-PageInfo", JsonConvert.SerializeObject( pageHeader ) );
 
-            return sortedFileItems.Skip( ( pageNo - 1 ) * pageSize ).Take( pageSize );            
+            return sortedFileItems.Skip( ( pageNo - 1 ) * pageSize ).Take( pageSize );
         }
 
         // GET: api/FileItems/5
-        [HttpGet( "{id}" )]
+        [HttpGet( "{id:int}" )]
         public async Task<IActionResult> GetFileItem( [FromRoute] int id ) {
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
@@ -97,7 +108,7 @@ namespace CloudMineServer.API_server.Controllers {
         }
 
         // PUT: api/FileItems/5
-        [HttpPut( "{id}" )]
+        [HttpPut( "{id:int}" )]
         public async Task<IActionResult> PutFileItem( [FromRoute] int id, [FromBody] FileItem fileItem ) {
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
@@ -124,10 +135,10 @@ namespace CloudMineServer.API_server.Controllers {
             //Uppdatera userId på fileItem innan vi skickar den till business layer
             fileItem.UserId = _userManager.GetUserId( HttpContext.User );
 
-            var metaDataID = await _context.InitCreateFileItem( fileItem );
+            var metaDataCreated = await _context.InitCreateFileItem( fileItem );
 
-            if(metaDataID) {
-                return CreatedAtAction( "GetFileItem", new { id = fileItem.Id }, fileItem );    
+            if( metaDataCreated ) {
+                return CreatedAtAction( "GetFileItem", new { id = fileItem.Id }, fileItem );
             }
 
             return new StatusCodeResult( StatusCodes.Status400BadRequest );
@@ -135,22 +146,24 @@ namespace CloudMineServer.API_server.Controllers {
         }
 
         // POST: api/FileItems/5
-        [HttpPost( "{id}" )]
-        public async Task<IActionResult> PostDataChunk( [FromRoute] int id, [FromBody] DataChunk dataChunk ) {
+        [HttpPost( "{id:int}" )]
+        public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
 
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
             }
+
+            if( id != dataChunk.FileItemId )
+                return BadRequest( "Id from route wasn't the same as fileItemId in DataChunk." );
             
             if( await _context.AddFileUsingAPI( dataChunk ) ) {
-                    return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
-            }
-            else
+                return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
+            } else
                 return BadRequest( "Error adding datachunks." );
         }
 
         // DELETE: api/FileItems/5
-        [HttpDelete( "{id}" )]
+        [HttpDelete( "{id:int}" )]
         public async Task<IActionResult> DeleteFileItem( [FromRoute] int id ) {
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
