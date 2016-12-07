@@ -155,16 +155,7 @@ namespace CloudMineServer.API_server.Controllers {
 
             if( id != dataChunk.FileItemId )
                 return BadRequest( "Id from route wasn't the same as fileItemId in DataChunk." );
-
-            //Borde vara större än 0 annar har man inte valt en fil att ladda upp
-            if( Request.Form.Files.Count > 0 ) {
-                byte[] fileData = null;
-                using( var binaryReader = new BinaryReader( Request.Form.Files.First().OpenReadStream() ) ) {
-                    fileData = binaryReader.ReadBytes( (int)Request.Form.Files.First().Length );
-                }
-                dataChunk.Data = fileData;
-            }
-
+            
             if( await _context.AddFileUsingAPI( dataChunk ) ) {
                 return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
             } else
