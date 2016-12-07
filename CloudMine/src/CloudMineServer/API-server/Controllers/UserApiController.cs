@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CloudMineServer.API_server.Controllers
 {
+    // TODO: Make new controller for admin or remake this one
     [Produces("application/json")]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/Users")]
@@ -73,6 +74,7 @@ namespace CloudMineServer.API_server.Controllers
         }
 
 
+        // Change user settings
         [Authorize]
         [HttpPut("{userEmail}")]
         public async Task<IActionResult> PutUserInfo([FromRoute]string userEmail, [FromBody]UserInfo userInfo)
@@ -86,6 +88,7 @@ namespace CloudMineServer.API_server.Controllers
                 return BadRequest("Cant shrink storage to less than your used storage!");
             
             user.StorageSize = userInfo.StorageSize;
+            await _userManager.UpdateAsync(user);
             return Ok(userInfo);
         }
         //[HttpDelete]
