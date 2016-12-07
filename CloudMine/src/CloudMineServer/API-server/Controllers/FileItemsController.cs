@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using CloudMineServer.API_server.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
 
 namespace CloudMineServer.API_server.Controllers {
     [Produces( "application/json" )]
@@ -32,7 +33,7 @@ namespace CloudMineServer.API_server.Controllers {
 
         //GET: api/FileItems/checksum/id
         [HttpGet( "checksum/{id}" )]
-        public async Task<bool> CheckCheckSum(string id ) {
+        public async Task<bool> CheckCheckSum( string id ) {
             bool checksumExists = await _context.CheckChecksum( _userManager.GetUserId( User ), id );
             return checksumExists;
         }
@@ -146,10 +147,22 @@ namespace CloudMineServer.API_server.Controllers {
 
         // POST: api/FileItems/5
         [HttpPost( "{id:int}" )]
-        public async Task<IActionResult> PostDataChunk( [FromRoute] int id, [FromBody] DataChunk dataChunk ) {
+        public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
 
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
+            }
+
+            if( id != dataChunk.FileItemId )
+                return BadRequest( "Id from route wasn't the same as fileItemId in DataChunk." );
+
+            //Borde vara större än 0 annar har man inte valt en fil att ladda upp
+            if( Request.Form.Files.Count > 0 ) {
+                byte[] fileData = null;
+                using( var binaryReader = new BinaryReader( Request.Form.Files.First().OpenReadStream() ) ) {
+                    fileData = binaryReader.ReadBytes( (int)Request.Form.Files.First().Length );
+                }
+                dataChunk.Data = fileData;
             }
 
             if( await _context.AddFileUsingAPI( dataChunk ) ) {
