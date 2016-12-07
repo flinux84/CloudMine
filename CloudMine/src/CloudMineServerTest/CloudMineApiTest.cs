@@ -504,7 +504,7 @@ namespace CloudMineServer.Classes
             }
         }
 
-        //check if checksum exist. User has not added any chunks so there not even any datachunks.
+        //check if checksum exist. User has not added any chunks so there's not even any datachunks.
         [Fact]
         public async Task CheckChecksum_check_if_checksum_exist_there_are_no_datachunks_saved()
         {
