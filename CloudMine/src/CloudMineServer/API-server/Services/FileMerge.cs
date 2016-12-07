@@ -18,7 +18,18 @@ namespace CloudMineServer.Services
         public Uri MakeFile(FileItem fileitem)
         {
             var baseFileName = fileitem.FileName;
+
+            if (!fileitem.DataChunks.Any())
+            {
+                throw new InvalidOperationException("Can not merge without datachunks");
+            }
+
             string[] filesList = fileitem.DataChunks.Select(d => d.PartName).ToArray();
+            
+            if (!fileitem.DataChunks.FirstOrDefault().PartName.Contains(baseFileName))
+            {
+                throw new InvalidOperationException("chunkname does not match filename");
+            }
 
             var chunkPartName = filesList.FirstOrDefault();
             trailingToken = chunkPartName.Substring(chunkPartName.IndexOf(partToken) + partToken.Length);
@@ -77,6 +88,7 @@ namespace CloudMineServer.Services
             return fi;
         }
 
+        // sorterar chunks så vi har dem i rätt ordning innan vi klistrar ihop
         private List<SortedFile> SortMergeList(string[] filesList)
         {
             List<SortedFile> mergeList = new List<SortedFile>();
@@ -92,12 +104,11 @@ namespace CloudMineServer.Services
                 mergeList.Add(sFile);
             }
 
-            // sorterar chunks så vi har dem i rätt ordning innan vi klistrar ihop
             var MergeOrder = mergeList.OrderBy(s => s.FileOrder).ToList();
             return MergeOrder;
         }
 
-       
+        //Singleton-manager som håller koll på aktiva merges.
         public class MergeFileManager
         {
             private static MergeFileManager instance;
