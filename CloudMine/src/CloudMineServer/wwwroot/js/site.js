@@ -1,17 +1,25 @@
 ﻿var progressFileLabel;
-var progresslabel;
 var uploadbutton;
 var uploadzone;
+var progressBar;
+var progressDiv;
+
 
 $(document).ready(function () {
     dropzone = $("#dropzone");
     uploadbutton = $("upload");
-    dragAndDrop(dropzone);
     progressDiv = $("#progressDiv");
-    progressBar = $("progress-bar");
+    progressBar = $("#progressBar");
     progressFileLabel = $("#filelabel");
-    var status = createProgressbar(progressDiv, progressBar, progressFileLabel);
-    console.log = "banan";
-    //status.finished();
-    //status.updateProgress(50, "banan.jpg");
+
+    //enable drag and drop functionality
+    dragAndDrop(dropzone);
+
+    var probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
+    probar.DoATestRun();
+
+    //progressbar skickas sedan in i fileuploader som inparameter och kan anropas med en int i procent samt filnamnet.
+
+    //var fileuploader = new fileuploader(probar, targetfile[]);
+
 });

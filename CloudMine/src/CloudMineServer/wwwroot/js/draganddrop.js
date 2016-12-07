@@ -5,7 +5,7 @@
         e.stopPropagation();
         $(this).css('border', '2px solid #0B85A1');
     });
-
+    
     dropzone.on('dragover', function (e) {
         e.preventDefault();
         e.stopPropagation();

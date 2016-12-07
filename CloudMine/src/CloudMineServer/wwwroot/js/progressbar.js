@@ -1,40 +1,47 @@
-function createProgressbar(progressDiv, progressBar, fileLabel) {
-    var div = progressDiv;
-    var elem = progressBar;
-    var label = fileLabel;
-    var width = 0;
-    elem.innerHTML = '';
+var width = 0;
+
+var ProgressBar = function (divDOM, barDOM, fileDOM) {
+
+    divDOM.css('display', 'none');
+    barDOM.innerHTML = '';
     console.log("progressbar loaded");
 
-    this.updateProgress = function (percent, filename) {
-        var perc = percent;
-        var file = filename;
-        console.log(percent + "percent loaded of file" + filename);
-        div.style.display = "block";
-        label.innerHTML = file;
-        var id = setInterval(frame, 1000);
+    ProgressBar.prototype.updateProgress = function (percent, filename) {
+
+        console.log("uploading file" + filename);
+        divDOM.css('display', 'block');
+        fileDOM.innerHTML = filename;
 
         if (width >= 100) {
-            clearInterval(id);
-            setTimeout(clear, 1000)
-            div.style.display = "hidden";
+            setTimeout(clear, 2000)
+            console.log("finished upload of " + filename);
         } else {
-            width = perc;
-            elem.style.width = percent + '%';
-            elem.innerHTML = width + '%';
+            width = percent;
+            barDOM.css('width', width + '%');
+            barDOM.innerHTML = width + '%';
         }     
     }
 
-    function frame() {
-        elem.style.width = width + '%';
-        console.log("updating progressbar...");
+    ProgressBar.prototype.DoATestRun = function () {
+        divDOM.css('display', 'block');
+        fileDOM.append("Uploading filename.png");
+        var id = setInterval(frame, 100);
+        console.log("doing a testrun");
+        function frame() {
+            barDOM.css('width', width + '%');
+            width++;
+            if (width >= 100) {
+                clearInterval(id);
+                setTimeout(clear, 2000)
+            }
+        }
     }
 
-    this.finished = function clear() {
+
+    function clear() {
         width = 0;
-        elem.style.display = "hidden";
-        console.log("clears progress, done");
-    }
+        divDOM.css('display', 'none');
+    }  
 
 }
 

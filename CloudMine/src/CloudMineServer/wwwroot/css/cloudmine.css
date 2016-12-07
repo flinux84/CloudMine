@@ -93,16 +93,6 @@ input[type="file"] {
     display:inline;
 }
 
-/*#progress {
-    width:250px;
-    height:150px;
-    position:fixed;
-    margin-top:10px;
-    right: 30px;
-    bottom: 30px;
-    background-color:aqua;
-    border-radius:20px;
-}*/
 #progressDiv {
     position: fixed;
     width: 250px;
@@ -110,13 +100,8 @@ input[type="file"] {
     margin-top:10px;
     right: 30px;
     bottom: 30px;
-    background-color:aqua;
     text-align:center;
+    border: 1px solid black;
 }
-/*#progress{
-    position: absolute;
-    width: 1%;
-    height: 100%;
-    background-color: green;
-}*/
+
 
