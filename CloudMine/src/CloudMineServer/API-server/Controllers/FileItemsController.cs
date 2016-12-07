@@ -30,6 +30,13 @@ namespace CloudMineServer.API_server.Controllers {
             _urlHelper = urlHelperFactory.GetUrlHelper( actionContextAccessor.ActionContext );
         }
 
+        //GET: api/FileItems/checksum/id
+        [HttpGet( "checksum/{id}" )]
+        public async Task<bool> CheckCheckSum(string id ) {
+            bool checksumExists = await _context.CheckChecksum( _userManager.GetUserId( User ), id );
+            return checksumExists;
+        }
+
         // GET: api/FileItems
         [HttpGet( Name = "GetFileItems" )]
         public async Task<IEnumerable<FileItem>> GetFileItems( string filename = null, string description = null, string filetype = null, string sort = "id", string order = "asc", int pageNo = 1, int pageSize = maxPageSize ) {
@@ -127,9 +134,9 @@ namespace CloudMineServer.API_server.Controllers {
             //Uppdatera userId på fileItem innan vi skickar den till business layer
             fileItem.UserId = _userManager.GetUserId( HttpContext.User );
 
-            var metaDataID = await _context.InitCreateFileItem( fileItem );
+            var metaDataCreated = await _context.InitCreateFileItem( fileItem );
 
-            if( metaDataID ) {
+            if( metaDataCreated ) {
                 return CreatedAtAction( "GetFileItem", new { id = fileItem.Id }, fileItem );
             }
 
