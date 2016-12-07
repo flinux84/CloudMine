@@ -8,9 +8,10 @@ using CloudMineServer.Models;
 namespace CloudMineServer.Migrations.CloudDbRepositoryMigrations
 {
     [DbContext(typeof(CloudDbRepository))]
-    partial class CloudDbRepositoryModelSnapshot : ModelSnapshot
+    [Migration("20161205123220_ChecksumInDataChunk")]
+    partial class ChecksumInDataChunk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
@@ -41,7 +42,7 @@ namespace CloudMineServer.Migrations.CloudDbRepositoryMigrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Checksum");
+                    b.Property<Guid>("Checksum");
 
                     b.Property<string>("DataType");
 
