@@ -16,10 +16,64 @@
             asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
             asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
     </script>
+    <!--script till inlogg-->
+    @section scripts {
+        <link rel="stylesheet" href="~/css/tempLoginCss.css" asp-append-version="true" />
+    }
+
     <script src="~/js/TokenLogin.js"></script>
     <hr />
-
+    <!--script till inlogg end-->
     <div class="container">
+
+        <!--Dold div till inlogg-->
+        <div class="overlay" id="overlay" style="display:none;"></div>
+
+        <div class="box" id="box">
+            <a class="boxclose" id="boxclose"></a>
+            <h1>Login</h1>
+            <form id="Loginform" enctype="multipart/form-data">
+                <p>Name:</p> <input type="text" name="mail" style="color:black" required> <br />
+                <p>Password:</p> <input type="password" name="pword" style="color:black" required> <br />
+                <input id="InputLoginButton" type="submit" onchange="this.form.submit()" value="Login" />
+            </form>
+        </div>
+
+        <div class="box" id="boxRegister">
+            <a class="boxclose" id="boxRegisterclose"></a>
+            <h1>Register new user</h1>
+            <form id="Registerform" enctype="multipart/form-data">
+                <p>Name:</p> <input type="text" name="mail" style="color:black" required> <br />
+                <p>Password:</p> <input type="password" name="pword" style="color:black" required> <br />
+                <p>Password:</p> <input type="password" name="repword" style="color:black" required> <br />
+                <input id="InputRegisterButton" type="submit" onchange="this.form.submit()" value="Register" />
+
+            </form>
+        </div>
+
+        <div class="box" id="boxErrorRegister">
+            <a class="boxclose" id="boxErrorclose"></a>
+            <h1>Error Register new user</h1>
+            <br />
+            <p class="result"></p> 
+
+                <a href="#" id="" class="registerUser">Try register again</a>
+
+        </div>
+
+        <div class="box" id="boxErrorLogin">
+            <a class="boxclose" id="boxErrorLoginclose"></a>
+            <h1>Error login user</h1>
+            <br />
+            <p class="result"></p> 
+             
+                <a href="#" id="" class="signinuseragain">Try sign in again</a>
+            
+        </div>
+     
+        <!--Dold div till inlogg end-->
+
+
         <div class="navbar">
             <div class="col-lg-3">
             </div>
@@ -27,6 +81,7 @@
 
         <div class="col-lg-2">
             <aside class="submenu">
+                <div class="modal">I'm the Modal Window!</div>
                 <h4><span class="glyphicon glyphicon-cd"> Function</span></h4>
                 <h4><span class="glyphicon glyphicon-road"> Function</span></h4>
                 <h4><span class="glyphicon glyphicon-time"> Cloud</span></h4>
@@ -35,6 +90,15 @@
         </div>
         <div class="col-lg-10">
 
+            <!--knapp till inlogg-->
+            <div class="row col-md-12">
+                <a href="#" id="idLogInButton" class="">Login</a>
+                <a href="#" id="idSignOutButton" class="hidden">Sign Out</a>
+                <a href="#" id="" class="registerUser">Register</a>
+            </div>
+            <!--knapp till inlogg end-->
+
+            <br />
             <div class="col-lg-4">
                 <form id="firstForm" enctype="multipart/form-data">
                     Name: <input type="text" name="mailx" style="color:black">
@@ -59,13 +123,6 @@
                 </form>
             </div>
 
-        </div>
-
-        <div class="col-lg-10">
-            <br />
-            <div class="col-lg-4" style="margin-top:150px">
-                <button type="button" id="getToken">just a button</button>
-            </div>
         </div>
 
     </div>
