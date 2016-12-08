@@ -149,7 +149,7 @@ namespace CloudMineServer.Classes
 
 
         // Read One with file with filechunks return FileItem. No Merge on Server
-        public async Task<FileItem> GetFiAndDc(int id, string userId)
+        public async Task<FileItem> GetSpecifikFileItemAndDataChunk(int id, string userId)
         {
             var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
             var fi = await IQuerybleFileItem.FirstOrDefaultAsync(x => x.Id == id);
