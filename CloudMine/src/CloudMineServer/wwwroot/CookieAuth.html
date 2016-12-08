@@ -25,6 +25,11 @@
         <button type="button" id="testBtn">testAuth</button>
     </form>
 
+    <form id="logoutAuthForm" method="get">
+        <p>logout</p>
+        <button type="button" id="logoutBtn">Logout</button>
+    </form>
+    
     <script src="lib/jquery/dist/jquery.js"></script>
     <!--<script src="lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="js/site.js" ></script>-->
@@ -34,6 +39,21 @@
             e.preventDefault();
             $.ajax({
                 url: "../api/TestAuth",
+                contentType: 'application/json',
+                error: function (e) {
+                    console.log(e);
+                },
+                success: function (result, status) {
+                    console.log(result);
+                    console.log(status);
+                }
+            });
+        });
+
+        $('#logoutBtn').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "../api/v1.0/Users/Logout",
                 contentType: 'application/json',
                 error: function (e) {
                     console.log(e);

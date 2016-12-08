@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using CloudMineServer.API_server.Models;
 using Microsoft.AspNetCore.Authorization;
-using System.IO;
+using CloudMineServer.API_server.Services;
 
 namespace CloudMineServer.API_server.Controllers {
     [Produces( "application/json" )]
@@ -34,16 +34,16 @@ namespace CloudMineServer.API_server.Controllers {
         //GET: api/FileItems/checksum/id
         [HttpGet( "checksum/{id}" )]
         public async Task<bool> CheckCheckSum( string id ) {
-            bool checksumExists = await _context.CheckChecksum( _userManager.GetUserId( User ), id );
+            bool checksumExists = await _context.CheckChecksum( User.GetUserId(), id );
             return checksumExists;
         }
 
         // GET: api/FileItems
         [HttpGet( Name = "GetFileItems" )]
         public async Task<IEnumerable<FileItem>> GetFileItems( string filename = null, string description = null, string filetype = null, string sort = "id", string order = "asc", int pageNo = 1, int pageSize = maxPageSize ) {
-
+            
             //Get all FileItems from a user
-            FileItemSet fileItemSet = await _context.GetAllFilesUsingAPI( _userManager.GetUserId( User ) );
+            FileItemSet fileItemSet = await _context.GetAllFilesUsingAPI( User.GetUserId() );
             IList<FileItem> fileItems = fileItemSet.ListFileItems;
 
             //reset pagesize if higher than maxPageSize
@@ -133,7 +133,7 @@ namespace CloudMineServer.API_server.Controllers {
                 return BadRequest( ModelState );
             }
             //Uppdatera userId på fileItem innan vi skickar den till business layer
-            fileItem.UserId = _userManager.GetUserId( HttpContext.User );
+            fileItem.UserId = User.GetUserId();
 
             var metaDataCreated = await _context.InitCreateFileItem( fileItem );
 
