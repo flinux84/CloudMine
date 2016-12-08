@@ -1,15 +1,11 @@
-﻿var dropzone;
-
-$(document).ready(function () {
-
-dropzone = $("#dropzone")
+﻿function dragAndDrop(dropzone) {
 
     dropzone.on('dragenter', function (e) {
         e.preventDefault();
         e.stopPropagation();
         $(this).css('border', '2px solid #0B85A1');
     });
-
+    
     dropzone.on('dragover', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -25,7 +21,7 @@ dropzone = $("#dropzone")
 
         dragDropUpload(files, dropzone);
     });
-});
+};
 
 $(document).on('dragenter', function (e) {
     e.stopPropagation();
@@ -45,8 +41,8 @@ $(document).on('drop', function (e) {
 function dragDropUpload(files, dropzone) {
     for (var i = 0; i < files.length; i++) {
         var fd = new FormData();
-        fd.append('file', files[i]);
-        console.log("Du försöker ladda upp " + files[i].name)
+        fd.append('file', files[i]);    
+        console.log("Uploading file " + files[i].name);
         //var status = new createStatusbar(obj); //Using this we can set progress.
         //status.setFileNameSize(files[i].name, files[i].size);
 
