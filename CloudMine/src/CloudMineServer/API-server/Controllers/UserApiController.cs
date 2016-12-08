@@ -9,6 +9,7 @@ using CloudMineServer.Models;
 using CloudMineServer.Interface;
 using Microsoft.AspNetCore.Authorization;
 using CloudMineServer.API_server.Services;
+using System.Text.Encodings.Web;
 
 namespace CloudMineServer.API_server.Controllers
 {
@@ -35,7 +36,7 @@ namespace CloudMineServer.API_server.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser { Email = userRegistration.Email, UserName = userRegistration.Email};
+            var user = new ApplicationUser { Email = userRegistration.Email, UserName = userRegistration.Email };
             user.StorageSize = 100000000;
 
             var result = await _userManager.CreateAsync(user, userRegistration.Password);
@@ -87,7 +88,7 @@ namespace CloudMineServer.API_server.Controllers
             var oldUserInfo = await GetUserInfo(user);
             if (oldUserInfo.UsedStorage > userInfo.StorageSize)
                 return BadRequest("Cant shrink storage to less than your used storage!");
-            
+
             user.StorageSize = userInfo.StorageSize;
             await _userManager.UpdateAsync(user);
             return Ok(userInfo);
@@ -98,12 +99,24 @@ namespace CloudMineServer.API_server.Controllers
 
         //}
 
-        //[Authorize]
-        //[HttpGet]
-        //public async Task<IActionResult> LogoutUser()
-        //{
-
-        //}
+        [Route("Logout")]
+        [Authorize]
+        [HttpGet]
+        public IActionResult LogoutUser()
+        {
+            var cookieValue = HtmlEncoder.Default.Encode(Request.Cookies["access_token"]);
+            Response.Cookies.Append(
+                "access_token",
+                cookieValue,
+                new CookieOptions
+                {
+                    Path = "/",
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTime.Now.AddYears(-1)
+                });
+            return Ok();
+        }
 
 
         private async Task<UserInfo> GetUserInfo(ApplicationUser user)
