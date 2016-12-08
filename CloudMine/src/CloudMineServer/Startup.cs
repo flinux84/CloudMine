@@ -20,6 +20,9 @@ using CloudMineServer.Middleware.TokenProvider;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using CloudMineServer.API_server.Middleware.TokenProvider;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace CloudMineServer
 {
@@ -86,6 +89,10 @@ namespace CloudMineServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+
+            #region tokenProvider
             var secretKey = "mysupersecret_secretkey!123";
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
             var tokenValidationParameters = new TokenValidationParameters
@@ -108,16 +115,33 @@ namespace CloudMineServer
                 // If you want to allow a certain amount of clock drift, set that here:
                 ClockSkew = TimeSpan.Zero
             };
-
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                AuthenticationScheme = "Cookie",
+                CookieName = "access_token",
+                TicketDataFormat = new CustomJwtDataFormat(
+                    SecurityAlgorithms.HmacSha256, tokenValidationParameters)
+            });
             app.UseJwtBearerAuthentication(new JwtBearerOptions
             {
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
                 TokenValidationParameters = tokenValidationParameters
             });
+            //var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+            var options = new TokenProviderOptions
+            {
+                Audience = "ExampleAudience",
+                Issuer = "CloudMine",
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
+            };
 
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            // Add JWT generation endpoint:
+            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
+            #endregion
+
 
             if (env.IsDevelopment())
             {
@@ -130,23 +154,14 @@ namespace CloudMineServer
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+
             app.UseCors("AllowAnyOrigin");
             app.UseStaticFiles();
             app.UseIdentity();
             app.UseWebSockets();
             app.UseSignalR();
-            // Add JWT generation endpoint:
 
-            //var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
-            var options = new TokenProviderOptions
-            {
-                Audience = "ExampleAudience",
-                Issuer = "CloudMine",
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
-            };
-            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
-            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
-            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
