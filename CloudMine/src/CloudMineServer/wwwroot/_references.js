@@ -1,6 +1,7 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="js/chat.js" />
 /// <reference path="js/checksum.js" />
+/// <reference path="js/draganddrop.js" />
 /// <reference path="js/fileuploader.js" />
 /// <reference path="js/progressbar.js" />
 /// <reference path="js/site.js" />
