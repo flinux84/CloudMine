@@ -15,11 +15,54 @@ function validatePassWord(password) {
     return re.test(password);
 }
 
+function userSignIn(userName, userPassword) {
+    $.ajax({
+        type: "POST",
+        url: '../token', // TODO: sätta rätt adress
+        contentType: 'application/x-www-form-urlencoded',
+        data: { "username": userName, "password": userPassword },
+        dataType: 'json',
+
+        error: function (e) {
+            UserIsSignIn = false;
+            console.log("ajax call error " + e);
+            message = "ajax call error: " + e;
+            return false;
+        },
+        success: function (result, status) {
+            console.log("ajax call - success")
+            console.log(result);
+            return true;
+        }
+    });
+}
+
+function userSignOut() {
+    $.ajax({
+        type: "GET",
+        url: '../api/v1.0/Users/Logout',
+        contentType: 'application/json',
+        dataType: 'json',
+
+        error: function (e) {
+            console.log("error sign out: " + e);
+            return false;
+        },
+        success: function (result, status) {
+            console.log("success signout: " + result)
+            return true;
+        }
+    });
+}
+
 $(document).ready(function () {
 
     // not in use any more
     function UseAjaxGetToken() {
-        console.log("this is just a empty button")
+        var asdf = document.cookie;
+        console.log(typeof asdf)
+        console.log(asdf)
+        console.log("http only")
     }
     $("#getToken").click(UseAjaxGetToken);
 
@@ -62,11 +105,12 @@ $(document).ready(function () {
     // get token
     $('form#secondForm').on('submit', function (e) {
         e.preventDefault();
-        console.log("second");
+
+        console.log("button get token!")
         var usermail = document.forms["secondForm"]["mail"].value;
         var userpassword = document.forms["secondForm"]["pword"].value;
 
-        console.log(usermail + " " + userpassword);
+        console.log("username: " + usermail + " password: " + userpassword)
 
         $.ajax({
             type: "POST",
@@ -93,8 +137,8 @@ $(document).ready(function () {
     $('form#thirdForm').on('submit', function (e) {
         e.preventDefault();
         console.log("third")
-        var usermail = document.forms["secondForm"]["mail"].value;
-        var userpassword = document.forms["secondForm"]["pword"].value;
+        var usermail = document.forms["thirdForm"]["mail"].value;
+        var userpassword = document.forms["thirdForm"]["pword"].value;
         var ObjectElement = {};
         ObjectElement.Email = usermail;
         ObjectElement.Password = userpassword;
@@ -160,22 +204,22 @@ $(document).ready(function () {
         //            }
         //        });
 
-                //$.ajax({
-                //    type: "POST",
-                //    beforeSend: function (request) {
-                //        request.setRequestHeader("Authority", result.access_token);
-                //    },
-                //    url: "http://localhost:17881/api/v1.0/FileItems",
-                //    data: TheFileItemObj,
+        //$.ajax({
+        //    type: "POST",
+        //    beforeSend: function (request) {
+        //        request.setRequestHeader("Authority", result.access_token);
+        //    },
+        //    url: "http://localhost:17881/api/v1.0/FileItems",
+        //    data: TheFileItemObj,
 
-                //    error: function (e) {
-                //        console.log(e);
-                //    },
-                //    success: function (result, status) {
-                //        console.log(result);
-                //        console.log(status);
-                //    }
-                //});
+        //    error: function (e) {
+        //        console.log(e);
+        //    },
+        //    success: function (result, status) {
+        //        console.log(result);
+        //        console.log(status);
+        //    }
+        //});
         //        //
         //    }
         //});
@@ -194,8 +238,23 @@ $(document).ready(function () {
 
     // knapp för att logga ut
     $('#idSignOutButton').click(function () {
-        //TODO: göra anrop till server och loggas ut där också. 
-        UserIsSignIn = false;
+
+        // kolla att användaren verkligen är inloggad, innan ajax 
+        if (userName !== "") {
+
+            // TODO: ajax bort coockie och logga ut. Sätta värde på "UserIsSignIn"                       <-----------<<<
+
+            //
+            if (userSignOut()) {
+                UserIsSignIn = true;
+            } else {
+
+                UserIsSignIn = false;
+            }
+            //
+
+        }
+
         if (!UserIsSignIn) {
             $("#idSignOutButton").addClass("hidden");
             $("#idLogInButton").removeClass("hidden");
@@ -257,12 +316,30 @@ $(document).ready(function () {
         if (validateEmail(userName)) {
             // kolla så lösen är ok
             if (validatePassWord(userPassword)) {
-
-                // TODO: ajax till serven och logga in. Sätta värde på "UserIsSignIn"                       <-----------<<<
                 console.log("ajax call - sign in")
 
-                message = "message if no good";
-                UserIsSignIn = true;
+                // TODO: ajax till serven och logga in. Sätta värde på "UserIsSignIn"                       <-----------<<<
+                //
+                $.ajax({
+                    type: "POST",
+                    url: '../token', // TODO: sätta rätt adress
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { "username": userName, "password": userPassword },
+                    dataType: 'json',
+
+                    error: function (e) {
+                        UserIsSignIn = false;
+                        console.log("ajax call error " + e);
+                        message = "ajax call error: " + e;
+                    },
+                    success: function (result, status) {
+                        console.log("ajax call - success")
+                        console.log(result);
+                        UserIsSignIn = true;
+                    }
+                });
+                //
+
             } else {
                 message = "password is not valid";
                 UserIsSignIn = false;
@@ -299,6 +376,7 @@ $(document).ready(function () {
     // submit-funktion för regristrering
     $('form#Registerform').on('submit', function (e) {
         e.preventDefault();
+        var registerSuccess = false;
         // ta ut inputdata
         userName = document.forms["Registerform"]["mail"].value;
         userPassword = document.forms["Registerform"]["pword"].value;
@@ -312,10 +390,39 @@ $(document).ready(function () {
                 if (validatePassWord(userPassword)) {
 
                     // TODO: ajax till serven och logga in. Sätta värde på "UserIsSignIn"                       <-----------<<<
-                    console.log("ajax call - register and sign in")
 
-                    message = "message if no good";
-                    UserIsSignIn = true;
+                    var ObjectElement = {};
+                    ObjectElement.Email = userName;
+                    ObjectElement.Password = userPassword;
+                    var theInput = JSON.stringify(ObjectElement);
+
+                    //
+                    $.ajax({
+                        type: "POST",
+                        url: '../api/v1.0/Users', // TODO: sätta rätt adress
+                        contentType: 'application/json',
+                        data: theInput,
+                        dataType: 'json',
+
+                        error: function (e) {
+                            console.log("Error register: " + e);
+                            message = "Error register" + e;
+                            UserIsSignIn = false;
+                        },
+                        success: function (result, status) {
+                            console.log(result);
+
+                            // auto signin at register
+                            if (userSignIn(userName, userPassword)) {
+                                UserIsSignIn = true;
+                            } else {
+                                message = "auto sign in error";
+                                UserIsSignIn = false;
+                            }
+                        }
+                    });
+                    //
+
                 } else {
                     message = "password is not valid";
                     UserIsSignIn = false;
