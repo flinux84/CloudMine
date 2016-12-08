@@ -19,7 +19,10 @@ $(document).ready(function () {
 
     // not in use any more
     function UseAjaxGetToken() {
-        console.log("this is just a empty button")
+        var asdf = document.cookie;
+        console.log(typeof asdf)
+        console.log(asdf)
+        console.log("http only")
     }
     $("#getToken").click(UseAjaxGetToken);
 
@@ -62,11 +65,11 @@ $(document).ready(function () {
     // get token
     $('form#secondForm').on('submit', function (e) {
         e.preventDefault();
-        console.log("second")
+        console.log("button get token!")
         var usermail = document.forms["secondForm"]["mail"].value;
         var userpassword = document.forms["secondForm"]["pword"].value;
 
-        console.log(usermail + " " + userpassword)
+        console.log("username: "+usermail + " password: " + userpassword)
 
         $.ajax({
             type: "POST",
@@ -94,8 +97,8 @@ $(document).ready(function () {
     $('form#thirdForm').on('submit', function (e) {
         e.preventDefault();
         console.log("third")
-        var usermail = document.forms["secondForm"]["mail"].value;
-        var userpassword = document.forms["secondForm"]["pword"].value;
+        var usermail = document.forms["thirdForm"]["mail"].value;
+        var userpassword = document.forms["thirdForm"]["pword"].value;
         var ObjectElement = {};
         ObjectElement.Email = usermail;
         ObjectElement.Password = userpassword;
@@ -181,7 +184,12 @@ $(document).ready(function () {
     // knapp för att logga ut
     $('#idSignOutButton').click(function () {
 
-        // TODO: ajax till serven och logga ut. Sätta värde på "UserIsSignIn"                       <-----------<<<
+        // kolla att användaren verkligen är inloggad, innan ajax 
+        if (userName !== "") {
+
+            // TODO: ajax bort coockie och logga ut. Sätta värde på "UserIsSignIn"                       <-----------<<<
+           
+        }
 
         UserIsSignIn = false;
         if (!UserIsSignIn) {
