@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using CloudMineServer.Models;
 using CloudMineServer.Interface;
 using Microsoft.AspNetCore.Authorization;
+using CloudMineServer.API_server.Services;
 
 namespace CloudMineServer.API_server.Controllers
 {
@@ -50,8 +51,8 @@ namespace CloudMineServer.API_server.Controllers
         [HttpGet("{userEmail}")]
         public async Task<IActionResult> GetUserInfo([FromRoute]string userEmail)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            if(user.Email == userEmail)
+            var user = await _userManager.FindByIdAsync(User.GetUserId());
+            if (user.Email == userEmail)
                 return Ok(await GetUserInfo(user));
             return BadRequest("Wrong email");
         }
@@ -79,7 +80,7 @@ namespace CloudMineServer.API_server.Controllers
         [HttpPut("{userEmail}")]
         public async Task<IActionResult> PutUserInfo([FromRoute]string userEmail, [FromBody]UserInfo userInfo)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var user = await _userManager.FindByIdAsync(User.GetUserId());
             if (user.Email != userEmail)
                 return BadRequest();
 
@@ -97,7 +98,12 @@ namespace CloudMineServer.API_server.Controllers
 
         //}
 
+        //[Authorize]
+        //[HttpGet]
+        //public async Task<IActionResult> LogoutUser()
+        //{
 
+        //}
 
 
         private async Task<UserInfo> GetUserInfo(ApplicationUser user)
