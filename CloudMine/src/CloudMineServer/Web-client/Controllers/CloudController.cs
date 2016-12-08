@@ -24,7 +24,8 @@ namespace CloudMineServer.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return Redirect("CloudMine.html");
+            //return View();
         }
 
 

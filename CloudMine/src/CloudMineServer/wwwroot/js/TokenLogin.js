@@ -42,7 +42,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: "POST",
-            url: 'http://localhost:17881/api/v1.0/Users',
+            url: '../api/v1.0/Users',
             contentType: 'application/json',
             data: theInput,
             dataType: 'json',
@@ -65,6 +65,7 @@ $(document).ready(function () {
     // get token
     $('form#secondForm').on('submit', function (e) {
         e.preventDefault();
+
         console.log("button get token!")
         var usermail = document.forms["secondForm"]["mail"].value;
         var userpassword = document.forms["secondForm"]["pword"].value;
@@ -73,7 +74,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: "POST",
-            url: 'http://localhost:17881/token',
+            url: '../token',
             contentType: 'application/x-www-form-urlencoded',
             data: { "username": usermail, "password": userpassword },
             dataType: 'json',
@@ -82,12 +83,11 @@ $(document).ready(function () {
                 console.log(e);
             },
             success: function (result, status, jqHXR) {
-                var jsonUpdateData = result;
                 Datatype: "json",
-                console.log(jsonUpdateData);
+                console.log(result);
                 console.log("just the token:");
-                console.log(jsonUpdateData.access_token);
-                return jsonUpdateData.access_token;
+                console.log(result.access_token);
+                return result.access_token;
             }
         });
 
@@ -119,36 +119,50 @@ $(document).ready(function () {
         FileItemElement.dataChunks = null
         var TheFileItemObj = JSON.stringify(FileItemElement);
         //
-
         $.ajax({
             type: "POST",
-            url: 'http://localhost:17881/token',
-            contentType: 'application/x-www-form-urlencoded',
-            data: { "username": usermail, "password": userpassword },
+            url: "http://localhost:17881/api/v1.0/FileItems",
+            contentType: 'application/json',
+            data: TheFileItemObj,
             dataType: 'json',
 
             error: function (e) {
                 console.log(e);
             },
-            success: function (result, status, jqHXR) {
-                console.log("sucess token n stuff")
-                //
+            success: function (result, status) {
+                console.log(result);
+                console.log(status);
+            }
+        });
+        //$.ajax({
+        //    type: "POST",
+        //    url: 'http://localhost:17881/token',
+        //    contentType: 'application/x-www-form-urlencoded',
+        //    data: { "username": usermail, "password": userpassword },
+        //    dataType: 'json',
 
-                $.ajax({
-                    type: "POST",
-                    url: "http://localhost:17881/api/v1.0/FileItems",
-                    contentType: 'application/json',
-                    data: TheFileItemObj,
-                    dataType: 'json',
+        //    error: function (e) {
+        //        console.log(e);
+        //    },
+        //    success: function (result, status, jqHXR) {
+        //        console.log("sucess token n stuff")
+        //        //
 
-                    error: function (e) {
-                        console.log(e);
-                    },
-                    success: function (result, status) {
-                        console.log(result);
-                        console.log(status);
-                    }
-                });
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "http://localhost:17881/api/v1.0/FileItems",
+        //            contentType: 'application/json',
+        //            data: TheFileItemObj,
+        //            dataType: 'json',
+
+        //            error: function (e) {
+        //                console.log(e);
+        //            },
+        //            success: function (result, status) {
+        //                console.log(result);
+        //                console.log(status);
+        //            }
+        //        });
 
                 //$.ajax({
                 //    type: "POST",
@@ -166,11 +180,12 @@ $(document).ready(function () {
                 //        console.log(status);
                 //    }
                 //});
-                //
-            }
-        });
+        //        //
+        //    }
+        //});
 
     });
+
 
 
     // Knapp för att logga in
@@ -345,4 +360,5 @@ $(document).ready(function () {
             });
         }
     });
+
 });
