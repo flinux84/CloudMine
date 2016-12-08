@@ -133,7 +133,7 @@ namespace CloudMineServer.API_server.Controllers {
                 return BadRequest( ModelState );
             }
             //Uppdatera userId på fileItem innan vi skickar den till business layer
-            fileItem.UserId = _userManager.GetUserId( HttpContext.User );
+            fileItem.UserId = User.GetUserId();
 
             var metaDataCreated = await _context.InitCreateFileItem( fileItem );
 
