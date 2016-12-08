@@ -180,7 +180,9 @@ $(document).ready(function () {
 
     // knapp för att logga ut
     $('#idSignOutButton').click(function () {
-        //TODO: göra anrop till server och loggas ut där också. 
+
+        // TODO: ajax till serven och logga ut. Sätta värde på "UserIsSignIn"                       <-----------<<<
+
         UserIsSignIn = false;
         if (!UserIsSignIn) {
             $("#idSignOutButton").addClass("hidden");
