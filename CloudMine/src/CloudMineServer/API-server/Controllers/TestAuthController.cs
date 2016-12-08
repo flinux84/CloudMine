@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using CloudMineServer.Models;
+using System.IdentityModel.Tokens.Jwt;
+using CloudMineServer.API_server.Services;
 
 namespace CloudMineServer.Controllers
 {
@@ -47,8 +49,10 @@ namespace CloudMineServer.Controllers
         [HttpGet]
         public async Task<IEnumerable<string>> Get()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            return new string[] { user.Email, user.Id };
+            var userId = User.GetUserId();
+            var userEmail = User.GetUserEmail();
+
+            return new string[] { userEmail, userId };
         }
     }
 }
