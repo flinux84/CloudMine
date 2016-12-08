@@ -98,10 +98,20 @@ namespace CloudMineServer.Middleware.TokenProvider
                 expires_in = (int)_options.Expiration.TotalSeconds
             };
 
-            //var user = _userManager.Users.Where(u => u.UserName == username).SingleOrDefault();
-            //user.
+
             // Set the response cookie
-            context.Response.Cookies.Append("access_token", response.access_token);
+
+            context.Response.Cookies.Append(
+                "access_token",
+                response.access_token,
+                new CookieOptions
+                {
+                    Path = "/",
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTime.Now.AddYears(1)
+                });
+
             // Serialize and return the response
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
@@ -113,21 +123,8 @@ namespace CloudMineServer.Middleware.TokenProvider
             var user =  await _userManager.FindByNameAsync(username);
             bool passwordOk = await _userManager.CheckPasswordAsync(user, password);
             if (user != null && passwordOk)
-            {
                 return user;
-            }
-            //var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
             
-            //var user = _userManager.
-            //if (username == "TEST" && password == "TEST123")
-            //if(result.Succeeded)
-            //{
-            //    await _signInManager.SignOutAsync();
-            //    //return new ClaimsIdentity();
-            //    return new ClaimsIdentity(new System.Security.Principal.GenericIdentity(username, "Token"), new Claim[] { });
-            //}
-
-            // Credentials are invalid, or account doesn't exist
             return null;
         }
     }
