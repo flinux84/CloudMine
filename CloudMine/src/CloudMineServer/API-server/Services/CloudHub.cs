@@ -12,7 +12,7 @@ namespace CloudMineServer.Services
         private Uri url;
         private string connectedUser;
 
-        public void DownloadFile(string connectedUser, string file)
+        public void DownloadFile(string connectedUser, string fileiD)
         {
 
         }

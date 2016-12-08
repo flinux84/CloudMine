@@ -142,7 +142,7 @@ namespace CloudMineServer.Classes
 
             Services.FileMerge FM = new Services.FileMerge();
 
-            var returnUri = FM.MakeFile(fi);
+            var returnUri = FM.MakeFileOnServer(fi);
 
             return returnUri;
         }
