@@ -98,28 +98,14 @@ namespace CloudMineServer.API_server.Controllers {
                 return BadRequest( ModelState );
             }
 
-            var fileItemUri = await _context.GetSpecificFilItemAndDataChunks( id, _userManager.GetUserId( User ) );
+            var fileItem = await _context.GetFileByIdUsingAPI( id );
 
-            if( fileItemUri == null ) {
+            if( fileItem == null ) {
                 return NotFound();
             }
 
-            return Ok( fileItemUri );
+            return Ok( fileItem );
         }
-        //OLD GET
-        //public async Task<IActionResult> GetFileItem( [FromRoute] int id ) {
-        //    if( !ModelState.IsValid ) {
-        //        return BadRequest( ModelState );
-        //    }
-
-        //    var fileItem = await _context.GetFileByIdUsingAPI( id );
-
-        //    if( fileItem == null ) {
-        //        return NotFound();
-        //    }
-
-        //    return Ok( fileItem );
-        //}
 
         // PUT: api/FileItems/5
         [HttpPut( "{id:int}" )]
