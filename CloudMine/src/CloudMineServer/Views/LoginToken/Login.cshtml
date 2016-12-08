@@ -16,17 +16,18 @@
             asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
             asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
     </script>
-    <!--script till inlogg-->
+
+    <!--separat js och css under utvecklingsfasen-->
     @section scripts {
         <link rel="stylesheet" href="~/css/tempLoginCss.css" asp-append-version="true" />
     }
-
     <script src="~/js/TokenLogin.js"></script>
     <hr />
-    <!--script till inlogg end-->
-    <div class="container">
+    <!--END separat js och css under utvecklingsfasen-->
 
-        <!--Dold div till inlogg-->
+    <div class="container" id="dropzone">
+
+        <!--dolda divvar till inloggningen-->
         <div class="overlay" id="overlay" style="display:none;"></div>
 
         <div class="box" id="box">
@@ -35,7 +36,7 @@
             <form id="Loginform" enctype="multipart/form-data">
                 <p>Name:</p> <input type="text" name="mail" style="color:black" required> <br />
                 <p>Password:</p> <input type="password" name="pword" style="color:black" required> <br />
-                <input id="InputLoginButton" type="submit" onchange="this.form.submit()" value="Login" />
+                <button type="submit" id="InputRegisterButton" data-loading-text="Signing in..." class="btn btn-primary" autocomplete="off">Log in</button>
             </form>
         </div>
 
@@ -46,8 +47,7 @@
                 <p>Name:</p> <input type="text" name="mail" style="color:black" required> <br />
                 <p>Password:</p> <input type="password" name="pword" style="color:black" required> <br />
                 <p>Password:</p> <input type="password" name="repword" style="color:black" required> <br />
-                <input id="InputRegisterButton" type="submit" onchange="this.form.submit()" value="Register" />
-
+                <button type="submit" id="InputRegisterButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off">Register</button>
             </form>
         </div>
 
@@ -55,33 +55,52 @@
             <a class="boxclose" id="boxErrorclose"></a>
             <h1>Error Register new user</h1>
             <br />
-            <p class="result"></p> 
-
-                <a href="#" id="" class="registerUser">Try register again</a>
-
+            <p class="result"></p>
+            <a href="#" id="" class="registerUser">Try register again</a>
         </div>
 
         <div class="box" id="boxErrorLogin">
             <a class="boxclose" id="boxErrorLoginclose"></a>
             <h1>Error login user</h1>
             <br />
-            <p class="result"></p> 
-             
-                <a href="#" id="" class="signinuseragain">Try sign in again</a>
-            
+            <p class="result"></p>
+            <a href="#" id="" class="signinuseragain">Try sign in again</a>
         </div>
-     
-        <!--Dold div till inlogg end-->
-
+        <!--END dolda divvar till inloggningen-->
 
         <div class="navbar">
-            <div class="col-lg-3">
+            <div class="col-lg-2">
+                <form enctype="multipart/form-data">
+                    <label for="uploadFile" class="uploadbutton">
+                        Upload
+                    </label>
+                    <input id="uploadFile" type="file" multiple="multiple" onchange="this.form.submit()" />
+                </form>
             </div>
+            <div class="col-lg-7">
+                <div class="input-group" id="search">
+                    <input type="text" class="form-control" placeholder="Search by filename...">
+                    <button type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <!--<a href="#"><h4>Login/Username</h4></a>-->
+                <!--knappar till inlogg-->
+                <div class="row col-md-12">
+                    <a href="#" id="idLogInButton" class="noclass">Login</a>
+                    <a href="#" id="idSignOutButton" class="hidden">Sign Out</a>
+                    <a href="#" id="" class="registerUser">Register</a>
+                </div>
+                <!--knappar till inlogg end-->
+            </div>
+
         </div>
 
         <div class="col-lg-2">
             <aside class="submenu">
-                <div class="modal">I'm the Modal Window!</div>
                 <h4><span class="glyphicon glyphicon-cd"> Function</span></h4>
                 <h4><span class="glyphicon glyphicon-road"> Function</span></h4>
                 <h4><span class="glyphicon glyphicon-time"> Cloud</span></h4>
@@ -89,42 +108,32 @@
             </aside>
         </div>
         <div class="col-lg-10">
-
-            <!--knapp till inlogg-->
-            <div class="row col-md-12">
-                <a href="#" id="idLogInButton" class="">Login</a>
-                <a href="#" id="idSignOutButton" class="hidden">Sign Out</a>
-                <a href="#" id="" class="registerUser">Register</a>
-            </div>
-            <!--knapp till inlogg end-->
-
-            <br />
-            <div class="col-lg-4">
-                <form id="firstForm" enctype="multipart/form-data">
-                    Name: <input type="text" name="mailx" style="color:black">
-                    Password: <input type="password" name="pwordx" style="color:black">
-                    <input id="uploadFile" type="submit" onchange="this.form.submit()" value="Register" />
-                </form>
-            </div>
-
-            <div class="col-lg-4">
-                <form id="secondForm" enctype="multipart/form-data">
-                    Name: <input type="text" name="mail" style="color:black">
-                    Password: <input type="password" name="pword" style="color:black">
-                    <input id="uploadFile" type="submit" onchange="this.form.submit()" value="get token button" />
-                </form>
-            </div>
-
-            <div class="col-lg-4">
-                <form id="thirdForm" enctype="multipart/form-data">
-                    Name: <input type="text" name="mail" style="color:black">
-                    Password: <input type="password" name="pword" style="color:black">
-                    <input id="uploadFile" type="submit" onchange="this.form.submit()" value="sen static fileitem" />
-                </form>
-            </div>
-
+            <section class="filelist">
+                <table id="filetable">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Filename</th>
+                            <th>Filesize</th>
+                            <th>Upload Date</th>
+                            <th>Datatype</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <br />
+            </section>
         </div>
 
+        <!--bara testknapp-->
+        <br />
+        
+        <button id="getToken" class="btn" style="margin-top:20px">Testa om inloggad</button>
+        <p>console.log()</p>
+        <!---->
+
     </div>
+
 </body>
 </html>
