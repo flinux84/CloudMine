@@ -77,14 +77,6 @@ input[type="file"] {
     border-radius:20px;
 }
 
-#filetable th:first-child {
-    display:none;
-}
-
-#filetable td:first-child {
-    display:none;
-}
-
 .custom-file-upload {
     background-color: #008CBA;
     border: 1px solid #ccc;
