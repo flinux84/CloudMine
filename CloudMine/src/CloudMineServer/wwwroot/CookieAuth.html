@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/cloudmine.css" />
     <link rel="stylesheet" href="css/site.css" />-->
     <title>CookieAuth</title>
+
 </head>
 <body>
     <h2>X</h2>
@@ -28,5 +29,21 @@
     <!--<script src="lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="js/site.js" ></script>-->
     <script src="js/TokenLogin.js"></script>
+    <script>
+        $('#testBtn').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "../api/TestAuth",
+                contentType: 'application/json',
+                error: function (e) {
+                    console.log(e);
+                },
+                success: function (result, status) {
+                    console.log(result);
+                    console.log(status);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
