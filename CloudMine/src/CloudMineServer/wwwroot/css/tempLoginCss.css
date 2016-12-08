@@ -1,7 +1,4 @@
-﻿
-
-/*--------http://stackoverflow.com/questions/10019797/pure-css-close-button---------*/ 
-.overlay {
+﻿.overlay {
     background: black;
     opacity: .5;
     position: fixed;
@@ -51,7 +48,6 @@ a.boxclose {
 }
 
 .box h1 {
-    /*border-bottom: 1px dashed #7F7F7F;*/
     margin: -20px -20px 0px -20px;
     padding: 10px;
     background-color: blue;
@@ -62,7 +58,6 @@ a.boxclose {
     -khtml-border-top-left-radius: 20px;
     -khtml-border-top-right-radius: 20px;
 }
-
 
 input:invalid {
   border: 1px solid red;
