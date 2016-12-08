@@ -5,22 +5,17 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="css/cloudmine.css" />
-    <link rel="stylesheet" href="css/site.css" />
 </head>
 <body>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
     <script src="js/progressbar.js"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-            asp-fallback-src="lib/jquery/dist/jquery.min.js"
-            asp-fallback-test="window.jQuery">
-    </script>
-    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
-            asp-fallback-src="lib/bootstrap/dist/js/bootstrap.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-    </script>
-    <script src="~/js/site.js"></script>
+    <script src="js/appendhtml.js"></script>
+    <script src="js/site.js"></script>
+    <script src="js/draganddrop.js"></script>
     <hr />
 
-    <div class="container">
+    <div class="container" id="dropzone">
         <div class="navbar">
             <div class="col-lg-2">
                 <form enctype="multipart/form-data">
@@ -51,20 +46,17 @@
                 <h4><span class="glyphicon glyphicon-time"> Cloud</span></h4>
                 <h4><span class="glyphicon glyphicon-trash"> Cloud</span></h4>
             </aside>
-            <div id="progress">
-
-            </div>
         </div>
         <div class="col-lg-10">
             <section class="filelist">
-                <table class="filetable">
+                <table id="filetable">
                     <thead>
                         <tr>
                             <th>Filename</th>
                             <th>Filesize</th>
                             <th>Upload Date</th>
-                            <th>Owner</th>
-                            <th>Bananas on pizza?</th>
+                            <th>Datatype</th>
+                            <th>Description</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -79,140 +71,26 @@
                             2016-11-28
                         </td>
                         <td>
-                            Me
+                            jpg
                         </td>
                         <td>
                             Yes!
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Greger.jpg
-                        </td>
-                        <td>
-                            960kb
-                        </td>
-                        <td>
-                            2016-12-20
-                        </td>
-                        <td>
-                            Me
-                        </td>
-                        <td>
-                            No!
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Bodil.jpg
-                        </td>
-                        <td>
-                            560kb
-                        </td>
-                        <td>
-                            2016-11-28
-                        </td>
-                        <td>
-                            Me
-                        </td>
-                        <td>
-                            Yes!
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Greger.jpg
-                        </td>
-                        <td>
-                            960kb
-                        </td>
-                        <td>
-                            2016-12-20
-                        </td>
-                        <td>
-                            Me
-                        </td>
-                        <td>
-                            No!
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Bodil.jpg
-                        </td>
-                        <td>
-                            560kb
-                        </td>
-                        <td>
-                            2016-11-28
-                        </td>
-                        <td>
-                            Me
-                        </td>
-                        <td>
-                            Yes!
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Greger.jpg
-                        </td>
-                        <td>
-                            960kb
-                        </td>
-                        <td>
-                            2016-12-20
-                        </td>
-                        <td>
-                            Me
-                        </td>
-                        <td>
-                            No!
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Bodil.jpg
-                        </td>
-                        <td>
-                            560kb
-                        </td>
-                        <td>
-                            2016-11-28
-                        </td>
-                        <td>
-                            Me
-                        </td>
-                        <td>
-                            Yes!
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Greger.jpg
-                        </td>
-                        <td>
-                            960kb
-                        </td>
-                        <td>
-                            2016-12-20
-                        </td>
-                        <td>
-                            Me
-                        </td>
-                        <td>
-                            No!
                         </td>
                     </tr>
                 </table>
                 <br />
             </section>
         </div>
-
-
-
     </div>
-
+    
+    <!--Progress-div som visas när en upload startar-->
+    <div id="progressDiv">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar">
+            </div>
+        </div>
+        <div id="filelabel"></div>
+    </div>
     <br />
 </body>
 </html>
