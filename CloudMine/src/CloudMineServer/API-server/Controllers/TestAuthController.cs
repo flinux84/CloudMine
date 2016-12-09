@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using CloudMineServer.Models;
 using System.IdentityModel.Tokens.Jwt;
 using CloudMineServer.API_server.Services;
+using CloudMineServer.API_server.Models;
 
 namespace CloudMineServer.Controllers
 {
@@ -49,6 +50,21 @@ namespace CloudMineServer.Controllers
         [HttpGet]
         public async Task<IEnumerable<string>> Get()
         {
+            List<DataChunk> dcs = new List<DataChunk>
+            {
+                new DataChunk {PartName= "aha.jpg.part_8.10"},
+                new DataChunk {PartName= "aha.jpg.part_2.10" },
+                new DataChunk {PartName= "aha.jpg.part_4.10" },
+                new DataChunk {PartName= "aha.jpg.part_9.10" },
+                new DataChunk {PartName= "aha.jpg.part_10.10" },
+                new DataChunk {PartName= "aha.jpg.part_7.10" },
+                new DataChunk {PartName= "aha.jpg.part_6.10" },
+                new DataChunk {PartName= "aha.jpg.part_5.10" },
+                new DataChunk {PartName= "aha.jpg.part_1.10" },
+                new DataChunk {PartName= "aha.jpg.part_3.10" }
+            };
+            dcs.Sort(new DataChunkPartNameComparer());
+
             var userId = User.GetUserId();
             var userEmail = User.GetUserEmail();
 

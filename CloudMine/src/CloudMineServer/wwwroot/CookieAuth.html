@@ -2,16 +2,12 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <!--<link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="css/cloudmine.css" />
-    <link rel="stylesheet" href="css/site.css" />-->
     <title>CookieAuth</title>
-
 </head>
 <body>
-    <h2>X</h2>
+    <h2>Test area</h2>
 
-    <form id="secondForm" method="post">
+    <form id="loginForm" method="post">
         <label for="userName">user name:</label>
         <input type="text" id="mail" name="userName" />
 
@@ -30,40 +26,88 @@
         <button type="button" id="logoutBtn">Logout</button>
     </form>
     
-    <script src="lib/jquery/dist/jquery.js"></script>
-    <!--<script src="lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="js/site.js" ></script>-->
-    <script src="js/TokenLogin.js"></script>
-    <script>
-        $('#testBtn').click(function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: "../api/TestAuth",
-                contentType: 'application/json',
-                error: function (e) {
-                    console.log(e);
-                },
-                success: function (result, status) {
-                    console.log(result);
-                    console.log(status);
-                }
-            });
-        });
 
-        $('#logoutBtn').click(function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: "../api/v1.0/Users/Logout",
-                contentType: 'application/json',
-                error: function (e) {
-                    console.log(e);
-                },
-                success: function (result, status) {
-                    console.log(result);
-                    console.log(status);
-                }
+    <p>
+    <a href="/api/v1.0/GetFile/NoDisk/14">Download</a>
+
+        <!--<form id="callbackForm" method="get">
+            <p>Callback</p>
+            <button type="button" id="callbackBtn">Logout</button>
+        </form>-->
+    </p>
+
+
+
+        <script src="lib/jquery/dist/jquery.js"></script>
+        <script>
+            $('#testBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/TestAuth",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
             });
-        });
-    </script>
+
+            $('#logoutBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/v1.0/Users/Logout",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+
+            $('form#loginForm').on('submit', function (e) {
+                e.preventDefault();
+                var usermail = document.forms["loginForm"]["mail"].value;
+                var userpassword = document.forms["loginForm"]["pword"].value;
+                console.log(usermail + " " + userpassword);
+
+                $.ajax({
+                    type: "POST",
+                    url: '../token',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { "username": usermail, "password": userpassword },
+                    dataType: 'json',
+
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status, jqHXR) {
+                        Datatype: "json",
+                        console.log(result.access_token);
+                        return result.access_token;
+                    }
+                });
+
+            });
+            $('#callbackBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/v1.0/GetFile/NoDisk/14",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+        </script>
 </body>
 </html>
