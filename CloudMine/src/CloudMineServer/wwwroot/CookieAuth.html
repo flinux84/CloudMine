@@ -19,6 +19,8 @@
     <form id="testAuthForm" method="get">
         <p>hej</p>
         <button type="button" id="testBtn">testAuth</button>
+        <button type="button" id="isLoggedInBtn">isLoggedIn(true/false)</button>
+        <button type="button" id="authCodeBtn">authCodeCheck</button>
     </form>
 
     <form id="logoutAuthForm" method="get">
@@ -98,6 +100,36 @@
                 e.preventDefault();
                 $.ajax({
                     url: "../api/v1.0/GetFile/NoDisk/14",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+
+
+            $('#isLoggedInBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/v1.0/Users/IsLoggedIn",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+            $('#authCodeBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/v1.0/Users/LoginCode",
                     contentType: 'application/json',
                     error: function (e) {
                         console.log(e);
