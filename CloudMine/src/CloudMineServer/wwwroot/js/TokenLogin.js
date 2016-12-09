@@ -1,4 +1,7 @@
 ﻿$(document).ready(function () {
+
+    /*JS Sign in*/
+
     var UserIsSignIn = false;
     var userName = "";
     var userPassword = "";
@@ -20,7 +23,8 @@
 
     // just for testing 
     function UseAjaxGetToken() {
-        $.ajax({                                                               
+        $.ajax({
+            // TODO:   https://localhost:44336/api/TestAuth                                      <------adress-----<<<
             url: "../api/TestAuth",
             contentType: 'application/json',
             error: function (e) {
@@ -35,6 +39,27 @@
     $("#getToken").click(UseAjaxGetToken);
     // just for testing end
 
+    // check user Authenticated-status. Kolla om användaren är inloggad när sidan laddas
+    function AjaxUserIsLoggedIn() {
+        $.ajax({
+            //TODO: "https://localhost:44336/api/v1.0/Users/IsLoggedIn"                                       <------adress-----<<<
+            url: "../api/v1.0/Users/IsLoggedIn",
+            contentType: 'application/json',
+
+            error: function (e) {
+                console.log("error Authenticated check");
+            },
+            success: function (result, status) {
+                console.log("Authenticated check: " + result)
+                UserIsSignIn = result;
+            }
+        }).done(function () {
+            console.log("user auto check done!")
+            UserSignOutStatus();
+        });
+    }
+    AjaxUserIsLoggedIn();
+
     // Knapp för att logga in
     $('#idLogInButton').click(function () {
         $('#overlay').fadeIn(200, function () {
@@ -45,11 +70,7 @@
 
     // knapp för att logga ut
     $('#idSignOutButton').click(function () {
-
-        // kolla att användaren verkligen är inloggad, innan ajax 
-        if (userName !== "") {
             userSignOut();
-        }
     });
     function userSignOut() {
         $.ajax({
@@ -78,6 +99,10 @@
             $("#idSignOutButton").addClass("hidden");
             $("#idLogInButton").removeClass("hidden");
             $(".registerUser").removeClass("hidden");
+        } else {
+            $("#idSignOutButton").removeClass("hidden");
+            $("#idLogInButton").addClass("hidden");
+            $(".registerUser").addClass("hidden");
         }
     }
 
@@ -317,5 +342,5 @@
             });
         }
     }
-
+    /*END JS Sign in*/
 });
