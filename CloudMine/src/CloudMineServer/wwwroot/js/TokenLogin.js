@@ -1,4 +1,7 @@
 ﻿$(document).ready(function () {
+
+    /*JS Sign in*/
+
     var UserIsSignIn = false;
     var userName = "";
     var userPassword = "";
@@ -20,7 +23,8 @@
 
     // just for testing 
     function UseAjaxGetToken() {
-        $.ajax({                                                               
+        $.ajax({
+            // TODO:   https://localhost:44336/api/TestAuth                                      <------adress-----<<<
             url: "../api/TestAuth",
             contentType: 'application/json',
             error: function (e) {
@@ -317,5 +321,5 @@
             });
         }
     }
-
+    /*END JS Sign in*/
 });

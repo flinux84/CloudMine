@@ -17,14 +17,6 @@
             asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
     </script>
 
-    <!--separat js och css under utvecklingsfasen-->
-    @section scripts {
-        <link rel="stylesheet" href="~/css/tempLoginCss.css" asp-append-version="true" />
-    }
-    <script src="~/js/TokenLogin.js"></script>
-    <hr />
-    <!--END separat js och css under utvecklingsfasen-->
-
     <div class="container" id="dropzone">
 
         <!--dolda divvar till inloggningen-->
@@ -128,12 +120,20 @@
 
         <!--bara testknapp-->
         <br />
-        
+
         <button id="getToken" class="btn" style="margin-top:20px">Testa om inloggad</button>
         <p>console.log()</p>
         <!---->
 
     </div>
+   
+    <!--separat js och css under utvecklingsfasen-->
+    @section scripts {
+        <link rel="stylesheet" href="~/css/tempLoginCss.css" asp-append-version="true" />
+    }
+    <script src="~/js/TokenLogin.js"></script>
+    <hr />
+    <!--END separat js och css under utvecklingsfasen-->
 
 </body>
 </html>
