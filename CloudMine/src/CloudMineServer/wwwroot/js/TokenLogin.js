@@ -233,7 +233,6 @@
             // nåt gick snett
         else if (!UserIsSignIn) {
             $(".result").text(message);
-            $(".result").css("color", "red");
             $('#box').animate({ 'top': '-200px' }, 500, function () {
                 $('#boxErrorLogin').animate({ 'top': '200px' }, 200);
               
@@ -352,7 +351,6 @@
         } else if (!UserIsSignIn) {
             //sätt felmeddelande på error popup
             $(".result").text(message);
-            $(".result").css("color", "red");
             $('#boxRegister').animate({ 'top': '-200px' }, 200, function () {
                 $('#boxErrorRegister').animate({ 'top': '200px' }, 200);
             });

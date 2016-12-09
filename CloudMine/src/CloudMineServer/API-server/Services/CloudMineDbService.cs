@@ -169,7 +169,7 @@ namespace CloudMineServer.Classes
         {
             // Finns inget "datachunkIndex" i DataChunks att söka nästa datachunk på. Men tanken är att man kanske kan genom ett 
             // FileItems id ta ut en grupp av datachunks och kunna plocka ut ett specifikt datachunk objekt. 
-            // Har inte hunnit fundera på hur man ska använda sig av det än eller vilket som blir bästa tillvägagångs sätt.
+            // Har inte hunnit fundera på hur man ska använda sig av det än eller vilket som blir bästa tillvägagångssätt.
             // En datachunk hade behövt veta vilket index den har och vilken som nästa index för att kunna ta ut..
 
             //Hypotetiskt i nuvarande metod skulle (y => y.Id == datachunkIndex) bytas till nåt i stil med (y => y.datachunkIndex == datachunkIndex)
