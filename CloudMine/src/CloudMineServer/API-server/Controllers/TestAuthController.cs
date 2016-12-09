@@ -35,7 +35,7 @@ namespace CloudMineServer.Controllers
     /// value: Bearer eyJhbGciO....
     /// </summary> 
 
-    [Authorize]
+    
     [Produces("application/json")]
     [Route("api/TestAuth")]
     public class TestAuthController : Controller
@@ -47,6 +47,7 @@ namespace CloudMineServer.Controllers
             _userManager = userManager;
         }
         // GET: api/TestAuth
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<string>> Get()
         {
@@ -70,5 +71,7 @@ namespace CloudMineServer.Controllers
 
             return new string[] { userEmail, userId };
         }
+
+
     }
 }

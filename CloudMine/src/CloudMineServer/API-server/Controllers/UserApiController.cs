@@ -118,6 +118,16 @@ namespace CloudMineServer.API_server.Controllers
             return Ok();
         }
 
+        [HttpGet("IsLoggedIn")]
+        public bool GetLoginStatus()
+        {
+            return User.Identity.IsAuthenticated;
+        }
+
+        [Authorize]
+        [HttpGet("LoginCode")]
+        public IActionResult EmptyLoginCheck()
+        { return new OkResult(); }
 
         private async Task<UserInfo> GetUserInfo(ApplicationUser user)
         {
