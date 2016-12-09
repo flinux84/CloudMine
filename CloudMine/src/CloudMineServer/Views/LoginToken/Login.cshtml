@@ -22,17 +22,17 @@
         <!--dolda divvar till inloggningen-->
         <div class="overlay" id="overlay" style="display:none;"></div>
 
-        <div class="box" id="box">
+        <div class="box hidden" id="box">
             <a class="boxclose" id="boxclose"></a>
             <h1>Login</h1>
             <form id="Loginform" enctype="multipart/form-data">
                 <p>Name:</p> <input type="text" name="mail" style="color:black" required> <br />
                 <p>Password:</p> <input type="password" name="pword" style="color:black" required> <br />
-                <button type="submit" id="InputRegisterButton" data-loading-text="Signing in..." class="btn btn-primary" autocomplete="off">Log in</button>
+                <button type="submit" id="InputSigninButton" data-loading-text="Signing in..." class="btn btn-primary" autocomplete="off">Log in</button>
             </form>
         </div>
 
-        <div class="box" id="boxRegister">
+        <div class="box hidden" id="boxRegister">
             <a class="boxclose" id="boxRegisterclose"></a>
             <h1>Register new user</h1>
             <form id="Registerform" enctype="multipart/form-data">
@@ -43,7 +43,7 @@
             </form>
         </div>
 
-        <div class="box" id="boxErrorRegister">
+        <div class="box hidden" id="boxErrorRegister">
             <a class="boxclose" id="boxErrorclose"></a>
             <h1>Error Register new user</h1>
             <br />
@@ -51,7 +51,7 @@
             <a href="#" id="" class="registerUser">Try register again</a>
         </div>
 
-        <div class="box" id="boxErrorLogin">
+        <div class="box hidden" id="boxErrorLogin">
             <a class="boxclose" id="boxErrorLoginclose"></a>
             <h1>Error login user</h1>
             <br />
