@@ -1,4 +1,5 @@
-﻿using CloudMineServer.Data;
+﻿using CloudMineServer.API_server.Services;
+using CloudMineServer.Data;
 using CloudMineServer.Interface;
 using CloudMineServer.Models;
 using Microsoft.AspNetCore.Identity;
@@ -175,6 +176,22 @@ namespace CloudMineServer.Classes
             //Hypotetiskt i nuvarande metod skulle (y => y.Id == datachunkIndex) bytas till nåt i stil med (y => y.datachunkIndex == datachunkIndex)
             var dc = await _context.DataChunks.Where(x => x.FileItemId == FileItemId).FirstOrDefaultAsync(y => y.Id == datachunkIndex);
             return dc;
+        }
+
+        public async Task<DataChunk> GetFirstDataChunk(int fileItemId)
+        {
+            var anyDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.FileItemId == fileItemId);
+            var firstName = anyDataChunk.FirstInSequenceName();
+            var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == firstName);
+            return firstDataChunk;
+        }
+        public async Task<DataChunk> GetNextDataChunk(DataChunk dataChunk)
+        {
+            var nextName = dataChunk.NextName();
+            if (nextName == null)
+                return null;
+            var nextDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == nextName);
+            return nextDataChunk;
         }
         #endregion
 
