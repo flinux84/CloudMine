@@ -18,28 +18,24 @@ namespace CloudMineServer.API_server.Services
         }
         public static string PreviousName(this DataChunk dataChunk)
         {
-            return String.Empty;
+            int partNumber = GetPartNumber(dataChunk.PartName);
+            if (partNumber <= 1)
+                return null;
+            return ReplacePartNumberWith(dataChunk.PartName, partNumber - 1);
         }
-        public static string FirstInSequenceName(this DataChunk dataChunk)
-        {
-            return String.Empty;
-        }
-        public static string LastInSequenceName(this DataChunk dataChunk)
-        {
-            return String.Empty;
-        }
-        public static int Index(this DataChunk dataChunk)
-        {
-            return 0;
-        }
-        public static int NumberOfChunksInSequence(this DataChunk dataChunk)
-        {
-            return 0;
-        }
-        public static bool IsLastInSequence(this DataChunk dataChunk)
-        {
-            return false;
-        }
+        public static string FirstInSequenceName(this DataChunk dataChunk) => 
+            ReplacePartNumberWith(dataChunk.PartName, 1);
+        public static string LastInSequenceName(this DataChunk dataChunk) =>
+            ReplacePartNumberWith(dataChunk.PartName, GetTotalCount(dataChunk.PartName));
+        public static int Index(this DataChunk dataChunk) =>
+            GetPartNumber(dataChunk.PartName) - 1;
+
+        public static int NumberOfChunksInSequence(this DataChunk dataChunk) =>
+            GetTotalCount(dataChunk.PartName);
+
+        public static bool IsLastInSequence(this DataChunk dataChunk) => 
+            GetTotalCount(dataChunk.PartName) == GetPartNumber(dataChunk.PartName);
+        
 
         private static int GetPartNumber(string partName)
         {
