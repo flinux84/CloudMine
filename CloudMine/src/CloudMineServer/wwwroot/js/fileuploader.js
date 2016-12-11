@@ -18,7 +18,7 @@
     var theInput;
     var theFile;
     var ChunkElement = {};
-    var FileChunk = [];    
+    var FileChunk = [];
     var MaxFileSizeMB = 1;
     var BufferChunkSize = MaxFileSizeMB * (1024 * 1024);
     var ReadBuffer_Size = 1024;
@@ -38,7 +38,7 @@
     //Läser av storleken på filen
     function theSizeOfFile(TargetFile) {
         console.log(TargetFile);
-        var theSize = TargetFile[0].size;        
+        var theSize = TargetFile[0].size;
         return theSize;
     }
 
@@ -68,9 +68,9 @@
     });
 
     function CarryOn(hashCode) {
-        
-        ObjectElement.id = Id;        
-        ObjectElement.checksum = hashCode;        
+
+        ObjectElement.id = Id;
+        ObjectElement.checksum = hashCode;
         ObjectElement.fileName = filename;
         ObjectElement.uploaded = Uploaded;
         if (document.getElementById("publ").checked == true) {
@@ -90,7 +90,7 @@
         ObjectElement.dataChunks = DataChunks;
         theInput = JSON.stringify(ObjectElement);
         console.log(theInput);
-        
+
         SendData(theInput);
         return false;
     };
@@ -173,14 +173,14 @@
                 console.log("Done");
             });
             function ReadingTheBytesAndCheckSum(resolve) {
-                
+
                 var reader = new FileReader();
-                reader.onload = function (event) {                    
+                reader.onload = function (event) {
                     var binary = event.target.result;
                     var bytes = new Uint8Array(binary);
-                    var byteArray = [].slice.call(bytes);                    
+                    var byteArray = [].slice.call(bytes);
                     var hashCode2 = $.sha1(binary);
-                    var theObject = { byteArray, hashCode2};                    
+                    var theObject = { byteArray, hashCode2};
                     resolve(theObject);
                 }
                 reader.readAsArrayBuffer(blob);
