@@ -29,7 +29,7 @@ $(document).ready(function () {
 
     $.ajax({
         type: "GET",
-        url: 'http://localhost:1234/api/v1.0/FileItems/',
+        url: '../api/v1.0/FileItems/',
         error: function (e) {
             console.log(e);
         },
