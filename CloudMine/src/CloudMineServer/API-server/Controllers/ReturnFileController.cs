@@ -77,6 +77,7 @@ namespace CloudMineServer.API_server.Controllers
             })
             { FileDownloadName = fileItem.FileName };
 
+            #region OldAndTest
             //var dataChunks = fileItem.DataChunks.ToList();
             //dataChunks.Sort(new DataChunkPartNameComparer());
 
@@ -113,6 +114,7 @@ namespace CloudMineServer.API_server.Controllers
             //    }
             //})
             //{ FileDownloadName = "TestBytes.txt"};
+            #endregion
         }
     }
 }
