@@ -18,6 +18,7 @@ namespace CloudMineServer.API_server.Controllers
     [Route("api/v{version:apiVersion}/Users")]
     public class UserApiController : Controller
     {
+        private static readonly int _defaultStorageSize = 100000000;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICloudMineDbService _cloudMineDbService;
 
@@ -36,7 +37,7 @@ namespace CloudMineServer.API_server.Controllers
             }
 
             var user = new ApplicationUser { Email = userRegistration.Email, UserName = userRegistration.Email };
-            user.StorageSize = 100000000;
+            user.StorageSize = _defaultStorageSize;
 
             var result = await _userManager.CreateAsync(user, userRegistration.Password);
             if (result.Succeeded)
@@ -59,7 +60,6 @@ namespace CloudMineServer.API_server.Controllers
             return Ok(await GetUserInfo(user));
         }
 
-        // TODO: Should be available for admin role only
         [Authorize]
         [HttpGet]
         public async Task<List<UserInfo>> GetUsersInfos()
@@ -76,8 +76,7 @@ namespace CloudMineServer.API_server.Controllers
         }
 
 
-        // Change user settings
-        // TODO: Should be available for admin role only
+        // Change user settings, only storage for now
         [Authorize]
         [HttpPut("{userEmail}")]
         public async Task<IActionResult> PutUserInfo([FromRoute]string userEmail, [FromBody]UserInfo userInfo)
@@ -127,16 +126,12 @@ namespace CloudMineServer.API_server.Controllers
         }
 
         [HttpGet("IsLoggedIn")]
-        public bool GetLoginStatus()
-        {
-            return User.Identity.IsAuthenticated;
-        }
+        public bool GetLoginStatus() => User.Identity.IsAuthenticated;
 
         [Authorize]
         [HttpGet("LoginCode")]
-        public IActionResult EmptyLoginCheck()
-        { return new OkResult(); }
-        
+        public IActionResult EmptyLoginCheck() => new OkResult();
+
         #endregion
 
         private async Task<UserInfo> GetUserInfo(ApplicationUser user)
