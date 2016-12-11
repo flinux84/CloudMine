@@ -62,20 +62,35 @@ namespace CloudMineServer.API_server.Controllers
             if (fileItem == null)
                 return BadRequest("File does not exist");
 
-            var dataChunks = fileItem.DataChunks.ToList();
-            dataChunks.Sort(new DataChunkPartNameComparer());
+            var dataChunk = await _context.GetFirstDataChunk(id);
 
             return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), async (outputStream, _) =>
             {
-                foreach (var dataChunk in dataChunks)
+                while(dataChunk != null)
                 {
                     using (Stream readStream = new MemoryStream(dataChunk.Data))
                     {
                         await readStream.CopyToAsync(outputStream);
                     }
+                    dataChunk = await _context.GetNextDataChunk(dataChunk);
                 }
             })
             { FileDownloadName = fileItem.FileName };
+
+            //var dataChunks = fileItem.DataChunks.ToList();
+            //dataChunks.Sort(new DataChunkPartNameComparer());
+
+            //return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), async (outputStream, _) =>
+            //{
+            //    foreach (var dataChunk in dataChunks)
+            //    {
+            //        using (Stream readStream = new MemoryStream(dataChunk.Data))
+            //        {
+            //            await readStream.CopyToAsync(outputStream);
+            //        }
+            //    }
+            //})
+            //{ FileDownloadName = fileItem.FileName };
 
 
             //var bytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
