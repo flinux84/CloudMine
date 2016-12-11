@@ -15,27 +15,26 @@
         <input type="password" id="pword" name="password" />
         <button type="submit">Login</button>
     </form>
+    
+        <form id="testAuthForm" method="get">
+            <p>
+                <button type="button" id="testBtn">testAuth</button>
+                <button type="button" id="isLoggedInBtn">isLoggedIn(true/false)</button>
+                <button type="button" id="authCodeBtn">authCodeCheck</button>
+            </p>
+       </form>
+    
 
-    <form id="testAuthForm" method="get">
-        <p>hej</p>
-        <button type="button" id="testBtn">testAuth</button>
-        <button type="button" id="isLoggedInBtn">isLoggedIn(true/false)</button>
-        <button type="button" id="authCodeBtn">authCodeCheck</button>
-    </form>
-
-    <form id="logoutAuthForm" method="get">
-        <p>logout</p>
-        <button type="button" id="logoutBtn">Logout</button>
-    </form>
+    
+        <form id="logoutAuthForm" method="get">
+            <p>
+                <button type="button" id="logoutBtn">Logout</button>
+            </p>
+        </form>
     
 
     <p>
-    <a href="/api/v1.0/GetFile/NoDisk/24">Download</a>
-
-        <!--<form id="callbackForm" method="get">
-            <p>Callback</p>
-            <button type="button" id="callbackBtn">Logout</button>
-        </form>-->
+        <a href="/api/v1.0/GetFile/NoDisk/24" download>Download item 24</a>
     </p>
 
 
@@ -76,7 +75,7 @@
                 e.preventDefault();
                 var usermail = document.forms["loginForm"]["mail"].value;
                 var userpassword = document.forms["loginForm"]["pword"].value;
-                console.log(usermail + " " + userpassword);
+                console.log("logging in " + usermail);
 
                 $.ajax({
                     type: "POST",
@@ -90,27 +89,12 @@
                     },
                     success: function (result, status, jqHXR) {
                         Datatype: "json",
-                        console.log(result.access_token);
+                        console.log("access_token: " + result.access_token);
                         return result.access_token;
                     }
                 });
 
             });
-            $('#callbackBtn').click(function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: "../api/v1.0/GetFile/NoDisk/14",
-                    contentType: 'application/json',
-                    error: function (e) {
-                        console.log(e);
-                    },
-                    success: function (result, status) {
-                        console.log(result);
-                        console.log(status);
-                    }
-                });
-            });
-
 
             $('#isLoggedInBtn').click(function (e) {
                 e.preventDefault();
@@ -126,6 +110,7 @@
                     }
                 });
             });
+
             $('#authCodeBtn').click(function (e) {
                 e.preventDefault();
                 $.ajax({
