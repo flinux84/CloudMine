@@ -133,6 +133,11 @@ namespace CloudMineServer.API_server.Controllers
         [HttpGet("LoginCode")]
         public IActionResult EmptyLoginCheck() => new OkResult();
 
+
+        [Authorize]
+        [HttpGet("IsAdmin")]
+        public bool IsAdmin() => User.IsInRole("admin");
+        
         #endregion
 
         private async Task<UserInfo> GetUserInfo(ApplicationUser user)
