@@ -9,6 +9,8 @@
     var message = "";
     var $btn;
 
+    var userPushButtonToSignOut = false; // TODO: del av fullösning # 1/3
+
     // validera mail
     function validateEmail(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -24,7 +26,7 @@
     // just for testing 
     function UseAjaxGetToken() {
         $.ajax({
-            // TODO:   https://localhost:44336/api/TestAuth                                      <------adress-----<<<
+            // TODO:   https://localhost:44336/api/TestAuth                                      
             url: "../api/TestAuth",
             contentType: 'application/json',
             error: function (e) {
@@ -46,27 +48,14 @@
             url: "../api/v1.0/Users/IsLoggedIn",
             contentType: 'application/json',
 
-            //error: function (e) {
-            //    console.log("error Authenticated check");
-            //},
-            //success: function (result, status) {
-            //    console.log("Authenticated check: " + result)
-            //    UserIsSignIn = result;
-            //}
-            //}).done(function () {
-            //    console.log("user auto check done!")
-            //    UserSignOutStatus();
-            //});
-
         }).done(function (result) {
-            console.log("is user signin: "+result)
+            console.log("is user signin: " + result)
             UserIsSignIn = result;
         })
   .fail(function () {
       console.log("error Authenticated check");
   })
   .always(function () {
-      console.log("is user sign in always")
       UserSignOutStatus();
   });
 
@@ -84,44 +73,37 @@
 
     // knapp för att logga ut
     $('#idSignOutButton').click(function () {
+        userPushButtonToSignOut = true; // TODO: del av fullösning # 1/3
         userSignOut();
     });
     function userSignOut() {
         $.ajax({
-            type: "POST",
+            //  type: "POST",
             //TODO: "https://localhost:44336/api/v1.0/Users/Logout"                                       <------adress-----<<<
             url: "../api/v1.0/Users/Logout",
             contentType: 'application/json',
 
-            //error: function (e) {
-            //    console.log("error sign out: " + e);
-            //    UserIsSignIn = true;
-            //},
-            //success: function (result, status) {
-            //    console.log("success signout: " + result)
-            //    UserIsSignIn = false;
-            //}
         }).done(function () {
             console.log("signout done")
             UserIsSignIn = false;
         })
-            .fail(function () {
-                console.log("signout fail")
+            .fail(function (e) {
+                console.log("signout fail.")
                 UserIsSignIn = true;
             })
             .always(function () {
-                console.log("always - signout")
                 UserSignOutStatus();
             });
-
-        //UserIsSignIn = false;
-        //UserSignOutStatus();
     }
     function UserSignOutStatus() {
         if (!UserIsSignIn) {
             $("#idSignOutButton").addClass("hidden");
             $("#idLogInButton").removeClass("hidden");
             $(".registerUser").removeClass("hidden");
+
+            if (userPushButtonToSignOut) {
+                location.reload();                                          // TODO:    <------fullösning-----<<< #1/3. Ladda om sifan om användaren loggar ut, för att listan inte ska synas.
+            }
         } else {
             $("#idSignOutButton").removeClass("hidden");
             $("#idLogInButton").addClass("hidden");
@@ -151,44 +133,12 @@
         return false;
     });
 
-    //// knapp för att kryssa inloggnings-lådan
-    //$('#boxclose').click(function () {
-    //    $('#box').animate({ 'top': '-200px' }, 500, function () {
-    //        $('#overlay').fadeOut('fast');
-    //        $("#box").addClass("hidden");
-    //    });
-    //});
-    //// knapp för att kryssa regristrerings-lådan
-    //$('#boxRegisterclose').click(function () {
-    //    $('#boxRegister').animate({ 'top': '-200px' }, 500, function () {
-    //        $('#overlay').fadeOut('fast');
-    //        $("#boxRegister").addClass("hidden");
-    //    });
-    //});
-    //// knapp för att kryssa regristrerings-error-lådan
-    //$('#boxErrorclose').click(function () {
-    //    $('#boxErrorRegister').animate({ 'top': '-200px' }, 500, function () {
-    //        $('#overlay').fadeOut('fast');
-    //    });
-    //    $("#boxRegister").addClass("hidden");
-    //    $("#boxErrorRegister").addClass("hidden");
-    //});
-    //// knapp för att kryssa inloggnings-error-lådan
-    //$('#boxErrorLoginclose').click(function () {
-    //    $('#boxErrorLogin').animate({ 'top': '-200px' }, 500, function () {
-    //        $('#overlay').fadeOut('fast');
-    //    });
-    //    $("#box").addClass("hidden");
-    //    $("#boxErrorLogin").addClass("hidden");
-    //});
-
-    //one x to x them all 
+    //one x to x them all. Kryssknappen 
     $('.boxclose').click(function () {
         $('.box').animate({ 'top': '-200px' }, 500);
         $('#overlay').fadeOut('fast');
         $(".box").addClass("hidden");
     });
-    //END one x to x them all out
 
     // submit-funktion för inloggning
     $('form#Loginform').on('submit', function (e) {
@@ -229,36 +179,17 @@
             data: { "username": userName, "password": userPassword },
             dataType: 'json',
 
-            //    error: function (e) {
-            //        UserIsSignIn = false;
-            //        console.log("ajax call error " + e);
-            //        message = "ajax call error. ";
-            //        UserSigninStatus();
-            //    },
-            //    success: function (result, status) {
-            //        console.log("ajax call - success")
-            //        console.log(result);
-            //        UserIsSignIn = true;
-            //    }
-            //}).done(function () {
-            //    UserSigninStatus();
-            //});
-
         }).done(function () {
             console.log("ajax call - success")
             UserIsSignIn = true;
-            //  UserSigninStatus();
         })
   .fail(function () {
       UserIsSignIn = false;
       message = "ajax call error. ";
-      // UserSigninStatus();
   })
             .always(function () {
-                console.log("sign in always")
                 UserSigninStatus();
             });
-
     }
 
     function UserSigninStatus() {
@@ -274,6 +205,7 @@
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
             $("#box").addClass("hidden");
+            location.reload();                                          // TODO:    <------fullösning-----<<< #2/3 Om användaren loggar in, ladda om sidan för att se filer.
             return false;
         }
             // nåt gick snett
@@ -341,21 +273,6 @@
             data: theInput,
             dataType: 'json',
 
-            //    error: function (e) {
-            //        console.log("Error register: " + e);
-            //        message = "Error register.";
-            //        UserIsSignIn = false;
-            //        UserRegisterStatus();
-            //    },
-            //    success: function (result, status) {
-            //        console.log(result);
-            //        UserIsSignIn = true;
-            //    }
-            //}).done(function () {
-            //    userSignInAfterRegister(userName, userPassword);
-
-            //});
-
         }).done(function () {
             UserIsSignIn = true;
             userSignInAfterRegister(userName, userPassword);
@@ -371,24 +288,11 @@
     function userSignInAfterRegister(userName, userPassword) {
         $.ajax({
             type: "POST",
-            // TODO:   https://localhost:44336/token                                       <------adress-----<<<
+            // TODO:   https://localhost:44336/token                                       <------adress-----<<< 
             url: '../token',
             contentType: 'application/x-www-form-urlencoded',
             data: { "username": userName, "password": userPassword },
             dataType: 'json',
-
-            //    error: function (e) {
-            //        UserIsSignIn = false;
-            //        console.log("ajax call - error sign in after register" + e);
-            //        message = "ajax call - error sign in after register. ";
-            //        UserRegisterStatus();
-            //    },
-            //    success: function (result, status) {
-            //        console.log(result);
-            //    }
-            //}).done(function () {
-            //    UserRegisterStatus();
-            //});
 
         }).done(function () {
             UserIsSignIn = true;
@@ -415,6 +319,7 @@
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
             $("#boxRegister").addClass("hidden");
+            location.reload();                                          // TODO:    <------fullösning-----<<< #3/2 Om användaren loggar in, ladda om sidan för att se filer. 
         } else if (!UserIsSignIn) {
             //sätt felmeddelande på error popup
             $(".result").text(message);
