@@ -1,4 +1,5 @@
-﻿using CloudMineServer.Data;
+﻿using CloudMineServer.API_server.Services;
+using CloudMineServer.Data;
 using CloudMineServer.Interface;
 using CloudMineServer.Models;
 using Microsoft.AspNetCore.Identity;
@@ -162,6 +163,35 @@ namespace CloudMineServer.Classes
         {
             var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
             return await IQuerybleFileItem.ToListAsync();
+        }
+
+        // Get spcific datachunk - under construction! 
+        public async Task<DataChunk> GetSpecifikDataChunk(int FileItemId, int datachunkIndex)
+        {
+            // Finns inget "datachunkIndex" i DataChunks att söka nästa datachunk på. Men tanken är att man kanske kan genom ett 
+            // FileItems id ta ut en grupp av datachunks och kunna plocka ut ett specifikt datachunk objekt. 
+            // Har inte hunnit fundera på hur man ska använda sig av det än eller vilket som blir bästa tillvägagångssätt.
+            // En datachunk hade behövt veta vilket index den har och vilken som nästa index för att kunna ta ut..
+
+            //Hypotetiskt i nuvarande metod skulle (y => y.Id == datachunkIndex) bytas till nåt i stil med (y => y.datachunkIndex == datachunkIndex)
+            var dc = await _context.DataChunks.Where(x => x.FileItemId == FileItemId).FirstOrDefaultAsync(y => y.Id == datachunkIndex);
+            return dc;
+        }
+
+        public async Task<DataChunk> GetFirstDataChunk(int fileItemId)
+        {
+            var anyDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.FileItemId == fileItemId);
+            var firstName = anyDataChunk.FirstInSequenceName();
+            var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == firstName);
+            return firstDataChunk;
+        }
+        public async Task<DataChunk> GetNextDataChunk(DataChunk dataChunk)
+        {
+            var nextName = dataChunk.NextName();
+            if (nextName == null)
+                return null;
+            var nextDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == nextName);
+            return nextDataChunk;
         }
         #endregion
 

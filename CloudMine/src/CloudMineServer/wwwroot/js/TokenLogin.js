@@ -1,4 +1,7 @@
 ﻿$(document).ready(function () {
+
+    /*JS Sign in*/
+
     var UserIsSignIn = false;
     var userName = "";
     var userPassword = "";
@@ -20,7 +23,8 @@
 
     // just for testing 
     function UseAjaxGetToken() {
-        $.ajax({                                                               
+        $.ajax({
+            // TODO:   https://localhost:44336/api/TestAuth                                      <------adress-----<<<
             url: "../api/TestAuth",
             contentType: 'application/json',
             error: function (e) {
@@ -35,8 +39,30 @@
     $("#getToken").click(UseAjaxGetToken);
     // just for testing end
 
+    // check user Authenticated-status. Kolla om användaren är inloggad när sidan laddas
+    function AjaxUserIsLoggedIn() {
+        $.ajax({
+            //TODO: "https://localhost:44336/api/v1.0/Users/IsLoggedIn"                                       <------adress-----<<<
+            url: "../api/v1.0/Users/IsLoggedIn",
+            contentType: 'application/json',
+
+            error: function (e) {
+                console.log("error Authenticated check");
+            },
+            success: function (result, status) {
+                console.log("Authenticated check: " + result)
+                UserIsSignIn = result;
+            }
+        }).done(function () {
+            console.log("user auto check done!")
+            UserSignOutStatus();
+        });
+    }
+    AjaxUserIsLoggedIn();
+
     // Knapp för att logga in
     $('#idLogInButton').click(function () {
+        $("#box").removeClass("hidden");
         $('#overlay').fadeIn(200, function () {
             $('#box').animate({ 'top': '200px' }, 200);
         });
@@ -45,11 +71,7 @@
 
     // knapp för att logga ut
     $('#idSignOutButton').click(function () {
-
-        // kolla att användaren verkligen är inloggad, innan ajax 
-        if (userName !== "") {
-            userSignOut();
-        }
+        userSignOut();
     });
     function userSignOut() {
         $.ajax({
@@ -78,22 +100,30 @@
             $("#idSignOutButton").addClass("hidden");
             $("#idLogInButton").removeClass("hidden");
             $(".registerUser").removeClass("hidden");
+        } else {
+            $("#idSignOutButton").removeClass("hidden");
+            $("#idLogInButton").addClass("hidden");
+            $(".registerUser").addClass("hidden");
         }
     }
 
     // knapp för att registrera sig
     $('.registerUser').click(function () {
+        $("#boxRegister").removeClass("hidden");
         $('#overlay').fadeIn(200, function () {
             $('#boxErrorRegister').animate({ 'top': '-200px' }, 500);
             $('#boxRegister').animate({ 'top': '200px' }, 200);
+            $("#boxErrorRegister").addClass("hidden");
         });
         return false;
     });
 
     // knapp för att öppna inloggning igen efter error att logga in
     $('.signinuseragain').click(function () {
+        $("#box").removeClass("hidden");
         $('#overlay').fadeIn(200, function () {
             $('#boxErrorLogin').animate({ 'top': '-200px' }, 500);
+            $("#boxErrorLogin").addClass("hidden");
             $('#box').animate({ 'top': '200px' }, 200);
         });
         return false;
@@ -103,12 +133,14 @@
     $('#boxclose').click(function () {
         $('#box').animate({ 'top': '-200px' }, 500, function () {
             $('#overlay').fadeOut('fast');
+            $("#box").addClass("hidden");
         });
     });
     // knapp för att kryssa regristrerings-lådan
     $('#boxRegisterclose').click(function () {
         $('#boxRegister').animate({ 'top': '-200px' }, 500, function () {
             $('#overlay').fadeOut('fast');
+            $("#boxRegister").addClass("hidden");
         });
     });
     // knapp för att kryssa regristrerings-error-lådan
@@ -116,12 +148,16 @@
         $('#boxErrorRegister').animate({ 'top': '-200px' }, 500, function () {
             $('#overlay').fadeOut('fast');
         });
+        $("#boxRegister").addClass("hidden");
+        $("#boxErrorRegister").addClass("hidden");
     });
     // knapp för att kryssa inloggnings-error-lådan
     $('#boxErrorLoginclose').click(function () {
         $('#boxErrorLogin').animate({ 'top': '-200px' }, 500, function () {
             $('#overlay').fadeOut('fast');
         });
+        $("#box").addClass("hidden");
+        $("#boxErrorLogin").addClass("hidden");
     });
 
     // submit-funktion för inloggning
@@ -185,21 +221,24 @@
 
         // valideringen har gått igenom
         if (UserIsSignIn) {
-            $('#box').animate({ 'top': '-200px' }, 500, function () {
+            $('#box').animate({ 'top': '-200px' }, 200, function () {
                 $('#overlay').fadeOut('fast');
             });
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
+            $("#box").addClass("hidden");
             return false;
         }
             // nåt gick snett
         else if (!UserIsSignIn) {
             $(".result").text(message);
-            $(".result").css("color", "red");
             $('#box').animate({ 'top': '-200px' }, 500, function () {
                 $('#boxErrorLogin').animate({ 'top': '200px' }, 200);
+              
             });
+            $("#box").addClass("hidden");
+            $("#boxErrorLogin").removeClass("hidden");
             return false;
         }
     }
@@ -308,14 +347,16 @@
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
+            $("#boxRegister").removeClass("hidden");
         } else if (!UserIsSignIn) {
             //sätt felmeddelande på error popup
             $(".result").text(message);
-            $(".result").css("color", "red");
-            $('#boxRegister').animate({ 'top': '-200px' }, 500, function () {
+            $('#boxRegister').animate({ 'top': '-200px' }, 200, function () {
                 $('#boxErrorRegister').animate({ 'top': '200px' }, 200);
             });
+            $("#boxRegister").addClass("hidden");
+            $("#boxErrorRegister").removeClass("hidden");
         }
     }
-
+    /*END JS Sign in*/
 });

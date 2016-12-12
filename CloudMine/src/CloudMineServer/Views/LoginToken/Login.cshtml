@@ -17,56 +17,50 @@
             asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
     </script>
 
-    <!--separat js och css under utvecklingsfasen-->
-    @section scripts {
-        <link rel="stylesheet" href="~/css/tempLoginCss.css" asp-append-version="true" />
-    }
-    <script src="~/js/TokenLogin.js"></script>
-    <hr />
-    <!--END separat js och css under utvecklingsfasen-->
-
     <div class="container" id="dropzone">
 
         <!--dolda divvar till inloggningen-->
         <div class="overlay" id="overlay" style="display:none;"></div>
 
-        <div class="box" id="box">
+        <div class="box hidden" id="box">
             <a class="boxclose" id="boxclose"></a>
             <h1>Login</h1>
             <form id="Loginform" enctype="multipart/form-data">
-                <p>Name:</p> <input type="text" name="mail" style="color:black" required> <br />
-                <p>Password:</p> <input type="password" name="pword" style="color:black" required> <br />
-                <button type="submit" id="InputRegisterButton" data-loading-text="Signing in..." class="btn btn-primary" autocomplete="off">Log in</button>
+                <p>Name</p> <input type="text" name="mail" style="color:black" required> <br />
+                <p>Password</p> <input type="password" name="pword" style="color:black" required> <br />
+                <button type="submit" id="InputSigninButton" data-loading-text="Signing in..." class="btn btn-primary" autocomplete="off">Log in</button>
             </form>
         </div>
 
-        <div class="box" id="boxRegister">
+        <div class="box hidden" id="boxRegister">
             <a class="boxclose" id="boxRegisterclose"></a>
             <h1>Register new user</h1>
             <form id="Registerform" enctype="multipart/form-data">
-                <p>Name:</p> <input type="text" name="mail" style="color:black" required> <br />
-                <p>Password:</p> <input type="password" name="pword" style="color:black" required> <br />
-                <p>Password:</p> <input type="password" name="repword" style="color:black" required> <br />
+                <p>Name</p> <input type="text" name="mail" style="color:black" required> <br />
+                <p>Password</p> <input type="password" name="pword" style="color:black" required> <br />
+                <p>Retype password</p> <input type="password" name="repword" style="color:black" required> <br />
                 <button type="submit" id="InputRegisterButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off">Register</button>
             </form>
         </div>
 
-        <div class="box" id="boxErrorRegister">
+        <div class="box hidden" id="boxErrorRegister">
             <a class="boxclose" id="boxErrorclose"></a>
-            <h1>Error Register new user</h1>
+            <h1>Error register new user</h1>
             <br />
             <p class="result"></p>
             <a href="#" id="" class="registerUser">Try register again</a>
         </div>
 
-        <div class="box" id="boxErrorLogin">
+        <div class="box hidden" id="boxErrorLogin">
             <a class="boxclose" id="boxErrorLoginclose"></a>
-            <h1>Error login user</h1>
+            <h1>Error log in</h1>
             <br />
             <p class="result"></p>
             <a href="#" id="" class="signinuseragain">Try sign in again</a>
         </div>
         <!--END dolda divvar till inloggningen-->
+
+        <div style="margin-top: 20px"></div>
 
         <div class="navbar">
             <div class="col-lg-2">
@@ -128,12 +122,18 @@
 
         <!--bara testknapp-->
         <br />
-        
         <button id="getToken" class="btn" style="margin-top:20px">Testa om inloggad</button>
         <p>console.log()</p>
         <!---->
 
     </div>
+
+    <!--separat js och css under utvecklingsfasen-->
+    @section scripts {
+        <link rel="stylesheet" href="~/css/tempLoginCss.css" asp-append-version="true" />
+        <script src="~/js/TokenLogin.js"></script>
+    }
+    <!--END separat js och css under utvecklingsfasen-->
 
 </body>
 </html>
