@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>CookieAuth</title>
+</head>
+<body>
+    <h2>Test area</h2>
+
+    <form id="loginForm" method="post">
+        <label for="userName">user name:</label>
+        <input type="text" id="mail" name="userName" />
+
+        <label for="password">password:</label>
+        <input type="password" id="pword" name="password" />
+        <button type="submit">Login</button>
+    </form>
+    
+        <form id="testAuthForm" method="get">
+            <p>
+                <button type="button" id="testBtn">testAuth</button>
+                <button type="button" id="isLoggedInBtn">isLoggedIn(true/false)</button>
+                <button type="button" id="authCodeBtn">authCodeCheck</button>
+            </p>
+       </form>
+    
+
+    
+        <form id="logoutAuthForm" method="get">
+            <p>
+                <button type="button" id="logoutBtn">Logout</button>
+            </p>
+        </form>
+    
+
+    <p>
+        <a href="/api/v1.0/GetFile/NoDisk/24" download>Download item 24</a>
+    </p>
+
+
+
+        <script src="lib/jquery/dist/jquery.js"></script>
+        <script>
+            $('#testBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/TestAuth",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+
+            $('#logoutBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/v1.0/Users/Logout",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+
+            $('form#loginForm').on('submit', function (e) {
+                e.preventDefault();
+                var usermail = document.forms["loginForm"]["mail"].value;
+                var userpassword = document.forms["loginForm"]["pword"].value;
+                console.log("logging in " + usermail);
+
+                $.ajax({
+                    type: "POST",
+                    url: '../token',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { "username": usermail, "password": userpassword },
+                    dataType: 'json',
+
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status, jqHXR) {
+                        Datatype: "json",
+                        console.log("access_token: " + result.access_token);
+                        return result.access_token;
+                    }
+                });
+
+            });
+
+            $('#isLoggedInBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/v1.0/Users/IsLoggedIn",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+
+            $('#authCodeBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/v1.0/Users/LoginCode",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+        </script>
+</body>
+</html>

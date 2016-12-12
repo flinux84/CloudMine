@@ -15,7 +15,7 @@ namespace CloudMineServer.Services
         private string trailingToken = "";
         private int fileIndex = 0;
 
-        public Uri MakeFile(FileItem fileitem)
+        public Uri MakeFileOnServer(FileItem fileitem)
         {
             var baseFileName = fileitem.FileName;
 
@@ -28,7 +28,7 @@ namespace CloudMineServer.Services
             
             if (!fileitem.DataChunks.FirstOrDefault().PartName.Contains(baseFileName))
             {
-                throw new InvalidOperationException("chunkname does not match filename");
+                throw new InvalidOperationException("Chunkname does not match Filename");
             }
 
             var chunkPartName = filesList.FirstOrDefault();
@@ -87,6 +87,7 @@ namespace CloudMineServer.Services
             }
             return fi;
         }
+
 
         // sorterar chunks så vi har dem i rätt ordning innan vi klistrar ihop
         private List<SortedFile> SortMergeList(string[] filesList)

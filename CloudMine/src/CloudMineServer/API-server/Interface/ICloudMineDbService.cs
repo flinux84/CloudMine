@@ -21,6 +21,10 @@ namespace CloudMineServer.Interface
         #region get FileItem & Chunks
         Task<Uri> GetSpecificFilItemAndDataChunks(int id, string userId);
         Task<List<FileItem>> GetAllFilItemAndDataChunks(string userId);
+        Task<FileItem> GetSpecifikFileItemAndDataChunk(int id, string userId);
+        Task<DataChunk> GetSpecifikDataChunk(int FileItemId, int datachunkIndex);
+        Task<DataChunk> GetFirstDataChunk(int fileItemId);
+        Task<DataChunk> GetNextDataChunk(DataChunk dataChunk);
         #endregion
 
     }
