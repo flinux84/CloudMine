@@ -145,21 +145,45 @@ namespace CloudMineServer.API_server.Controllers {
 
         }
 
-        // POST: api/FileItems/5
-        [HttpPost( "{id:int}" )]
-        public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
+        //// POST: api/FileItems/5
+        //[HttpPost( "{id:int}" )]
+        //public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
 
-            if( !ModelState.IsValid) {
-                return BadRequest( ModelState );
-            }
+        //    if( !ModelState.IsValid) {
+        //        return BadRequest( ModelState );
+        //    }
 
-            if( id != dataChunk.FileItemId )
-                return BadRequest( "Id from route wasn't the same as fileItemId in DataChunk." );
+        //    if( id != dataChunk.FileItemId )
+        //        return BadRequest( "Id from route wasn't the same as fileItemId in DataChunk." );
             
-            if( await _context.AddFileUsingAPI( dataChunk ) ) {
-                return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
-            } else
-                return BadRequest( "Error adding datachunks." );
+        //    if( await _context.AddFileUsingAPI( dataChunk ) ) {
+        //        return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
+        //    } else
+        //        return BadRequest( "Error adding datachunks." );
+        //}
+
+        // POST: api/FileItems/5
+        [HttpPost("{id:int}")]
+        public async Task<IActionResult> PostDataChunk([FromRoute]int id, [FromForm]DataChunk dataChunk)
+        {
+
+            var apa = Request.Form.Files[0];
+            var hej = apa;
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+
+            if (id != dataChunk.FileItemId)
+                return BadRequest("Id from route wasn't the same as fileItemId in DataChunk.");
+
+            if (await _context.AddFileUsingAPI(dataChunk))
+            {
+                
+                return CreatedAtAction("GetFileItem", new { id = dataChunk.Id }, dataChunk);
+            }
+            else
+                return BadRequest("Error adding datachunks.");
         }
 
         // DELETE: api/FileItems/5

@@ -127,12 +127,9 @@
     //Delar upp filen, namnger den och skickar den vidare-
     //till reader för att få de sista elementen innan det skickas.
     function UploadFile(jsonUpdateData, TargetFile) {
-        var id;
-        var FileID = jsonUpdateData.id;
-        console.log("!!!!!!!!!!!!!!!!!!!!!!")
-        console.log(FileID);
-        console.log("!!!!!!!!!!!!!!!!!!!!!!")
-        var fileitemlist = null;
+        
+        var FileID = jsonUpdateData.id;        
+        //var fileitemlist = null;
         var file = TargetFile[0];
         var EndPos = BufferChunkSize;
         var Size = file.size;
@@ -142,96 +139,98 @@
             FileStreamPos = EndPos; // Hoppar för varje läst fil.
             EndPos = FileStreamPos + BufferChunkSize; // sätter nästa chunk-längd.
             
-        }
-
-        var TotalParts = FileChunk.length;
-        var PartCount = 0;
-
-        while (chunk = FileChunk.shift()) {
-            console.log("BEGINS");
-            
-            var blob = new Blob([chunk], { type: 'application/octet-binary' });
-            //console.log(blob);
-            console.log("ENDS!");
-            var promise = new Promise(ReadingTheBytesAndCheckSum);
-            console.log("foreachsecond");
-            promise.then(function (data) {
-                PartCount++;
-                
-                var FilePartName = file.name + ".part_" + PartCount + "." + TotalParts;
-                var byteData = data.byteArray;
-                
-                console.log("????????");
-                console.log(byteData);
-                console.log("????????");
-                //ChunkElement.Id = id;
-                //ChunkElement.CheckSum = data.hashCode2;
-                //ChunkElement.PartName = FilePartName;
-                //ChunkElement.Data = byteData;
-                //ChunkElement.FileItemId = FileID;
-                //ChunkElement.FileItem = fileitemlist;
-                //console.log(ChunkElement);
-                //skickar som ett json-objekt
-                //var theInput = ChunkElement.serializeArray()
-                //console.log(theInput);
-                
-                //for (var x in ChunkElement) {
-                //    FD.append(x, ChunkElement[x]);
-                //}                             
-                var FD = new FormData();
-                FD.append('Id', id);
-                FD.append('PartName', FilePartName);
-                FD.append('Checksum', data.hashCode2);
-                
-                var ali = 1234;
-                // bblob = new Blob([byteData], { type: 'application/octet-binary' });
-                FD.append('Data', ali);
-                //FD.append('Data', bblob );
-                //for (var i = 0; i < byteData.length; i++) {
-                //    FD.append('Data[]', byteData[i]);
-                //}
-                FD.append('FileItemId', FileID);
-                console.log(FD);
-                
-                $.ajax({
-                    type: "POST",
-                    //url: 'http://localhost:56875/api/v1.0/FileItems/' + FileID,
-                    url: '../api/v1.0/FileItems/' + FileID,
-                    //contentType: 'multipart/form-data',
-                    contentType: false,
-                    //dataType: 'json',
-                    //datatype: false,
-                    processData: false,
-                    data: FD,
-                    error: function (e) {
-                        console.log(e);
-                    },
-                    success: function (result, status, jqHXR) {
-                        var jsonUpdateData = result;
-                        //Datatype: "json";
-                        Datatype: false;
-                    }
-                })
-                console.log("Done");
-            });
-            //Läser checksum och binär data för chunken
-            function ReadingTheBytesAndCheckSum(resolve) {
-                
-                var reader = new FileReader();
-                reader.onload = function (event) {                    
-                    var binary = event.target.result;
-                    var bytes = new Uint8Array(binary);
-                    var byteArray = [].slice.call(bytes);                    
-                    var hashCode2 = $.sha1(binary);
-                    var theObject = { byteArray, hashCode2};                    
-                    resolve(theObject);
-                }
-                reader.readAsArrayBuffer(blob);
-            }
-        }
-
+        }  
+        
+        SendNextPart(FileChunk,file,FileID, 1);
     };
+    function SendNextPart(FileChunk,file,FileID, PartCount){
+        var TotalParts = FileChunk.length;
+            
+        var chunk = FileChunk.shift();
+        if (chunk == null) { return;}
+        blob = new Blob([chunk], { type: 'application/octet-binary' });
+            
+            
+        var promise = new Promise(ReadingTheBytesAndCheckSum);
+        promise.then(function (data) {
+                
+                
+            var FilePartName = file.name + ".part_" + PartCount + "." + TotalParts;
+            var byteData = data.byteArray;
+               
+            var ChunkElement = {};
+            
+            ChunkElement.CheckSum = data.hashCode2;
+            ChunkElement.PartName = FilePartName;
+            ChunkElement.Data = byteData;
+            ChunkElement.FileItemId = FileID;
+            //ChunkElement.FileItem = fileitemlist;
+            //var hej = JSON.stringify(byteData);
+            //console.log(ChunkElement);
+                
+            //var theInput = ChunkElement.serializeArray()
+            //console.log(theInput);
+                
+            //for (var x in ChunkElement) {
+            //    FD.append(x, ChunkElement[x]);
+            //}                             
+            //var FD = new FormData();
+            var FD = new FormData();
+                
+            
+            FD.append('PartName', FilePartName);
+            FD.append('Checksum', data.hashCode2);                
+                
+            //// bblob = new Blob([byteData], { type: 'application/octet-binary' });
+            FD.append('Data', chunk);
+            ////FD.append('Data', bblob );
+            ////for (var i = 0; i < byteData.length; i++) {
+            ////    FD.append('Data[]', byteData[i]);
+            ////}
+            FD.append('FileItemId', FileID);
+            ////console.log(FD);
+            console.log(ChunkElement);
+            $.ajax({
+                type: "POST",
+                //url: 'http://localhost:56875/api/v1.0/FileItems/' + FileID,
+                url: '../api/v1.0/FileItems/' + FileID,
+                //contentType: 'multipart/form-data; boundary = --boundary--',
+                contentType: false,                    
+                processData: false,
+                    
+                data: FD,
+                error: function (e) {
+                    console.log(e);
+                },
+                success: function (result, status, jqHXR) {
+                    var jsonUpdateData = result;
+                    //Datatype: "json";
+                    Datatype: false;
+                    SendNextPart(FileChunk,file,FileID,PartCount++)
+                }
+            });
+            console.log("Done");
+        });
+        //Läser checksum och binär data för chunken
+        function ReadingTheBytesAndCheckSum(resolve) {
+                
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var binary = event.target.result;
+                var bytes = new Uint8Array(binary);
+                var byteArray = [].slice.call(bytes);
+                var hashCode2 = $.sha1(binary);
+                var theObject = { byteArray, hashCode2};
+                resolve(theObject);
+            };
+            reader.readAsArrayBuffer(blob);
+        }
+        console.log("still testing");
+    }
+    
 });
+ 
+
 
 
 
