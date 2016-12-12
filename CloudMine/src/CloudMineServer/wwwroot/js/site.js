@@ -15,21 +15,20 @@ $(document).ready(function () {
     progressBar = $("#progressBar");
     progressFileLabel = $("#filelabel");
     filetable = $("#filetable");
-    //jQuery.sha1 = sha;
-    //enable drag and drop functionality
-    dragAndDrop(dropzone);
 
-    //create progressbar (and do a testrun)
+    //create progressbar
     var probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
-    probar.DoATestRun();
+
+    //enable drag and drop functionality
+    dragAndDrop(dropzone, probar);
+
 
     //setup fileuploader.js
-    var load = new JSuploader(uploadform, probar);
-    
+    var newloader = new TheFileUploader(probar);
+
     uploadform.change(function () {
-        load.UploadMyFile();
+        newloader.Upload(uploadform[0].files[0])
     })
-    //var fileuploader = new fileuploader(probar, targetfile[]);
 
     //create html-appender
     var append = new HTMLappender(filetable);
