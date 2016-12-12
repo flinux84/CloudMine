@@ -13,7 +13,7 @@ var HTMLappender = function (element) {
                 + '</td><td>' + result[i].uploaded.split('T')[0]
                 + '</td><td>' + result[i].dataType
                 + '</td><td>' + result[i].description
-                + '</td><td><a href=\"/api/v1.0/GetFile/' + result[i].id + '\">' 
+                + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\">' 
                 + downloadbutton + '</a></td></tr>');
         }         
     }

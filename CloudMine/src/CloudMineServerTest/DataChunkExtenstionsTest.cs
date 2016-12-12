@@ -91,6 +91,26 @@ namespace CloudMineServerTest
             // Assert
             Assert.Equal(10, result);
         }
+        [Fact]
+        public void IsLastInSequenceReturnsTrueWhenLast()
+        {
+            // Arrange
+            DataChunk dataChunk = new DataChunk { PartName = "test.jpg.part_10.10" };
+            // Act
+            var result = dataChunk.IsLastInSequence();
+            // Assert
+            Assert.True(result);
+        }
+        [Fact]
+        public void IsLastInSequenceReturnsFalseWhenNotLast()
+        {
+            // Arrange
+            DataChunk dataChunk = new DataChunk { PartName = "test.jpg.part_9.10" };
+            // Act
+            var result = dataChunk.IsLastInSequence();
+            // Assert
+            Assert.False(result);
+        }
 
     }
 

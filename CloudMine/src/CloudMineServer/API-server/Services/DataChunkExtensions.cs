@@ -9,6 +9,7 @@ namespace CloudMineServer.API_server.Services
     public static class DataChunkExtensions
     {
         private static readonly string _partToken = ".part_";
+
         public static string NextName(this DataChunk dataChunk)
         {
             int partNumber = GetPartNumber(dataChunk.PartName);
@@ -16,6 +17,7 @@ namespace CloudMineServer.API_server.Services
                 return null;
             return ReplacePartNumberWith(dataChunk.PartName, partNumber + 1);
         }
+
         public static string PreviousName(this DataChunk dataChunk)
         {
             int partNumber = GetPartNumber(dataChunk.PartName);
@@ -23,10 +25,13 @@ namespace CloudMineServer.API_server.Services
                 return null;
             return ReplacePartNumberWith(dataChunk.PartName, partNumber - 1);
         }
+
         public static string FirstInSequenceName(this DataChunk dataChunk) => 
             ReplacePartNumberWith(dataChunk.PartName, 1);
+
         public static string LastInSequenceName(this DataChunk dataChunk) =>
             ReplacePartNumberWith(dataChunk.PartName, GetTotalCount(dataChunk.PartName));
+
         public static int Index(this DataChunk dataChunk) =>
             GetPartNumber(dataChunk.PartName) - 1;
 
