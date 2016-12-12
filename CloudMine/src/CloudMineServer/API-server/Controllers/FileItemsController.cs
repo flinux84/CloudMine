@@ -13,6 +13,7 @@ using System.Linq;
 using CloudMineServer.API_server.Models;
 using Microsoft.AspNetCore.Authorization;
 using CloudMineServer.API_server.Services;
+using System.IO;
 
 namespace CloudMineServer.API_server.Controllers {
     [Produces( "application/json" )]
@@ -145,45 +146,28 @@ namespace CloudMineServer.API_server.Controllers {
 
         }
 
-        //// POST: api/FileItems/5
-        //[HttpPost( "{id:int}" )]
-        //public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
-
-        //    if( !ModelState.IsValid) {
-        //        return BadRequest( ModelState );
-        //    }
-
-        //    if( id != dataChunk.FileItemId )
-        //        return BadRequest( "Id from route wasn't the same as fileItemId in DataChunk." );
-            
-        //    if( await _context.AddFileUsingAPI( dataChunk ) ) {
-        //        return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
-        //    } else
-        //        return BadRequest( "Error adding datachunks." );
-        //}
-
         // POST: api/FileItems/5
-        [HttpPost("{id:int}")]
-        public async Task<IActionResult> PostDataChunk([FromRoute]int id, [FromForm]DataChunk dataChunk)
-        {
+        [HttpPost( "{id:int}" )]
+        public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
 
-            var apa = Request.Form.Files[0];
-            var hej = apa;
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
+            for (int i = 0; i < Request.Form.Files.Count; i++)
+            {
+
+                var file = Request.Form.Files[i];
+                dataChunk.Data = StreamToArray(file.OpenReadStream());
+            }
+            
+            //if( !ModelState.IsValid) {
+            //    return BadRequest( ModelState );
             //}
 
-            if (id != dataChunk.FileItemId)
-                return BadRequest("Id from route wasn't the same as fileItemId in DataChunk.");
-
-            if (await _context.AddFileUsingAPI(dataChunk))
-            {
-                
-                return CreatedAtAction("GetFileItem", new { id = dataChunk.Id }, dataChunk);
-            }
-            else
-                return BadRequest("Error adding datachunks.");
+            if( id != dataChunk.FileItemId )
+                return BadRequest( "Id from route wasn't the same as fileItemId in DataChunk." );
+            
+            if( await _context.AddFileUsingAPI( dataChunk ) ) {
+                return CreatedAtAction( "GetFileItem", new { id = dataChunk.Id }, dataChunk );
+            } else
+                return BadRequest( "Error adding datachunks." );
         }
 
         // DELETE: api/FileItems/5
@@ -205,5 +189,20 @@ namespace CloudMineServer.API_server.Controllers {
             else
                 return BadRequest( "Error while removing file" );
         }
+
+        private static byte[] StreamToArray(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
+        }
+
     }
 }
