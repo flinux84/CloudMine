@@ -149,7 +149,7 @@ namespace CloudMineServer.API_server.Controllers {
         [HttpPost( "{id:int}" )]
         public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
 
-            if( !ModelState.IsValid ) {
+            if( !ModelState.IsValid) {
                 return BadRequest( ModelState );
             }
 

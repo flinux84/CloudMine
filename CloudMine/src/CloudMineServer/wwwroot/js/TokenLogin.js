@@ -22,7 +22,8 @@
 
         $.ajax({
             type: "POST",
-            url: 'http://localhost:17881/api/v1.0/Users',
+            //url: 'http://localhost:17881/api/v1.0/Users',
+            url: '../api/v1.0/Users',
             contentType: 'application/json',
             data: theInput,
             dataType: 'json',
@@ -53,7 +54,8 @@
 
         $.ajax({
             type: "POST",
-            url: 'http://localhost:17881/token',
+            //url: 'http://localhost:17881/token',
+            url: '../token',
             contentType: 'application/x-www-form-urlencoded',
             data: { "username": usermail, "password": userpassword },
             dataType: 'json',
@@ -102,7 +104,8 @@
 
         $.ajax({
             type: "POST",
-            url: 'http://localhost:17881/token',
+            //url: 'http://localhost:17881/token',
+            url: '../token',
             contentType: 'application/x-www-form-urlencoded',
             data: { "username": usermail, "password": userpassword },
             dataType: 'json',
@@ -116,7 +119,8 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "http://localhost:17881/api/v1.0/FileItems",
+                    //url: "http://localhost:17881/api/v1.0/FileItems",
+                    url: "../api/v1.0/FileItems",
                     contentType: 'application/json',
                     data: TheFileItemObj,
                     dataType: 'json',
