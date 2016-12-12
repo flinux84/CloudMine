@@ -65,19 +65,20 @@ namespace CloudMineServer.Middleware.TokenProvider
                 await context.Response.WriteAsync("Invalid username or password.");
                 return;
             }
-            
+
             var now = DateTime.UtcNow;
             var unixTimeStamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-
+            var roles = await _userManager.GetRolesAsync(identity);
             // Specifically add the jti (random nonce), iat (issued timestamp), and sub (subject/user) claims.
             // You can add other claims here, if you want:
-            var claims = new Claim[]
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, identity.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, unixTimeStamp.ToString(), ClaimValueTypes.Integer64),
-                new Claim(JwtRegisteredClaimNames.Email, username)                
+                new Claim(JwtRegisteredClaimNames.Email, username)
             };
+            foreach(var role in roles) claims.Add(new Claim("role", role));
 
             // Create the JWT and write it to a string
             var jwt = 
