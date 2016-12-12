@@ -46,17 +46,31 @@
             url: "../api/v1.0/Users/IsLoggedIn",
             contentType: 'application/json',
 
-            error: function (e) {
-                console.log("error Authenticated check");
-            },
-            success: function (result, status) {
-                console.log("Authenticated check: " + result)
-                UserIsSignIn = result;
-            }
-        }).done(function () {
+            //error: function (e) {
+            //    console.log("error Authenticated check");
+            //},
+            //success: function (result, status) {
+            //    console.log("Authenticated check: " + result)
+            //    UserIsSignIn = result;
+            //}
+            //}).done(function () {
+            //    console.log("user auto check done!")
+            //    UserSignOutStatus();
+            //});
+
+        }).done(function (result) {
+            console.log("result: " + result)
             console.log("user auto check done!")
-            UserSignOutStatus();
-        });
+            UserIsSignIn = result;
+        })
+  .fail(function () {
+      console.log("error Authenticated check");
+  })
+  .always(function () {
+      console.log("always - ajax user is signin ")
+      UserSignOutStatus();
+  });
+
     }
     AjaxUserIsLoggedIn();
 
@@ -79,21 +93,29 @@
             url: "../api/v1.0/Users/Logout",
             contentType: 'application/json',
 
-            error: function (e) {
-                console.log("error sign out: " + e);
-                UserIsSignIn = true;
-            },
-            success: function (result, status) {
-                console.log("success signout: " + result)
-                UserIsSignIn = false;
-            }
-        });
-        //.done(function () {
-        //    UserSignOutStatus();
-        //});
-        // tvek att egentligen vänta på ajax
-        UserIsSignIn = false;
-        UserSignOutStatus();
+            //error: function (e) {
+            //    console.log("error sign out: " + e);
+            //    UserIsSignIn = true;
+            //},
+            //success: function (result, status) {
+            //    console.log("success signout: " + result)
+            //    UserIsSignIn = false;
+            //}
+        }).done(function () {
+            console.log("signout done")
+            UserIsSignIn = false;
+        })
+  .fail(function () {
+      console.log("signout fail")
+      UserIsSignIn = true;
+  })
+  .always(function () {
+      console.log("always - signout")
+      UserSignOutStatus();
+  });
+
+        //UserIsSignIn = false;
+        //UserSignOutStatus();
     }
     function UserSignOutStatus() {
         if (!UserIsSignIn) {
@@ -199,20 +221,32 @@
             data: { "username": userName, "password": userPassword },
             dataType: 'json',
 
-            error: function (e) {
-                UserIsSignIn = false;
-                console.log("ajax call error " + e);
-                message = "ajax call error. ";
-                UserSigninStatus();
-            },
-            success: function (result, status) {
-                console.log("ajax call - success")
-                console.log(result);
-                UserIsSignIn = true;
-            }
+            //    error: function (e) {
+            //        UserIsSignIn = false;
+            //        console.log("ajax call error " + e);
+            //        message = "ajax call error. ";
+            //        UserSigninStatus();
+            //    },
+            //    success: function (result, status) {
+            //        console.log("ajax call - success")
+            //        console.log(result);
+            //        UserIsSignIn = true;
+            //    }
+            //}).done(function () {
+            //    UserSigninStatus();
+            //});
+
         }).done(function () {
+            console.log("ajax call - success")
+            UserIsSignIn = true;
             UserSigninStatus();
-        });
+        })
+  .fail(function () {
+      UserIsSignIn = false;
+      message = "ajax call error. ";
+      UserSigninStatus();
+  });
+
     }
 
     function UserSigninStatus() {
@@ -235,7 +269,7 @@
             $(".result").text(message);
             $('#box').animate({ 'top': '-200px' }, 500, function () {
                 $('#boxErrorLogin').animate({ 'top': '200px' }, 200);
-              
+
             });
             $("#box").addClass("hidden");
             $("#boxErrorLogin").removeClass("hidden");
@@ -296,20 +330,31 @@
             data: theInput,
             dataType: 'json',
 
-            error: function (e) {
-                console.log("Error register: " + e);
-                message = "Error register.";
-                UserIsSignIn = false;
-                UserRegisterStatus();
-            },
-            success: function (result, status) {
-                console.log(result);
-                UserIsSignIn = true;
-            }
-        }).done(function () {
-            userSignInAfterRegister(userName, userPassword);
+            //    error: function (e) {
+            //        console.log("Error register: " + e);
+            //        message = "Error register.";
+            //        UserIsSignIn = false;
+            //        UserRegisterStatus();
+            //    },
+            //    success: function (result, status) {
+            //        console.log(result);
+            //        UserIsSignIn = true;
+            //    }
+            //}).done(function () {
+            //    userSignInAfterRegister(userName, userPassword);
 
-        });
+            //});
+
+        }).done(function () {
+            UserIsSignIn = true;
+            userSignInAfterRegister(userName, userPassword);
+        })
+  .fail(function () {
+      UserIsSignIn = false;
+      message = "Error register. ";
+      UserRegisterStatus();
+  });
+
     }
 
     function userSignInAfterRegister(userName, userPassword) {
@@ -321,18 +366,29 @@
             data: { "username": userName, "password": userPassword },
             dataType: 'json',
 
-            error: function (e) {
-                UserIsSignIn = false;
-                console.log("ajax call - error sign in after register" + e);
-                message = "ajax call - error sign in after register. ";
-                UserRegisterStatus();
-            },
-            success: function (result, status) {
-                console.log(result);
-            }
+            //    error: function (e) {
+            //        UserIsSignIn = false;
+            //        console.log("ajax call - error sign in after register" + e);
+            //        message = "ajax call - error sign in after register. ";
+            //        UserRegisterStatus();
+            //    },
+            //    success: function (result, status) {
+            //        console.log(result);
+            //    }
+            //}).done(function () {
+            //    UserRegisterStatus();
+            //});
+
         }).done(function () {
+            UserIsSignIn = true;
             UserRegisterStatus();
-        });
+        })
+  .fail(function () {
+      UserIsSignIn = false;
+      message = "ajax call - error sign in after register. ";
+      UserRegisterStatus();
+  });
+
     }
 
     function UserRegisterStatus() {
@@ -347,7 +403,7 @@
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
-            $("#boxRegister").removeClass("hidden");
+            $("#boxRegister").addClass("hidden");
         } else if (!UserIsSignIn) {
             //sätt felmeddelande på error popup
             $(".result").text(message);
