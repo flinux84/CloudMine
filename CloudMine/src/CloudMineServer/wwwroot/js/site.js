@@ -6,7 +6,7 @@ var progressDiv;
 var arrayOfFileItems;
 var filetable;
 var append;
-var sha;
+
 
 $(document).ready(function () {
     dropzone = $("#dropzone");
@@ -15,7 +15,7 @@ $(document).ready(function () {
     progressBar = $("#progressBar");
     progressFileLabel = $("#filelabel");
     filetable = $("#filetable");
-    jQuery.sha1 = sha;
+    //jQuery.sha1 = sha;
     //enable drag and drop functionality
     dragAndDrop(dropzone);
 
@@ -24,7 +24,11 @@ $(document).ready(function () {
     probar.DoATestRun();
 
     //setup fileuploader.js
-    //var uploader = new Uploader(uploadform, sha);
+    var load = new JSuploader(uploadform, probar);
+    
+    uploadform.change(function () {
+        load.UploadMyFile();
+    })
     //var fileuploader = new fileuploader(probar, targetfile[]);
 
     //create html-appender
