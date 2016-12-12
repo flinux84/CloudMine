@@ -1,177 +1,68 @@
-﻿var UserIsSignIn = false;
-var userName = "";
-var userPassword = "";
-var userSecondPassword = "";
-var message = "";
+﻿$(document).ready(function () {
 
-// känner tydligen av regex redan vid inmatningen. går inte submitta om reggen inte stämer. vilket gör mina felmeddelande lite överflödiga.. 
-function validateEmail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-}
+    /*JS Sign in*/
 
-function validatePassWord(password) {
-    var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/;
-    return re.test(password);
-}
+    var UserIsSignIn = false;
+    var userName = "";
+    var userPassword = "";
+    var userSecondPassword = "";
+    var message = "";
+    var $btn;
 
-$(document).ready(function () {
+    // validera mail
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
 
-    // not in use any more
+    // validera password
+    function validatePassWord(password) {
+        var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/;
+        return re.test(password);
+    }
+
+    // just for testing 
     function UseAjaxGetToken() {
-        console.log("this is just a empty button")
+        $.ajax({
+            // TODO:   https://localhost:44336/api/TestAuth                                      <------adress-----<<<
+            url: "../api/TestAuth",
+            contentType: 'application/json',
+            error: function (e) {
+                console.log(e);
+            },
+            success: function (result, status) {
+                console.log(result);
+                console.log(status);
+            }
+        });
     }
     $("#getToken").click(UseAjaxGetToken);
+    // just for testing end
 
-    // register
-    $('form#firstForm').submit(function (e) {
-        e.preventDefault();
-        console.log("first")
-
-
-        var Email = document.forms["firstForm"]["mailx"].value;
-        var Password = document.forms["firstForm"]["pwordx"].value;
-
-        var ObjectElement = {};
-        ObjectElement.Email = Email;
-        ObjectElement.Password = Password;
-        var theInput = JSON.stringify(ObjectElement);
-
+    // check user Authenticated-status. Kolla om användaren är inloggad när sidan laddas
+    function AjaxUserIsLoggedIn() {
         $.ajax({
-            type: "POST",
-            url: 'http://localhost:17881/api/v1.0/Users',
+            //TODO: "https://localhost:44336/api/v1.0/Users/IsLoggedIn"                                       <------adress-----<<<
+            url: "../api/v1.0/Users/IsLoggedIn",
             contentType: 'application/json',
-            data: theInput,
-            dataType: 'json',
 
             error: function (e) {
-                console.log(e);
+                console.log("error Authenticated check");
             },
-            success: function (result, status, jqHXR) {
-                var jsonUpdateData = result;
-                Datatype: "json",
-                console.log(jsonUpdateData);
-                console.log("just the token:");
-                console.log(jsonUpdateData.access_token);
-
+            success: function (result, status) {
+                console.log("Authenticated check: " + result)
+                UserIsSignIn = result;
             }
+        }).done(function () {
+            console.log("user auto check done!")
+            UserSignOutStatus();
         });
-
-    })
-
-    // get token
-    $('form#secondForm').on('submit', function (e) {
-        e.preventDefault();
-        console.log("second")
-        var usermail = document.forms["secondForm"]["mail"].value;
-        var userpassword = document.forms["secondForm"]["pword"].value;
-
-        console.log(usermail + " " + userpassword)
-
-        $.ajax({
-            type: "POST",
-            url: 'http://localhost:17881/token',
-            contentType: 'application/x-www-form-urlencoded',
-            data: { "username": usermail, "password": userpassword },
-            dataType: 'json',
-
-            error: function (e) {
-                console.log(e);
-            },
-            success: function (result, status, jqHXR) {
-                var jsonUpdateData = result;
-                Datatype: "json",
-                console.log(jsonUpdateData);
-                console.log("just the token:");
-                console.log(jsonUpdateData.access_token);
-                return jsonUpdateData.access_token;
-            }
-        });
-
-    });
-
-    // staic add fileitem
-    $('form#thirdForm').on('submit', function (e) {
-        e.preventDefault();
-        console.log("third")
-        var usermail = document.forms["secondForm"]["mail"].value;
-        var userpassword = document.forms["secondForm"]["pword"].value;
-        var ObjectElement = {};
-        ObjectElement.Email = usermail;
-        ObjectElement.Password = userpassword;
-        var theInput = JSON.stringify(ObjectElement);
-
-        //
-        var FileItemElement = {};
-        FileItemElement.id = 0,
-        FileItemElement.checksum = "93657799-3937-48db-ab50-65d22be62732",
-        FileItemElement.fileName = "staticApiFile",
-        FileItemElement.description = "generate api call add static fileitem to db",
-        FileItemElement.uploaded = "0001-01-01T00:00:00",
-        FileItemElement.private = false,
-        FileItemElement.dataType = "jpg",
-        FileItemElement.fileSize = 88,
-          FileItemElement.userId = null,
-        //FileItemElement.userId = "b3295177-17a4-4df1-ad2b-c360eb87254a",
-        FileItemElement.dataChunks = null
-        var TheFileItemObj = JSON.stringify(FileItemElement);
-        //
-
-        $.ajax({
-            type: "POST",
-            url: 'http://localhost:17881/token',
-            contentType: 'application/x-www-form-urlencoded',
-            data: { "username": usermail, "password": userpassword },
-            dataType: 'json',
-
-            error: function (e) {
-                console.log(e);
-            },
-            success: function (result, status, jqHXR) {
-                console.log("sucess token n stuff")
-                //
-
-                $.ajax({
-                    type: "POST",
-                    url: "http://localhost:17881/api/v1.0/FileItems",
-                    contentType: 'application/json',
-                    data: TheFileItemObj,
-                    dataType: 'json',
-
-                    error: function (e) {
-                        console.log(e);
-                    },
-                    success: function (result, status) {
-                        console.log(result);
-                        console.log(status);
-                    }
-                });
-
-                //$.ajax({
-                //    type: "POST",
-                //    beforeSend: function (request) {
-                //        request.setRequestHeader("Authority", result.access_token);
-                //    },
-                //    url: "http://localhost:17881/api/v1.0/FileItems",
-                //    data: TheFileItemObj,
-
-                //    error: function (e) {
-                //        console.log(e);
-                //    },
-                //    success: function (result, status) {
-                //        console.log(result);
-                //        console.log(status);
-                //    }
-                //});
-                //
-            }
-        });
-
-    });
-
+    }
+    AjaxUserIsLoggedIn();
 
     // Knapp för att logga in
     $('#idLogInButton').click(function () {
+        $("#box").removeClass("hidden");
         $('#overlay').fadeIn(200, function () {
             $('#box').animate({ 'top': '200px' }, 200);
         });
@@ -180,28 +71,59 @@ $(document).ready(function () {
 
     // knapp för att logga ut
     $('#idSignOutButton').click(function () {
-        //TODO: göra anrop till server och loggas ut där också. 
+        userSignOut();
+    });
+    function userSignOut() {
+        $.ajax({
+            //TODO: "https://localhost:44336/api/v1.0/Users/Logout"                                       <------adress-----<<<
+            url: "../api/v1.0/Users/Logout",
+            contentType: 'application/json',
+
+            error: function (e) {
+                console.log("error sign out: " + e);
+                UserIsSignIn = true;
+            },
+            success: function (result, status) {
+                console.log("success signout: " + result)
+                UserIsSignIn = false;
+            }
+        });
+        //.done(function () {
+        //    UserSignOutStatus();
+        //});
+        // tvek att egentligen vänta på ajax
         UserIsSignIn = false;
+        UserSignOutStatus();
+    }
+    function UserSignOutStatus() {
         if (!UserIsSignIn) {
             $("#idSignOutButton").addClass("hidden");
             $("#idLogInButton").removeClass("hidden");
             $(".registerUser").removeClass("hidden");
+        } else {
+            $("#idSignOutButton").removeClass("hidden");
+            $("#idLogInButton").addClass("hidden");
+            $(".registerUser").addClass("hidden");
         }
-    });
+    }
 
     // knapp för att registrera sig
     $('.registerUser').click(function () {
+        $("#boxRegister").removeClass("hidden");
         $('#overlay').fadeIn(200, function () {
             $('#boxErrorRegister').animate({ 'top': '-200px' }, 500);
             $('#boxRegister').animate({ 'top': '200px' }, 200);
+            $("#boxErrorRegister").addClass("hidden");
         });
         return false;
     });
 
     // knapp för att öppna inloggning igen efter error att logga in
     $('.signinuseragain').click(function () {
+        $("#box").removeClass("hidden");
         $('#overlay').fadeIn(200, function () {
             $('#boxErrorLogin').animate({ 'top': '-200px' }, 500);
+            $("#boxErrorLogin").addClass("hidden");
             $('#box').animate({ 'top': '200px' }, 200);
         });
         return false;
@@ -211,12 +133,14 @@ $(document).ready(function () {
     $('#boxclose').click(function () {
         $('#box').animate({ 'top': '-200px' }, 500, function () {
             $('#overlay').fadeOut('fast');
+            $("#box").addClass("hidden");
         });
     });
     // knapp för att kryssa regristrerings-lådan
     $('#boxRegisterclose').click(function () {
         $('#boxRegister').animate({ 'top': '-200px' }, 500, function () {
             $('#overlay').fadeOut('fast');
+            $("#boxRegister").addClass("hidden");
         });
     });
     // knapp för att kryssa regristrerings-error-lådan
@@ -224,17 +148,23 @@ $(document).ready(function () {
         $('#boxErrorRegister').animate({ 'top': '-200px' }, 500, function () {
             $('#overlay').fadeOut('fast');
         });
+        $("#boxRegister").addClass("hidden");
+        $("#boxErrorRegister").addClass("hidden");
     });
     // knapp för att kryssa inloggnings-error-lådan
     $('#boxErrorLoginclose').click(function () {
         $('#boxErrorLogin').animate({ 'top': '-200px' }, 500, function () {
             $('#overlay').fadeOut('fast');
         });
+        $("#box").addClass("hidden");
+        $("#boxErrorLogin").addClass("hidden");
     });
 
     // submit-funktion för inloggning
     $('form#Loginform').on('submit', function (e) {
         e.preventDefault();
+        //få submittknapp att snurra
+        $btn = $(this).button('loading')
         // ta ut inputdata
         userName = document.forms["Loginform"]["mail"].value;
         userPassword = document.forms["Loginform"]["pword"].value;
@@ -244,47 +174,81 @@ $(document).ready(function () {
             // kolla så lösen är ok
             if (validatePassWord(userPassword)) {
 
-                // TODO: ajax till serven och logga in. Sätta värde på "UserIsSignIn"                       <-----------<<<
-                console.log("ajax call - sign in")
+                ajaxSignInUser(userName, userPassword);
 
-                message = "message if no good";
-                UserIsSignIn = true;
             } else {
                 message = "password is not valid";
                 UserIsSignIn = false;
+                UserSigninStatus();
                 return false;
             }
         }
         else {
-            message = "email is not correct";
+            message = "email is not correct.";
             UserIsSignIn = false;
+            UserSigninStatus();
             return false;
         }
+    });
+    function ajaxSignInUser(userName, userPassword) {
+        $.ajax({
+            type: "POST",
+            // TODO:     https://localhost:44336/token                                          // <------adress-----<<<
+            url: '../token',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { "username": userName, "password": userPassword },
+            dataType: 'json',
+
+            error: function (e) {
+                UserIsSignIn = false;
+                console.log("ajax call error " + e);
+                message = "ajax call error. ";
+                UserSigninStatus();
+            },
+            success: function (result, status) {
+                console.log("ajax call - success")
+                console.log(result);
+                UserIsSignIn = true;
+            }
+        }).done(function () {
+            UserSigninStatus();
+        });
+    }
+
+    function UserSigninStatus() {
+        // få knapp att sluta snurra
+        $btn.button('reset')
 
         // valideringen har gått igenom
         if (UserIsSignIn) {
-            $('#box').animate({ 'top': '-200px' }, 500, function () {
+            $('#box').animate({ 'top': '-200px' }, 200, function () {
                 $('#overlay').fadeOut('fast');
             });
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
+            $("#box").addClass("hidden");
             return false;
         }
             // nåt gick snett
         else if (!UserIsSignIn) {
             $(".result").text(message);
-            $(".result").css("color", "red");
             $('#box').animate({ 'top': '-200px' }, 500, function () {
                 $('#boxErrorLogin').animate({ 'top': '200px' }, 200);
+              
             });
+            $("#box").addClass("hidden");
+            $("#boxErrorLogin").removeClass("hidden");
             return false;
         }
-    });
+    }
 
     // submit-funktion för regristrering
     $('form#Registerform').on('submit', function (e) {
         e.preventDefault();
+        // få knapp att snurra  
+        $btn = $(this).button('loading')
+
         // ta ut inputdata
         userName = document.forms["Registerform"]["mail"].value;
         userPassword = document.forms["Registerform"]["pword"].value;
@@ -297,26 +261,83 @@ $(document).ready(function () {
                 // validera att lösenord är ok
                 if (validatePassWord(userPassword)) {
 
-                    // TODO: ajax till serven och logga in. Sätta värde på "UserIsSignIn"                       <-----------<<<
-                    console.log("ajax call - register and sign in")
+                    var ObjectElement = {};
+                    ObjectElement.Email = userName;
+                    ObjectElement.Password = userPassword;
+                    var theInput = JSON.stringify(ObjectElement);
 
-                    message = "message if no good";
-                    UserIsSignIn = true;
+                    ajaxRegisterUser(userName, userPassword, theInput);
+
                 } else {
-                    message = "password is not valid";
+                    message = "password is not valid.";
                     UserIsSignIn = false;
+                    UserRegisterStatus();
                     return false;
                 }
             } else {
-                message = "password does not match";
+                message = "password does not match.";
                 UserIsSignIn = false;
+                UserRegisterStatus();
                 return false;
             }
         } else {
-            message = "email is not correct";
+            message = "email is not correct.";
             UserIsSignIn = false;
+            UserRegisterStatus();
             return false;
         }
+    });
+    function ajaxRegisterUser(userName, userPassword, theInput) {
+        $.ajax({
+            type: "POST",
+            // TODO: https://localhost:44336/api/v1.0/Users                                   <------adress-----<<<
+            url: '../api/v1.0/Users',
+            contentType: 'application/json',
+            data: theInput,
+            dataType: 'json',
+
+            error: function (e) {
+                console.log("Error register: " + e);
+                message = "Error register.";
+                UserIsSignIn = false;
+                UserRegisterStatus();
+            },
+            success: function (result, status) {
+                console.log(result);
+                UserIsSignIn = true;
+            }
+        }).done(function () {
+            userSignInAfterRegister(userName, userPassword);
+
+        });
+    }
+
+    function userSignInAfterRegister(userName, userPassword) {
+        $.ajax({
+            type: "POST",
+            // TODO:   https://localhost:44336/token                                       <------adress-----<<<
+            url: '../token',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { "username": userName, "password": userPassword },
+            dataType: 'json',
+
+            error: function (e) {
+                UserIsSignIn = false;
+                console.log("ajax call - error sign in after register" + e);
+                message = "ajax call - error sign in after register. ";
+                UserRegisterStatus();
+            },
+            success: function (result, status) {
+                console.log(result);
+            }
+        }).done(function () {
+            UserRegisterStatus();
+        });
+    }
+
+    function UserRegisterStatus() {
+        // få knapp att sluta snurra
+        $btn.button('reset')
 
         if (UserIsSignIn) {
             $('#boxRegister').animate({ 'top': '-200px' }, 500, function () {
@@ -326,13 +347,16 @@ $(document).ready(function () {
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
+            $("#boxRegister").removeClass("hidden");
         } else if (!UserIsSignIn) {
             //sätt felmeddelande på error popup
             $(".result").text(message);
-            $(".result").css("color", "red");
-            $('#boxRegister').animate({ 'top': '-200px' }, 500, function () {
+            $('#boxRegister').animate({ 'top': '-200px' }, 200, function () {
                 $('#boxErrorRegister').animate({ 'top': '200px' }, 200);
             });
+            $("#boxRegister").addClass("hidden");
+            $("#boxErrorRegister").removeClass("hidden");
         }
-    });
+    }
+    /*END JS Sign in*/
 });

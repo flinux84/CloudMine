@@ -79,8 +79,8 @@ namespace CloudMineServer.Classes
         {
             using (var context = new CloudDbRepository(options))
             {
-                context.DataChunks.Add(new DataChunk { Id = 11, FileItemId = 1, Checksum = "aa11-checksum-fil", Data = new byte[10], PartName = "AudioInterface.png.part_1.2" });
-                context.DataChunks.Add(new DataChunk { Id = 22, FileItemId = 1, Checksum = "bb122-checksum-fil", Data = new byte[01], PartName = "AudioInterface.png.part_2.2" });
+                context.DataChunks.Add(new DataChunk { Id = 11, FileItemId = 1, Checksum = "aa11-checksum-fil", Data = new byte[10], PartName = "name.png.part_1.2" });
+                context.DataChunks.Add(new DataChunk { Id = 22, FileItemId = 1, Checksum = "bb122-checksum-fil", Data = new byte[01], PartName = "name.png.part_2.2" });
 
                 context.SaveChanges();
             }
@@ -90,8 +90,8 @@ namespace CloudMineServer.Classes
         {
             using (var context = new CloudDbRepository(options))
             {
-                context.DataChunks.Add(new DataChunk { Id = 11, FileItemId = 11, Data = new byte[10], PartName = "AudioInterface.png.part_1.2" });
-                context.DataChunks.Add(new DataChunk { Id = 22, FileItemId = 11, Data = new byte[01], PartName = "AudioInterface.png.part_2.2" });
+                context.DataChunks.Add(new DataChunk { Id = 11, FileItemId = 11, Data = new byte[10], PartName = "name.png.part_1.2" });
+                context.DataChunks.Add(new DataChunk { Id = 22, FileItemId = 11, Data = new byte[01], PartName = "name.png.part_2.2" });
 
                 context.SaveChanges();
             }
@@ -430,7 +430,7 @@ namespace CloudMineServer.Classes
                 var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
-                var result = await service.GetFiAndDc(FileItemId, userGuid);
+                var result = await service.GetSpecifikFileItemAndDataChunk(FileItemId, userGuid);
 
                 //Assert
                 Assert.Equal(2, context.DataChunks.Count());

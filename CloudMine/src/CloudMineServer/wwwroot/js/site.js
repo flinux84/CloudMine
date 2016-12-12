@@ -3,7 +3,9 @@ var uploadbutton;
 var uploadzone;
 var progressBar;
 var progressDiv;
-
+var arrayOfFileItems;
+var filetable;
+var append;
 
 $(document).ready(function () {
     dropzone = $("#dropzone");
@@ -11,15 +13,30 @@ $(document).ready(function () {
     progressDiv = $("#progressDiv");
     progressBar = $("#progressBar");
     progressFileLabel = $("#filelabel");
+    filetable = $("#filetable");
 
     //enable drag and drop functionality
     dragAndDrop(dropzone);
 
+    //create progressbar (and do a testrun)
     var probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
     probar.DoATestRun();
 
-    //progressbar skickas sedan in i fileuploader som inparameter och kan anropas med en int i procent samt filnamnet.
-
     //var fileuploader = new fileuploader(probar, targetfile[]);
+
+    //create html-appender
+    var append = new HTMLappender(filetable);
+
+    $.ajax({
+        type: "GET",
+        url: '../api/v1.0/FileItems/',
+        error: function (e) {
+            console.log(e);
+        },
+        success: function (result) {
+            append.appendTable(result);
+            Datatype: "json";
+        }
+    })
 
 });
