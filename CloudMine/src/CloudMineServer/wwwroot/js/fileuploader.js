@@ -42,6 +42,7 @@
         return theSize;
     }
 
+    //Läser checksum för filen som sedan skickas iväg som metadata.
     function GetSHA1(TargetFile, CarryOnCallback) {
         console.log(TargetFile);
         var file = TargetFile[0];
@@ -55,10 +56,12 @@
         console.log("Loading");
     }
 
+    //Får filändelsen av den valda filen, ex .pdf, .exe, .jpg..
     function GetFileExtension(filename) {
         return filename.split('.').pop();
     }
 
+    //Exekveras när man trycker på upload
     $('#engage').click(function () {
         console.log("hej");
         TargetFile = $('#selectedfile')[0].files;
@@ -67,6 +70,7 @@
         Checksum = GetSHA1(TargetFile, CarryOn);
     });
 
+    //Funktionen kallas på när checksum är OK, skapar ett objekt av fil-elementen.
     function CarryOn(hashCode) {
         
         ObjectElement.id = Id;        
@@ -96,19 +100,21 @@
     };
 
 
-    //Här är det tänkt att skicka metadata på filen som "ska" laddas upp.
+    //Här skickar vi metadatan och får tillbaks data.
     function SendData(theInput) {
 
         var FD = theInput;
         $.ajax({
             type: "POST",
-            url: 'http://localhost:56875/api/v1.0/FileItems/',
+            //url: 'http://localhost:56875/api/v1.0/FileItems/',
+            url: '../api/v1.0/FileItems/',
             contentType: 'application/json',
             dataType: 'json',
             data: FD,
             error: function (e) {
                 console.log(e);
             },
+            //Är det ok, så påbörjar vi metoden med att skicka datachunks av filen.
             success: function (result, status, jqHXR) {
                 var jsonUpdateData = result;
                 Datatype: "json",
@@ -118,60 +124,97 @@
         });
     };
 
+    //Delar upp filen, namnger den och skickar den vidare-
+    //till reader för att få de sista elementen innan det skickas.
     function UploadFile(jsonUpdateData, TargetFile) {
         var id;
         var FileID = jsonUpdateData.id;
+        console.log("!!!!!!!!!!!!!!!!!!!!!!")
+        console.log(FileID);
+        console.log("!!!!!!!!!!!!!!!!!!!!!!")
         var fileitemlist = null;
         var file = TargetFile[0];
         var EndPos = BufferChunkSize;
         var Size = file.size;
-        console.log("Andra");
+        
         while (FileStreamPos < Size) {
             FileChunk.push(file.slice(FileStreamPos, EndPos));
-            FileStreamPos = EndPos; // jump by the amount read
-            EndPos = FileStreamPos + BufferChunkSize; // set next chunk length
-            console.log("foreachFirst");
+            FileStreamPos = EndPos; // Hoppar för varje läst fil.
+            EndPos = FileStreamPos + BufferChunkSize; // sätter nästa chunk-längd.
+            
         }
 
         var TotalParts = FileChunk.length;
         var PartCount = 0;
 
         while (chunk = FileChunk.shift()) {
-
-            var blob = new Blob([chunk]);
+            console.log("BEGINS");
+            
+            var blob = new Blob([chunk], { type: 'application/octet-binary' });
+            //console.log(blob);
+            console.log("ENDS!");
             var promise = new Promise(ReadingTheBytesAndCheckSum);
             console.log("foreachsecond");
             promise.then(function (data) {
                 PartCount++;
-                console.log("test");
+                
                 var FilePartName = file.name + ".part_" + PartCount + "." + TotalParts;
                 var byteData = data.byteArray;
+                
+                console.log("????????");
                 console.log(byteData);
-                ChunkElement.Id = id;
-                ChunkElement.CheckSum = data.hashCode2;
-                ChunkElement.PartName = FilePartName;
-                ChunkElement.Data = byteData;
-                ChunkElement.FileItemId = FileID;
-                ChunkElement.FileItem = fileitemlist;
-                console.log(ChunkElement);
-                var theChunkFile = JSON.stringify(ChunkElement);
-                console.log("almost");
+                console.log("????????");
+                //ChunkElement.Id = id;
+                //ChunkElement.CheckSum = data.hashCode2;
+                //ChunkElement.PartName = FilePartName;
+                //ChunkElement.Data = byteData;
+                //ChunkElement.FileItemId = FileID;
+                //ChunkElement.FileItem = fileitemlist;
+                //console.log(ChunkElement);
+                //skickar som ett json-objekt
+                //var theInput = ChunkElement.serializeArray()
+                //console.log(theInput);
+                
+                //for (var x in ChunkElement) {
+                //    FD.append(x, ChunkElement[x]);
+                //}                             
+                var FD = new FormData();
+                FD.append('Id', id);
+                FD.append('PartName', FilePartName);
+                FD.append('Checksum', data.hashCode2);
+                
+                var ali = 1234;
+                // bblob = new Blob([byteData], { type: 'application/octet-binary' });
+                FD.append('Data', ali);
+                //FD.append('Data', bblob );
+                //for (var i = 0; i < byteData.length; i++) {
+                //    FD.append('Data[]', byteData[i]);
+                //}
+                FD.append('FileItemId', FileID);
+                console.log(FD);
+                
                 $.ajax({
                     type: "POST",
-                    url: 'http://localhost:56875/api/v1.0/FileItems/' + FileID,
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    data: theChunkFile,
+                    //url: 'http://localhost:56875/api/v1.0/FileItems/' + FileID,
+                    url: '../api/v1.0/FileItems/' + FileID,
+                    //contentType: 'multipart/form-data',
+                    contentType: false,
+                    //dataType: 'json',
+                    //datatype: false,
+                    processData: false,
+                    data: FD,
                     error: function (e) {
                         console.log(e);
                     },
                     success: function (result, status, jqHXR) {
                         var jsonUpdateData = result;
-                        Datatype: "json";
+                        //Datatype: "json";
+                        Datatype: false;
                     }
                 })
                 console.log("Done");
             });
+            //Läser checksum och binär data för chunken
             function ReadingTheBytesAndCheckSum(resolve) {
                 
                 var reader = new FileReader();
