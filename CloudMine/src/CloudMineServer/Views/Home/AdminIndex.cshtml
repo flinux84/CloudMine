@@ -1,0 +1,88 @@
+﻿@model IEnumerable<CloudMineServer.API_server.Controllers.UserInfo>
+
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/cloudmine.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+@*<form id="loginForm" method="post">
+    <label for="userName">user name:</label>
+    <input type="text" id="mail" name="userName" />
+
+    <label for="password">password:</label>
+    <input type="password" id="pword" name="password" />
+    <button type="submit">Login</button>
+</form>
+
+<script>
+
+ $('form#loginForm').on('submit', function (e) {
+                e.preventDefault();
+                var usermail = document.forms["loginForm"]["mail"].value;
+                var userpassword = document.forms["loginForm"]["pword"].value;
+                console.log(usermail + " " + userpassword);
+
+                $.ajax({
+                    type: "POST",
+                    url: '../token',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { "username": usermail, "password": userpassword },
+                    dataType: 'json',
+
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status, jqHXR) {
+                        Datatype: "json",
+                        console.log(result.access_token);
+                        return result.access_token;
+                    }
+                });
+            });
+</script>*@
+
+
+
+<div class="col-lg-10">
+    <section class="filelist">
+        <table class="filetable">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Storage size(kb)</th>
+                    <th>Used storage(kb)</th>                    
+                </tr>
+            </thead>
+            <tbody></tbody>
+           
+            @foreach(var user in Model)
+            {
+
+
+             <tr>
+                <td>
+                    @Html.DisplayFor(modelUser=>user.UserName)
+                </td>
+                <td>
+                    @(user.StorageSize/1000)                    
+                </td>
+                <td>
+                    @(user.UsedStorage/1000)
+                </td>
+                 <td>
+                     <a asp-action="Edit" asp-route-id="">Edit</a> |
+                     <a asp-action="Delete" asp-route-id="@user.UserName">Delete</a> |
+                 </td>
+            </tr>
+
+            }
+        </table>
+</section>
+</div>
+
+
+
+

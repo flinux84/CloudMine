@@ -5,7 +5,6 @@
 /// <reference path="js/fileuploader.js" />
 /// <reference path="js/progressbar.js" />
 /// <reference path="js/site.js" />
-/// <reference path="js/site.min.js" />
 /// <reference path="js/tokenlogin.js" />
 /// <reference path="lib/bootstrap/dist/js/bootstrap.js" />
 /// <reference path="lib/jquery/dist/jquery.js" />
