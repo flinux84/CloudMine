@@ -59,15 +59,14 @@
             //});
 
         }).done(function (result) {
-            console.log("result: " + result)
-            console.log("user auto check done!")
+            console.log("is user signin: "+result)
             UserIsSignIn = result;
         })
   .fail(function () {
       console.log("error Authenticated check");
   })
   .always(function () {
-      console.log("always - ajax user is signin ")
+      console.log("is user sign in always")
       UserSignOutStatus();
   });
 
@@ -105,14 +104,14 @@
             console.log("signout done")
             UserIsSignIn = false;
         })
-  .fail(function () {
-      console.log("signout fail")
-      UserIsSignIn = true;
-  })
-  .always(function () {
-      console.log("always - signout")
-      UserSignOutStatus();
-  });
+            .fail(function () {
+                console.log("signout fail")
+                UserIsSignIn = true;
+            })
+            .always(function () {
+                console.log("always - signout")
+                UserSignOutStatus();
+            });
 
         //UserIsSignIn = false;
         //UserSignOutStatus();
@@ -151,36 +150,44 @@
         return false;
     });
 
-    // knapp för att kryssa inloggnings-lådan
-    $('#boxclose').click(function () {
-        $('#box').animate({ 'top': '-200px' }, 500, function () {
-            $('#overlay').fadeOut('fast');
-            $("#box").addClass("hidden");
-        });
+    //// knapp för att kryssa inloggnings-lådan
+    //$('#boxclose').click(function () {
+    //    $('#box').animate({ 'top': '-200px' }, 500, function () {
+    //        $('#overlay').fadeOut('fast');
+    //        $("#box").addClass("hidden");
+    //    });
+    //});
+    //// knapp för att kryssa regristrerings-lådan
+    //$('#boxRegisterclose').click(function () {
+    //    $('#boxRegister').animate({ 'top': '-200px' }, 500, function () {
+    //        $('#overlay').fadeOut('fast');
+    //        $("#boxRegister").addClass("hidden");
+    //    });
+    //});
+    //// knapp för att kryssa regristrerings-error-lådan
+    //$('#boxErrorclose').click(function () {
+    //    $('#boxErrorRegister').animate({ 'top': '-200px' }, 500, function () {
+    //        $('#overlay').fadeOut('fast');
+    //    });
+    //    $("#boxRegister").addClass("hidden");
+    //    $("#boxErrorRegister").addClass("hidden");
+    //});
+    //// knapp för att kryssa inloggnings-error-lådan
+    //$('#boxErrorLoginclose').click(function () {
+    //    $('#boxErrorLogin').animate({ 'top': '-200px' }, 500, function () {
+    //        $('#overlay').fadeOut('fast');
+    //    });
+    //    $("#box").addClass("hidden");
+    //    $("#boxErrorLogin").addClass("hidden");
+    //});
+
+    //one x to x them all 
+    $('.boxclose').click(function () {
+        $('.box').animate({ 'top': '-200px' }, 500);
+        $('#overlay').fadeOut('fast');
+        $(".box").addClass("hidden");
     });
-    // knapp för att kryssa regristrerings-lådan
-    $('#boxRegisterclose').click(function () {
-        $('#boxRegister').animate({ 'top': '-200px' }, 500, function () {
-            $('#overlay').fadeOut('fast');
-            $("#boxRegister").addClass("hidden");
-        });
-    });
-    // knapp för att kryssa regristrerings-error-lådan
-    $('#boxErrorclose').click(function () {
-        $('#boxErrorRegister').animate({ 'top': '-200px' }, 500, function () {
-            $('#overlay').fadeOut('fast');
-        });
-        $("#boxRegister").addClass("hidden");
-        $("#boxErrorRegister").addClass("hidden");
-    });
-    // knapp för att kryssa inloggnings-error-lådan
-    $('#boxErrorLoginclose').click(function () {
-        $('#boxErrorLogin').animate({ 'top': '-200px' }, 500, function () {
-            $('#overlay').fadeOut('fast');
-        });
-        $("#box").addClass("hidden");
-        $("#boxErrorLogin").addClass("hidden");
-    });
+    //END one x to x them all out
 
     // submit-funktion för inloggning
     $('form#Loginform').on('submit', function (e) {
@@ -239,13 +246,17 @@
         }).done(function () {
             console.log("ajax call - success")
             UserIsSignIn = true;
-            UserSigninStatus();
+            //  UserSigninStatus();
         })
   .fail(function () {
       UserIsSignIn = false;
       message = "ajax call error. ";
-      UserSigninStatus();
-  });
+      // UserSigninStatus();
+  })
+            .always(function () {
+                console.log("sign in always")
+                UserSigninStatus();
+            });
 
     }
 
@@ -269,7 +280,6 @@
             $(".result").text(message);
             $('#box').animate({ 'top': '-200px' }, 500, function () {
                 $('#boxErrorLogin').animate({ 'top': '200px' }, 200);
-
             });
             $("#box").addClass("hidden");
             $("#boxErrorLogin").removeClass("hidden");
