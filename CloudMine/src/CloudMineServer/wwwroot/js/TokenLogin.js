@@ -75,6 +75,7 @@
     });
     function userSignOut() {
         $.ajax({
+            type: "POST",
             //TODO: "https://localhost:44336/api/v1.0/Users/Logout"                                       <------adress-----<<<
             url: "../api/v1.0/Users/Logout",
             contentType: 'application/json',
