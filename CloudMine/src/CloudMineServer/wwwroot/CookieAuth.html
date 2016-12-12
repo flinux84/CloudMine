@@ -3,43 +3,49 @@
 <head>
     <meta charset="utf-8" />
     <title>CookieAuth</title>
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
 </head>
 <body>
-    <h2>Test area</h2>
+    <div class="col-md-10">
+        <h2>Test area</h2>
 
-    <form id="loginForm" method="post">
-        <label for="userName">user name:</label>
-        <input type="text" id="mail" name="userName" />
+        <form id="loginForm" method="post">
+            <label for="userName">user name:</label>
+            <input type="text" id="mail" name="userName" />
 
-        <label for="password">password:</label>
-        <input type="password" id="pword" name="password" />
-        <button type="submit">Login</button>
-    </form>
-    
+            <label for="password">password:</label>
+            <input type="password" id="pword" name="password" />
+            <button type="submit">Login</button>
+        </form>
+
         <form id="testAuthForm" method="get">
             <p>
                 <button type="button" id="testBtn">testAuth</button>
-                <button type="button" id="isLoggedInBtn">isLoggedIn(true/false)</button>
-                <button type="button" id="authCodeBtn">authCodeCheck</button>
+                <button type="button" id="isLoggedInBtn">isLoggedIn</button>
+                <button type="button" id="allUsersBtn">api/Users</button>
+                <button type="button" id="UsersIdBtn">api/Users/id</button>
             </p>
-       </form>
-    
+        </form>
 
-    
+
+
         <form id="logoutAuthForm" method="get">
             <p>
                 <button type="button" id="logoutBtn">Logout</button>
             </p>
         </form>
-    
-
-    <p>
-        <a href="/api/v1.0/GetFile/NoDisk/24" download>Download item 24</a>
-    </p>
 
 
+        <p>
+            <a href="/api/v1.0/GetFile/NoDisk/24" download>Download item 24</a>
+        </p>
+        <div class="col-md-11" id="result">
+
+        </div>
+    </div>
 
         <script src="lib/jquery/dist/jquery.js"></script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
         <script>
             $('#testBtn').click(function (e) {
                 e.preventDefault();
@@ -50,6 +56,7 @@
                         console.log(e);
                     },
                     success: function (result, status) {
+
                         console.log(result);
                         console.log(status);
                     }
@@ -62,9 +69,11 @@
                     url: "../api/v1.0/Users/Logout",
                     contentType: 'application/json',
                     error: function (e) {
+                        $('#result').prepend('<p>Logout error</p>');
                         console.log(e);
                     },
                     success: function (result, status) {
+                        $('#result').prepend('<p>logged out</p>');
                         console.log(result);
                         console.log(status);
                     }
@@ -90,6 +99,7 @@
                     success: function (result, status, jqHXR) {
                         Datatype: "json",
                         console.log("access_token: " + result.access_token);
+                        $('#result').prepend('<p>token: ' + result.access_token + '</p>');
                         return result.access_token;
                     }
                 });
@@ -105,6 +115,7 @@
                         console.log(e);
                     },
                     success: function (result, status) {
+                        $('#result').prepend('<p>' + result + '</p>')
                         console.log(result);
                         console.log(status);
                     }
@@ -120,11 +131,53 @@
                         console.log(e);
                     },
                     success: function (result, status) {
+                        $('#result').prepend('<p>'+result+'</p>')
                         console.log(result);
                         console.log(status);
                     }
                 });
             });
+
+            $('#allUsersBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/v1.0/Users",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        result.forEach(function (user) {
+                            $("#result").prepend(
+                                "<p>UserName: " + user.userName + ", "
+                                + "NumberFiles: " + user.numberFiles + ", UsedStorage: "
+                                + user.usedStorage + ", StorageSize: " + user.storageSize + "</p>");
+                        });
+                        
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+            $('#UsersIdBtn').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../api/v1.0/Users/andreasbrandt@gmail.com",
+                    contentType: 'application/json',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result, status) {
+                        $("#result").prepend(
+                            "<p>userName: " + result.userName + ", "
+                            + "NumberFiles: " + result.numberFiles + ", UsedStorage: "
+                            + result.usedStorage + ", StorageSize: " + result.storageSize + "</p>");
+                        console.log(result);
+                        console.log(status);
+                    }
+                });
+            });
+
         </script>
 </body>
 </html>
