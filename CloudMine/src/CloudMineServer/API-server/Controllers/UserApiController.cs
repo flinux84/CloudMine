@@ -8,15 +8,17 @@ using Microsoft.AspNetCore.Identity;
 using CloudMineServer.Models;
 using CloudMineServer.Interface;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Encodings.Web;
 
 namespace CloudMineServer.API_server.Controllers
 {
-    // TODO: Make new controller for admin or remake this one
+    // TODO: Make new controller for regular users and make this one admin only
     [Produces("application/json")]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/Users")]
     public class UserApiController : Controller
     {
+        private static readonly int _defaultStorageSize = 100000000;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICloudMineDbService _cloudMineDbService;
 
@@ -34,8 +36,8 @@ namespace CloudMineServer.API_server.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser { Email = userRegistration.Email, UserName = userRegistration.Email};
-            user.StorageSize = 100000000;
+            var user = new ApplicationUser { Email = userRegistration.Email, UserName = userRegistration.Email };
+            user.StorageSize = _defaultStorageSize;
 
             var result = await _userManager.CreateAsync(user, userRegistration.Password);
             if (result.Succeeded)
@@ -46,17 +48,18 @@ namespace CloudMineServer.API_server.Controllers
             return BadRequest();
         }
 
+        #region AdminActions
+
         [Authorize]
         [HttpGet("{userEmail}")]
         public async Task<IActionResult> GetUserInfo([FromRoute]string userEmail)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            if(user.Email == userEmail)
-                return Ok(await GetUserInfo(user));
-            return BadRequest("Wrong email");
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if(user == null)
+                return BadRequest($"User {userEmail} not found");
+            return Ok(await GetUserInfo(user));
         }
 
-        // TODO: Should probably be available for admin role only
         [Authorize]
         [HttpGet]
         public async Task<List<UserInfo>> GetUsersInfos()
@@ -64,7 +67,6 @@ namespace CloudMineServer.API_server.Controllers
             var users = _userManager.Users.ToList();
             var allUserInfos = new List<UserInfo>();
 
-            //users.ForEach(async u => allUserInfos.Add(await GetUserInfo(u)));
             foreach (var user in users)
             {
                 var userInfo = await GetUserInfo(user);
@@ -74,31 +76,63 @@ namespace CloudMineServer.API_server.Controllers
         }
 
 
-        // Change user settings
+        // Change user settings, only storage for now
         [Authorize]
         [HttpPut("{userEmail}")]
         public async Task<IActionResult> PutUserInfo([FromRoute]string userEmail, [FromBody]UserInfo userInfo)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            if (user.Email != userEmail)
-                return BadRequest();
-
+            var user = await _userManager.FindByEmailAsync(userEmail);
             var oldUserInfo = await GetUserInfo(user);
+
             if (oldUserInfo.UsedStorage > userInfo.StorageSize)
                 return BadRequest("Cant shrink storage to less than your used storage!");
-            
+
             user.StorageSize = userInfo.StorageSize;
             await _userManager.UpdateAsync(user);
             return Ok(userInfo);
         }
-        //[HttpDelete]
-        //public async Task<UserInfo> DeleteUser([FromRoute]string userEmail)
-        //{
 
-        //}
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser([FromRoute]string userEmail)
+        {
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            var result = await _userManager.DeleteAsync(user);
+            if (result == IdentityResult.Success)
+                return Ok();
+            return BadRequest($"Could not delete user: {userEmail}");
+        }
 
+        #endregion
 
+        #region NonAdminActions
 
+        [Route("Logout")]
+        [Authorize]
+        [HttpGet]
+        public IActionResult LogoutUser()
+        {
+            var cookieValue = HtmlEncoder.Default.Encode(Request.Cookies["access_token"]);
+            Response.Cookies.Append(
+                "access_token",
+                cookieValue,
+                new CookieOptions
+                {
+                    Path = "/",
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTime.Now.AddYears(-1)
+                });
+            return Ok();
+        }
+
+        [HttpGet("IsLoggedIn")]
+        public bool GetLoginStatus() => User.Identity.IsAuthenticated;
+
+        [Authorize]
+        [HttpGet("LoginCode")]
+        public IActionResult EmptyLoginCheck() => new OkResult();
+
+        #endregion
 
         private async Task<UserInfo> GetUserInfo(ApplicationUser user)
         {

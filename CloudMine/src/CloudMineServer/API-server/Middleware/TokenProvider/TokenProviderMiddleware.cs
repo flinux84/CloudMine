@@ -18,18 +18,18 @@ namespace CloudMineServer.Middleware.TokenProvider
     {
         private readonly RequestDelegate _next;
         private readonly TokenProviderOptions _options;
-        //private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public TokenProviderMiddleware(
             RequestDelegate next,
             IOptions<TokenProviderOptions> options,
-            //UserManager<ApplicationUser> userManager,
+            UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
             _next = next;
             _options = options.Value;
-            //_userManager = userManager;
+            _userManager = userManager;
             _signInManager = signInManager;
         }
 
@@ -65,7 +65,7 @@ namespace CloudMineServer.Middleware.TokenProvider
                 await context.Response.WriteAsync("Invalid username or password.");
                 return;
             }
-
+            
             var now = DateTime.UtcNow;
             var unixTimeStamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
@@ -73,19 +73,23 @@ namespace CloudMineServer.Middleware.TokenProvider
             // You can add other claims here, if you want:
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Sub, identity.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, unixTimeStamp.ToString(), ClaimValueTypes.Integer64)
+                new Claim(JwtRegisteredClaimNames.Iat, unixTimeStamp.ToString(), ClaimValueTypes.Integer64),
+                new Claim(JwtRegisteredClaimNames.Email, username)                
             };
 
             // Create the JWT and write it to a string
-            var jwt = new JwtSecurityToken(
-                issuer: _options.Issuer,
-                audience: _options.Audience,
-                claims: claims,
-                notBefore: now,
-                expires: now.Add(_options.Expiration),
-                signingCredentials: _options.SigningCredentials);
+            var jwt = 
+                new JwtSecurityToken(
+                    issuer: _options.Issuer,
+                    audience: _options.Audience,
+                    claims: claims,
+                    notBefore: now,
+                    expires: now.Add(_options.Expiration),
+                    signingCredentials: _options.SigningCredentials
+                );
+
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var response = new
@@ -94,22 +98,33 @@ namespace CloudMineServer.Middleware.TokenProvider
                 expires_in = (int)_options.Expiration.TotalSeconds
             };
 
+
+            // Set the response cookie
+
+            context.Response.Cookies.Append(
+                "access_token",
+                response.access_token,
+                new CookieOptions
+                {
+                    Path = "/",
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTime.Now.AddYears(1)
+                });
+
             // Serialize and return the response
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
 
-        private async Task<ClaimsIdentity> GetIdentity(string username, string password)
+        //private async Task<ClaimsIdentity> GetIdentity(string username, string password)
+        private async Task<ApplicationUser> GetIdentity(string username, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
-            // DON'T do this in production, obviously!
-            //if (username == "TEST" && password == "TEST123")
-            if(result.Succeeded)
-            {
-                return new ClaimsIdentity(new System.Security.Principal.GenericIdentity(username, "Token"), new Claim[] { });
-            }
-
-            // Credentials are invalid, or account doesn't exist
+            var user =  await _userManager.FindByNameAsync(username);
+            bool passwordOk = await _userManager.CheckPasswordAsync(user, password);
+            if (user != null && passwordOk)
+                return user;
+            
             return null;
         }
     }

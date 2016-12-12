@@ -30,7 +30,7 @@ namespace CloudMineServerTest
 
             var fileitem = new FileItem() {
                 Id = 1,
-                Checksum = new Guid("BE043E20-DBCD-4CA2-9000-0B2AB8BAE19E"),
+          //      Checksum = new Guid("BE043E20-DBCD-4CA2-9000-0B2AB8BAE19E"),
                 DataType = ".png",
                 Description = "En bild",
                 FileName = "banan.png",
@@ -46,20 +46,20 @@ namespace CloudMineServerTest
 
 
 
-        [Fact]
-        public void FileMergOK()
-        {
-            //Arrange
-            var merger = new FileMerge();
+        ////[Fact]
+        ////public void FileMergOK()
+        ////{
+        ////    //Arrange
+        ////    var merger = new FileMerge();
 
-            //Act
-            var uri = merger.MakeFile(CreateFileItem("banan.png"));
-            var test = uri.AbsolutePath;
+        ////    //Act
+        ////    var uri = merger.MakeFile(CreateFileItem("banan.png"));
+        ////    var test = uri.AbsolutePath;
 
-            //Assert
-            Assert.IsAssignableFrom<Uri>(uri);
-            Assert.NotNull(uri);
-        }
+        ////    //Assert
+        ////    Assert.IsAssignableFrom<Uri>(uri);
+        ////    Assert.NotNull(uri);
+        ////}
 
         //[Fact]
         //public async void FileMergeThrowsException()
