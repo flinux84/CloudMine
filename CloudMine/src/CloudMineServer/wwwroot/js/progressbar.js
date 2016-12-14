@@ -24,7 +24,7 @@ var ProgressBar = function (divDOM, barDOM, fileDOM) {
         }     
     }
 
-    function clear() {
+function clear() {
         width = 0;
         divDOM.css('display', 'none');
         barDOM.text('');

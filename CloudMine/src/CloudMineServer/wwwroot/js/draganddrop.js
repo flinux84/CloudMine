@@ -44,6 +44,7 @@ function dragDropUpload(files, dropzone,progress) {
         console.log("Uploading file " + files[i].name);
 
         var uploader = new TheFileUploader(progress);
-        uploader.Upload(files[i]);
+        var fid = uploader.Upload(files[i]);
+        GetFileItem(fid);
     }
 }

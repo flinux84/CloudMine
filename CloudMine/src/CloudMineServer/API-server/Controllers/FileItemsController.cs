@@ -150,9 +150,10 @@ namespace CloudMineServer.API_server.Controllers {
         [HttpPost( "{id:int}" )]
         public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
 
+            //Kolla dataChunk checksum om den redan finns, finns den så returnera ett error som javascriptet kan se och fortsätta på nästa chunk.
+            //returna isåfall statuscode 409
             for (int i = 0; i < Request.Form.Files.Count; i++)
             {
-
                 var file = Request.Form.Files[i];
                 dataChunk.Data = StreamToArray(file.OpenReadStream());
             }
