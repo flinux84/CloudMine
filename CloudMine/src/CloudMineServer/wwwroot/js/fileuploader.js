@@ -82,7 +82,7 @@
     function SendNextPart(ChunkArray, PartCount) {
         var chunk = ChunkArray.shift();
         if (chunk == null) {
-            GetFileItem(FileID);
+            GetFileItem(FileID);            
             return;}
         PartCount++;
 
