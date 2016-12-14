@@ -1,12 +1,10 @@
 ﻿var progressFileLabel;
-var uploadbutton;
-var uploadzone;
 var progressBar;
 var progressDiv;
-var arrayOfFileItems;
 var filetable;
 var append;
-
+var uploader;
+var probar;
 
 $(document).ready(function () {
     dropzone = $("#dropzone");
@@ -15,35 +13,45 @@ $(document).ready(function () {
     progressBar = $("#progressBar");
     progressFileLabel = $("#filelabel");
     filetable = $("#filetable");
-    //jQuery.sha1 = sha;
-    //enable drag and drop functionality
-    dragAndDrop(dropzone);
 
-    //create progressbar (and do a testrun)
-    var probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
-    probar.DoATestRun();
+    //create progressbar
+    probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
+
+    //enable drag and drop functionality
+    dragAndDrop(dropzone, probar);
+
 
     //setup fileuploader.js
-    var load = new JSuploader(uploadform, probar);
-    
-    uploadform.change(function () {
-        load.UploadMyFile();
-    })
-    //var fileuploader = new fileuploader(probar, targetfile[]);
+    uploader = new TheFileUploader(probar);
 
     //create html-appender
-    var append = new HTMLappender(filetable);
+    append = new HTMLappender(filetable);
+
+    //upload a file
+    uploadform.change(function () {
+        var fid = uploader.Upload(uploadform[0].files[0]);
+        GetFileItem(fid);
+    })
 
     //list all files
-    $.ajax({
-        type: "GET",
-        url: '../api/v1.0/FileItems/',
-        error: function (e) {
-            console.log(e);
-        },
-        success: function (result) {
-            append.appendTable(result);
-            Datatype: "json";
-        }
-    })
+    GetFileItems();
+
+    ////list specific file
+    //function listNewFileItem(fileitemId) {
+    //    $.ajax({
+    //        type: "GET",
+    //        url: '../api/v1.0/FileItems/' + fileitemId
+    //    }).done(function (result) {
+    //        append.appendTable(result);
+    //        Datatype: "json";
+    //    }).fail(function (e) {
+    //        console.log(e);
+    //    })
+    //}
+
+    //function DeleteFileItem(fileitemId) {
+    //    console.log("delete " + fileitemId);
+    //}
+
+
 });
