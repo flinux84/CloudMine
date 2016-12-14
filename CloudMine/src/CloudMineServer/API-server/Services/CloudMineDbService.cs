@@ -66,7 +66,7 @@ namespace CloudMineServer.Classes
             return false;
         }
 
-        // Kolla om chunken finns redan på chunks
+        // Kolla om chunken finns redan på dataChunks genom att kolla på checksum. 
         public async Task<bool> CheckChecksum(string userId, string checksum)
         {
             var ListFileItems = await _context.FileItems.Include(fi => fi.DataChunks).Where(x => x.UserId == userId).Select(x => x.DataChunks).ToListAsync();
@@ -101,20 +101,22 @@ namespace CloudMineServer.Classes
         public async Task<bool> DoesAllChunksExist(int fileItemID)
         {
             var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(y => y.FileItemId == fileItemID);
-            if(firstDataChunk == null)
-            {
-                // Det finns inga datachunks alls..
-                return false;
-            }
+          
             var NumberOfChunksInSequence = firstDataChunk.NumberOfChunksInSequence();
+
+            //lista med datachunks som tillhör ett fileitem
+            //var ListFileItems = await _context.FileItems.Include(t => t.DataChunks).Where(x => x.Id == fileItemID).Select(x => x.DataChunks).ToListAsync();
+            //var acdc = ListFileItems.Count();
 
             var fi = _context.FileItems.Include(w => w.DataChunks).FirstOrDefault(z => z.Id == fileItemID);
             var actualChunksInFileItem = fi.DataChunks.Count();
 
             if(actualChunksInFileItem == NumberOfChunksInSequence)
             {
+                // Antalet chunks stämmer med antalet som ska finnas 
                 return true;
             }
+            // Antalet chunks som ska finnas och antalet som faktiskt finns stämmer inte
             return false;
         }
 
