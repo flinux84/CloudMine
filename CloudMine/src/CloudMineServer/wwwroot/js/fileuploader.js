@@ -77,7 +77,10 @@
     //skickar nästa chunk efter att ha genererat checksum för chunken
     function SendNextPart(ChunkArray, PartCount) {
         var chunk = ChunkArray.shift();
-        if (chunk == null) { return; }
+        if (chunk == null) {
+            GetFileItem(FileID);
+            return;
+        }
         PartCount++;
 
         blob = new Blob([chunk], { type: 'application/octet-binary' });
