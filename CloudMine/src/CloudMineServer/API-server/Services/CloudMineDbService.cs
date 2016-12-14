@@ -66,7 +66,7 @@ namespace CloudMineServer.Classes
             return false;
         }
 
-        // Kolla om chunken finns redan
+        // Kolla om chunken finns redan på chunks
         public async Task<bool> CheckChecksum(string userId, string checksum)
         {
             var ListFileItems = await _context.FileItems.Include(fi => fi.DataChunks).Where(x => x.UserId == userId).Select(x => x.DataChunks).ToListAsync();
@@ -74,10 +74,46 @@ namespace CloudMineServer.Classes
 
             if (checkSums == null)
                 return false;
-            foreach(var c in checkSums)
+            foreach (var c in checkSums)
             {
                 if (c == checksum)
                     return true;
+            }
+            return false;
+        }
+
+        // Kolla om chunken finns redan på FileItem 
+        // TODO: test
+        public async Task<bool> CheckChecksumOnFileItem(string userId, string checksum)
+        {
+            var ListFileItems = await _context.FileItems.Where(x => x.UserId == userId).ToListAsync();
+            var checkSums = ListFileItems.Any(y => y.Checksum == checksum);
+
+            if (!checkSums)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        //TODO: om fileitem redan finns, kolla first default på cunken, ta ut part name. kolla om det finns så många chunks som den säger ska finnas. retunera bool. 
+        // TODO: Test
+        public async Task<bool> DoesAllChunksExist(int fileItemID)
+        {
+            var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(y => y.FileItemId == fileItemID);
+            if(firstDataChunk == null)
+            {
+                // Det finns inga datachunks alls..
+                return false;
+            }
+            var NumberOfChunksInSequence = firstDataChunk.NumberOfChunksInSequence();
+
+            var fi = _context.FileItems.Include(w => w.DataChunks).FirstOrDefault(z => z.Id == fileItemID);
+            var actualChunksInFileItem = fi.DataChunks.Count();
+
+            if(actualChunksInFileItem == NumberOfChunksInSequence)
+            {
+                return true;
             }
             return false;
         }
