@@ -135,7 +135,7 @@ namespace CloudMineServer.API_server.Controllers {
             }
 
             // checksum
-            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), fileItem.Checksum);
+            bool checksumExists = await _context.CheckChecksumOnFileItem(User.GetUserId(), fileItem.Checksum);
             if (checksumExists)
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
