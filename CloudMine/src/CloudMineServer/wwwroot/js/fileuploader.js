@@ -47,6 +47,10 @@
             data: theFileItem,
             error: function (e) {
                 console.log(e);
+                if (e.error = 409) {
+                    alert("The file already exists");
+                    return;
+                }
             },
             //Är det ok, så påbörjar vi metoden med att skicka datachunks av filen.
             success: function (result, status, jqHXR) {
@@ -78,9 +82,8 @@
     function SendNextPart(ChunkArray, PartCount) {
         var chunk = ChunkArray.shift();
         if (chunk == null) {
-            GetFileItem(FileID);
-            return;
-        }
+            GetFileItem(FileID);            
+            return;}
         PartCount++;
 
         blob = new Blob([chunk], { type: 'application/octet-binary' });
@@ -111,6 +114,15 @@
                 data: FD,
                 error: function (e) {
                     console.log(e);
+                    if (e.error = 409) {
+                        SendNextPart(ChunkArray, PartCount);
+                        var percent = Math.round((PartCount / TotalCount) * 100)
+                        progress.updateProgress(percent, actualFile.name);
+                    }
+                    if (e.error = 422) {
+                        alert("Please re-upload the file"+ actualFile.name);
+                    }
+                   
                 },
                 success: function (result) {
                     var jsonUpdateData = result;
@@ -129,8 +141,12 @@
             var reader = new FileReader();
             reader.onload = function (event) {
                 var binary = event.target.result;
+                console.log("hej");
+                
+                console.log(binary);
+                console.log("hejdå");
                 var hashCode2 = $.sha1(binary);
-                var theObject = { hashCode2};
+                var theObject = {hashCode2};
                 resolve(theObject);
             };
             reader.readAsArrayBuffer(blob);
