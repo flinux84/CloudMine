@@ -58,7 +58,7 @@ namespace CloudMineServer.API_server.Controllers
         [HttpGet("NoDisk/{id:int}")]
         public async Task<IActionResult> GetFileNoDisk([FromRoute]int id)
         {
-            var fileItem = await _context.GetSpecifikFileItemAndDataChunk(id, User.GetUserId());
+            var fileItem = await _context.GetFileByIdUsingAPI(id);
             if (fileItem == null)
                 return BadRequest("File does not exist");
 

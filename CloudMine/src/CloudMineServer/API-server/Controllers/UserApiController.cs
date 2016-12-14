@@ -45,7 +45,7 @@ namespace CloudMineServer.API_server.Controllers
                 return CreatedAtAction("Get", new { userName = user.UserName }, new UserInfo { UserName = user.UserName, StorageSize = user.StorageSize });
             }
 
-            return BadRequest();
+            return BadRequest(result.Errors.First().Description);
         }
 
         #region AdminActions
@@ -92,7 +92,8 @@ namespace CloudMineServer.API_server.Controllers
             return Ok(userInfo);
         }
 
-        [HttpDelete]
+        [Authorize]
+        [HttpDelete("{userEmail}")]
         public async Task<IActionResult> DeleteUser([FromRoute]string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
@@ -132,6 +133,11 @@ namespace CloudMineServer.API_server.Controllers
         [HttpGet("LoginCode")]
         public IActionResult EmptyLoginCheck() => new OkResult();
 
+
+        [Authorize]
+        [HttpGet("IsAdmin")]
+        public bool IsAdmin() => User.IsInRole("admin");
+        
         #endregion
 
         private async Task<UserInfo> GetUserInfo(ApplicationUser user)

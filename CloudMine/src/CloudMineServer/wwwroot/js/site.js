@@ -7,26 +7,33 @@ var arrayOfFileItems;
 var filetable;
 var append;
 
+
 $(document).ready(function () {
     dropzone = $("#dropzone");
-    uploadbutton = $("upload");
+    uploadform = $("#uploadFile");
     progressDiv = $("#progressDiv");
     progressBar = $("#progressBar");
     progressFileLabel = $("#filelabel");
     filetable = $("#filetable");
 
-    //enable drag and drop functionality
-    dragAndDrop(dropzone);
-
-    //create progressbar (and do a testrun)
+    //create progressbar
     var probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
-    probar.DoATestRun();
 
-    //var fileuploader = new fileuploader(probar, targetfile[]);
+    //enable drag and drop functionality
+    dragAndDrop(dropzone, probar);
+
+
+    //setup fileuploader.js
+    var newloader = new TheFileUploader(probar);
+
+    uploadform.change(function () {
+        newloader.Upload(uploadform[0].files[0])
+    })
 
     //create html-appender
     var append = new HTMLappender(filetable);
 
+    //list all files
     $.ajax({
         type: "GET",
         url: '../api/v1.0/FileItems/',
@@ -38,5 +45,4 @@ $(document).ready(function () {
             Datatype: "json";
         }
     })
-
 });
