@@ -133,6 +133,14 @@ namespace CloudMineServer.API_server.Controllers {
             if( !ModelState.IsValid ) {
                 return BadRequest( ModelState );
             }
+
+            // checksum
+            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), fileItem.Checksum);
+            if (checksumExists)
+            {
+                return new StatusCodeResult(StatusCodes.Status409Conflict);
+            }
+
             //Uppdatera userId på fileItem innan vi skickar den till business layer
             fileItem.UserId = User.GetUserId();
 
