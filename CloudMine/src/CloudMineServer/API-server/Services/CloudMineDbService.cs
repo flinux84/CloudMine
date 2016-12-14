@@ -66,7 +66,7 @@ namespace CloudMineServer.Classes
             return false;
         }
 
-        // Kolla om chunken finns redan
+        // Kolla om chunken finns redan på chunks
         public async Task<bool> CheckChecksum(string userId, string checksum)
         {
             var ListFileItems = await _context.FileItems.Include(fi => fi.DataChunks).Where(x => x.UserId == userId).Select(x => x.DataChunks).ToListAsync();
@@ -80,6 +80,20 @@ namespace CloudMineServer.Classes
                     return true;
             }
             return false;
+        }
+
+        // Kolla om chunken finns redan på FileItem 
+        // TODO: test
+        public async Task<bool> CheckChecksumOnFileItem(string userId, string checksum)
+        {
+            var ListFileItems = await _context.FileItems.Where(x => x.UserId == userId).ToListAsync();
+            var checkSums = ListFileItems.Any(y => y.Checksum == checksum);
+
+           if(!checkSums)
+            {
+                return false;
+            }
+            return true;
         }
 
         // Create Add DataChunk
