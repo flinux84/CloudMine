@@ -1,6 +1,6 @@
 ﻿var table;
 var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
-var deletebutton = '<span class=\"glyphicon glyphicon-remove-sign\"></span>';
+//var deletebutton = '<span class=\"glyphicon glyphicon-remove-sign\" onClick=\"DeleteFileItem()"></span>';
 
 var HTMLappender = function (element) {
     table = element;
@@ -14,12 +14,10 @@ var HTMLappender = function (element) {
                 + '</td><td>' + result[i].dataType
                 + '</td><td>' + result[i].description
                 + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\">' 
-                + downloadbutton + '</a></td></tr>');
+                + downloadbutton + '</a>'
+                + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'onClick=DeleteFileItem('
+                + result[i].id + ')>' + '</span>' + '</td></tr>');
         }         
     }
     
-    HTMLappender.prototype.removefromTable = function (result) {
-
-    }
-
 }

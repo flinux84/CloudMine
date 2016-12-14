@@ -7,12 +7,13 @@
     var TotalCount;
     var FileItem = {};
     var ChunkArray = [];
-    var FileId;
+    var FileID;
     var actualFile;
 
     TheFileUploader.prototype.Upload = function (file) {
         actualFile = file;
         GetSHA1();
+        return FileID;
     }
 
     //Läser checksum för filen som sedan skickas iväg som metadata.
@@ -50,7 +51,7 @@
             //Är det ok, så påbörjar vi metoden med att skicka datachunks av filen.
             success: function (result, status, jqHXR) {
                 Datatype: "json",
-                console.log("Första");
+                console.log("File metadata sent");
                 UploadChunks(result);
             }
         });
@@ -114,6 +115,7 @@
                     SendNextPart(ChunkArray, PartCount)
                     var percent = Math.round((PartCount / TotalCount) * 100)
                     progress.updateProgress(percent, actualFile.name);
+                    console.log("Uploaded " + FilePartName)
                 }
             });
         });

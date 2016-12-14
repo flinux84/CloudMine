@@ -1,12 +1,10 @@
 ﻿var progressFileLabel;
-var uploadbutton;
-var uploadzone;
 var progressBar;
 var progressDiv;
-var arrayOfFileItems;
 var filetable;
 var append;
-
+var uploader;
+var probar;
 
 $(document).ready(function () {
     dropzone = $("#dropzone");
@@ -17,32 +15,43 @@ $(document).ready(function () {
     filetable = $("#filetable");
 
     //create progressbar
-    var probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
+    probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
 
     //enable drag and drop functionality
     dragAndDrop(dropzone, probar);
 
 
     //setup fileuploader.js
-    var newloader = new TheFileUploader(probar);
-
-    uploadform.change(function () {
-        newloader.Upload(uploadform[0].files[0])
-    })
+    uploader = new TheFileUploader(probar);
 
     //create html-appender
-    var append = new HTMLappender(filetable);
+    append = new HTMLappender(filetable);
+
+    //upload a file
+    uploadform.change(function () {
+        var fid = uploader.Upload(uploadform[0].files[0]);
+        GetFileItem(fid);
+    })
 
     //list all files
-    $.ajax({
-        type: "GET",
-        url: '../api/v1.0/FileItems/',
-        error: function (e) {
-            console.log(e);
-        },
-        success: function (result) {
-            append.appendTable(result);
-            Datatype: "json";
-        }
-    })
+    GetFileItems();
+
+    ////list specific file
+    //function listNewFileItem(fileitemId) {
+    //    $.ajax({
+    //        type: "GET",
+    //        url: '../api/v1.0/FileItems/' + fileitemId
+    //    }).done(function (result) {
+    //        append.appendTable(result);
+    //        Datatype: "json";
+    //    }).fail(function (e) {
+    //        console.log(e);
+    //    })
+    //}
+
+    //function DeleteFileItem(fileitemId) {
+    //    console.log("delete " + fileitemId);
+    //}
+
+
 });
