@@ -107,6 +107,11 @@
                 data: FD,
                 error: function (e) {
                     console.log(e);
+                    if(e = 409){
+                        SendNextPart(ChunkArray, PartCount);
+                        var percent = Math.round((PartCount / TotalCount) * 100)
+                        progress.updateProgress(percent, actualFile.name);
+                    }
                 },
                 success: function (result) {
                     var jsonUpdateData = result;
@@ -125,7 +130,7 @@
             reader.onload = function (event) {
                 var binary = event.target.result;
                 var hashCode2 = $.sha1(binary);
-                var theObject = { hashCode2};
+                var theObject = {hashCode2};
                 resolve(theObject);
             };
             reader.readAsArrayBuffer(blob);
