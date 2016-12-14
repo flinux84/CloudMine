@@ -19,7 +19,7 @@
     var theFile;
     var ChunkElement = {};
     var FileChunk = [];    
-    var MaxFileSizeMB = 1;
+    var MaxFileSizeMB = 10;
     var BufferChunkSize = MaxFileSizeMB * (1024 * 1024);
     var ReadBuffer_Size = 1024;
     var FileStreamPos = 0;
