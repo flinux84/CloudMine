@@ -149,6 +149,12 @@ namespace CloudMineServer.API_server.Controllers {
         // POST: api/FileItems/5
         [HttpPost( "{id:int}" )]
         public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
+            
+            // checksum
+            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), dataChunk.Checksum);
+            if (checksumExists) {
+                return new StatusCodeResult(StatusCodes.Status409Conflict);
+            }
 
             //Kolla dataChunk checksum om den redan finns, finns den så returnera ett error som javascriptet kan se och fortsätta på nästa chunk.
             //returna isåfall statuscode 409

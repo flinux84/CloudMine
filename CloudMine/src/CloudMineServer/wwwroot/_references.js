@@ -1,5 +1,5 @@
 ﻿/// <autosync enabled="true" />
-/// <reference path="js/ajaxhelper.js" />
+/// <reference path="js/apihelper.js" />
 /// <reference path="js/appendhtml.js" />
 /// <reference path="js/checksum.js" />
 /// <reference path="js/draganddrop.js" />
