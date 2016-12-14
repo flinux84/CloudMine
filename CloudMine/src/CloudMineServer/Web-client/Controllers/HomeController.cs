@@ -20,51 +20,17 @@ namespace CloudMineServer.Controllers
             return View();
         }
 
-        public async Task<ActionResult>AdminIndex()
+        public IActionResult AdminIndex()
         {
             
-
-            var client = new HttpClient();
-                       
-
-            var response = await client.GetAsync("http://localhost:2015/api/v1.0/Users/");
-
-            var jsonResult = await response.Content.ReadAsStringAsync();
-
-
-            var users = JsonConvert.DeserializeObject<IEnumerable<UserInfo>>(jsonResult);
-            
-
-            return View(users);
+            return View();
             
            
         }
 
 
 
-        //public async Task<ActionResult> Delete(string username)
-        //{
-
-        //    if (username == null)
-        //    {
-
-        //        return NotFound();
-        //    }
-        //    var client = new HttpClient();
-        //    var response = await client.GetAsync("http://localhost:2015/api/v1.0/Users/");
-
-        //    var jsonResult = await response.Content.ReadAsStringAsync();
-
-
-        //    var users = JsonConvert.DeserializeObject<IEnumerable<UserInfo>>(jsonResult);
-
-        //    var userToDelete = users.Where(x => x.UserName == username);
-
-
-        //    return View();
-
-
-        //}
+      
 
 
 

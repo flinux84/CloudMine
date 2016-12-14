@@ -1,22 +1,26 @@
-﻿@model IEnumerable<CloudMineServer.API_server.Controllers.UserInfo>
+﻿
 
-<head>
-    <title></title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/cloudmine.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
+<h2>AdminPage</h2>
 
-@*<form id="loginForm" method="post">
+<script src="~/js/appendhtml.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
+
+
+
+<form id="loginForm" method="post">
     <label for="userName">user name:</label>
     <input type="text" id="mail" name="userName" />
-
     <label for="password">password:</label>
     <input type="password" id="pword" name="password" />
     <button type="submit">Login</button>
 </form>
 
+<div id="id01"></div>
+<div id="id02"></div>
+
+
+@section Scripts {
 <script>
 
  $('form#loginForm').on('submit', function (e) {
@@ -41,47 +45,72 @@
                         return result.access_token;
                     }
                 });
-            });
-</script>*@
+               
+                var append = new HTMLappender(filetable);
+        
+                $.ajax({
+                    type: "GET",
+                    url: '../api/v1.0/Users/',
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    success: function (result) {
+                        append.appendTable(result);
+                        Datatype: "json";
+                    }
+                })
+
+ });
 
 
 
-<div class="col-lg-10">
-    <section class="filelist">
-        <table class="filetable">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Storage size(kb)</th>
-                    <th>Used storage(kb)</th>                    
-                </tr>
-            </thead>
-            <tbody></tbody>
-           
-            @foreach(var user in Model)
-            {
+                //$.ajax({
+                    
+                //    type: "GET",
+                //    url: '../api/v1.0/Users',
+                //    dataType: 'json',
+                //    contentType: 'application/json; charset=utf-8',
+
+                //    error: function (er) {
+                //        console.log(er)
+
+                //    },
+                   
+                //    success: function (result) {
+
+                //        $.each(result, function (i, field){
+
+                //            $("#id01").append("<div>" + field.userName + " " + field.storageSize + " "+ field.usedStorage +" "+field.numberFiles+ "</div>")
+                        
+                //        });
+
+                //        {
+                //            console.log(result);
+                        
+                //        }
+
+                //    }
+
+                //});
 
 
-             <tr>
-                <td>
-                    @Html.DisplayFor(modelUser=>user.UserName)
-                </td>
-                <td>
-                    @(user.StorageSize/1000)                    
-                </td>
-                <td>
-                    @(user.UsedStorage/1000)
-                </td>
-                 <td>
-                     <a asp-action="Edit" asp-route-id="">Edit</a> |
-                     <a asp-action="Delete" asp-route-id="@user.UserName">Delete</a> |
-                 </td>
-            </tr>
+ });
+ 
 
-            }
-        </table>
-</section>
-</div>
+
+
+</script>
+
+
+
+
+
+}
+
+
+
+
+
 
 
 
