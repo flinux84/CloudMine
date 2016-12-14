@@ -74,7 +74,7 @@ namespace CloudMineServer.Classes
 
             if (checkSums == null)
                 return false;
-            foreach(var c in checkSums)
+            foreach (var c in checkSums)
             {
                 if (c == checksum)
                     return true;
@@ -89,11 +89,33 @@ namespace CloudMineServer.Classes
             var ListFileItems = await _context.FileItems.Where(x => x.UserId == userId).ToListAsync();
             var checkSums = ListFileItems.Any(y => y.Checksum == checksum);
 
-           if(!checkSums)
+            if (!checkSums)
             {
                 return false;
             }
             return true;
+        }
+
+        //TODO: om fileitem redan finns, kolla first default på cunken, ta ut part name. kolla om det finns så många chunks som den säger ska finnas. retunera bool. 
+        // TODO: Test
+        public async Task<bool> DoesAllChunksExist(int fileItemID)
+        {
+            var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(y => y.FileItemId == fileItemID);
+            if(firstDataChunk == null)
+            {
+                // Det finns inga datachunks alls..
+                return false;
+            }
+            var NumberOfChunksInSequence = firstDataChunk.NumberOfChunksInSequence();
+
+            var fi = _context.FileItems.Include(w => w.DataChunks).FirstOrDefault(z => z.Id == fileItemID);
+            var actualChunksInFileItem = fi.DataChunks.Count();
+
+            if(actualChunksInFileItem == NumberOfChunksInSequence)
+            {
+                return true;
+            }
+            return false;
         }
 
         // Create Add DataChunk
