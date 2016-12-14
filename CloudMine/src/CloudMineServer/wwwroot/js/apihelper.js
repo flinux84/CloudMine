@@ -39,11 +39,13 @@ function DeleteFileItem(fileitemId) {
     }).done(function (result) {
         Datatype: "json";
         console.log("successfully deleted a file, refresh")
+        append.deleteRow(fileitemId)
     }).fail(function (e) {
         console.log(e);
     }).always(function () {
         //Todo: stuff
     })
+
 }
 
 
