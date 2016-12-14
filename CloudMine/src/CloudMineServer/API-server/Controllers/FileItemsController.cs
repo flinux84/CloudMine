@@ -149,6 +149,12 @@ namespace CloudMineServer.API_server.Controllers {
         // POST: api/FileItems/5
         [HttpPost( "{id:int}" )]
         public async Task<IActionResult> PostDataChunk( [FromRoute]int id, [FromForm]DataChunk dataChunk ) {
+            
+            // checksum
+            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), dataChunk.Checksum);
+            if (checksumExists) {
+                return new StatusCodeResult(StatusCodes.Status409Conflict);
+            }
 
             for (int i = 0; i < Request.Form.Files.Count; i++)
             {
