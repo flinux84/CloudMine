@@ -119,6 +119,9 @@
                         var percent = Math.round((PartCount / TotalCount) * 100)
                         progress.updateProgress(percent, actualFile.name);
                     }
+                    if (e.error = 422) {
+                        alert("Please re-upload the file"+ actualFile.name);
+                    }
                    
                 },
                 success: function (result) {
