@@ -102,7 +102,7 @@
             $(".registerUser").removeClass("hidden");
 
             if (userPushButtonToSignOut) {
-                location.reload();                                          // TODO:    <------fullösning-----<<< #1/3. Ladda om sifan om användaren loggar ut, för att listan inte ska synas.
+                location.reload();                                          // TODO:    <------fullösning-----<<< #1/3. Om användaren loggar ut. Ladda om sidan om användaren loggar ut, för att listan inte ska synas.
             }
         } else {
             $("#idSignOutButton").removeClass("hidden");
@@ -319,7 +319,7 @@
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
             $("#boxRegister").addClass("hidden");
-            location.reload();                                          // TODO:    <------fullösning-----<<< #3/2 Om användaren loggar in, ladda om sidan för att se filer. 
+            location.reload();                                          // TODO:    <------fullösning-----<<< #3/2 Om användaren loggar in efter registering, ladda om sidan för att se filer. 
         } else if (!UserIsSignIn) {
             //sätt felmeddelande på error popup
             $(".result").text(message);
