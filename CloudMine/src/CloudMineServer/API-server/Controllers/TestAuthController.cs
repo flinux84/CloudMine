@@ -47,7 +47,7 @@ namespace CloudMineServer.Controllers
             _userManager = userManager;
         }
         // GET: api/TestAuth
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IEnumerable<string>> Get()
         {

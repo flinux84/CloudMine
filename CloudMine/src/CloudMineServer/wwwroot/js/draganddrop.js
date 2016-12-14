@@ -1,4 +1,4 @@
-﻿function dragAndDrop(dropzone) {
+﻿function dragAndDrop(dropzone, progress) {
 
     dropzone.on('dragenter', function (e) {
         e.preventDefault();
@@ -19,7 +19,7 @@
 
         var files = e.originalEvent.dataTransfer.files;
 
-        dragDropUpload(files, dropzone);
+        dragDropUpload(files, dropzone, progress);
     });
 };
 
@@ -38,14 +38,12 @@ $(document).on('drop', function (e) {
 });
 
 
-function dragDropUpload(files, dropzone) {
+function dragDropUpload(files, dropzone,progress) {
     for (var i = 0; i < files.length; i++) {
-        var fd = new FormData();
-        fd.append('file', files[i]);    
-        console.log("Uploading file " + files[i].name);
-        //var status = new createStatusbar(obj); //Using this we can set progress.
-        //status.setFileNameSize(files[i].name, files[i].size);
 
-        //sendFileToServer(fd, status); anropa uploaden i Ali/Joakims kod, ändra när den är klar.
+        console.log("Uploading file " + files[i].name);
+
+        var uploader = new TheFileUploader(progress);
+        uploader.Upload(files[i]);
     }
 }
