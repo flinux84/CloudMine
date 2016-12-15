@@ -127,15 +127,14 @@ namespace CloudMineServer.Classes
             {
                 return false;
             }
-       
+
             // Kolla om den sista chunken har kommit in. Om den sista laggts till sätt bool på FileItem till true, annars låt den vara false. 
             var lastChunk = await DoesAllChunksExist(DC.FileItemId);
             if (lastChunk)
             {
                 var fi = await GetFileByIdUsingAPI(DC.FileItemId);
-                //TODO:
-                //Sätta fi.iscomplete = true;
-               
+
+                fi.IsComplete = true;
                 bool addChange = await Add(fi);
                 if (!addChange)
                 {
