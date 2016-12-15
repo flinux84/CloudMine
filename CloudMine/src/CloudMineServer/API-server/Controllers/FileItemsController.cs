@@ -150,16 +150,20 @@ namespace CloudMineServer.API_server.Controllers
                 return BadRequest(ModelState);
             }
 
+            //Uppdatera userId på fileItem innan vi skickar den till business layer
+            fileItem.UserId = User.GetUserId();
+
             // checksum 
             bool checksumExists = await _context.CheckChecksumOnFileItem(User.GetUserId(), fileItem.Checksum);
             if (checksumExists)
             {
                 // kollar om alla antalet chunks som ska finnas finns 
-                var IsAllChunks = await _context.DoesAllChunksExist(fileItem.Id);
-                if (!IsAllChunks)
+                if (!fileItem.IsComplete)
                 {
+                    int fileid = await _context.GetFileItemIdbyChecksum(fileItem.Checksum);
+                    fileItem.Id = fileid;
                     // Antalet Chunks som ska finnas stämmer inte med hur många chunks som faktiskt finns.
-                    return new StatusCodeResult(StatusCodes.Status422UnprocessableEntity);
+                    return AcceptedAtAction("GetFileItem", new { id = fileItem.Id }, fileItem);
                 }
                 else
                 {
@@ -168,8 +172,7 @@ namespace CloudMineServer.API_server.Controllers
                 }
             }
 
-            //Uppdatera userId på fileItem innan vi skickar den till business layer
-            fileItem.UserId = User.GetUserId();
+            
 
             var metaDataCreated = await _context.InitCreateFileItem(fileItem);
 
@@ -186,9 +189,8 @@ namespace CloudMineServer.API_server.Controllers
         [HttpPost("{id:int}")]
         public async Task<IActionResult> PostDataChunk([FromRoute]int id, [FromForm]DataChunk dataChunk)
         {
-
             // checksum
-            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), dataChunk.Checksum);
+            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), dataChunk.Checksum);            
             if (checksumExists)
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
