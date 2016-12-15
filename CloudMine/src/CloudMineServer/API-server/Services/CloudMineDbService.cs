@@ -101,7 +101,7 @@ namespace CloudMineServer.Classes
         public async Task<bool> DoesAllChunksExist(int fileItemID)
         {
             var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(y => y.FileItemId == fileItemID);
-          
+
             var NumberOfChunksInSequence = firstDataChunk.NumberOfChunksInSequence();
 
             //lista med datachunks som tillhör ett fileitem
@@ -111,7 +111,7 @@ namespace CloudMineServer.Classes
             var fi = _context.FileItems.Include(w => w.DataChunks).FirstOrDefault(z => z.Id == fileItemID);
             var actualChunksInFileItem = fi.DataChunks.Count();
 
-            if(actualChunksInFileItem == NumberOfChunksInSequence)
+            if (actualChunksInFileItem == NumberOfChunksInSequence)
             {
                 // Antalet chunks stämmer med antalet som ska finnas 
                 return true;
@@ -119,7 +119,6 @@ namespace CloudMineServer.Classes
             // Antalet chunks som ska finnas och antalet som faktiskt finns stämmer inte
             return false;
         }
-
         // Create Add DataChunk
         public async Task<bool> AddFileUsingAPI(DataChunk DC)
         {
@@ -128,8 +127,22 @@ namespace CloudMineServer.Classes
             {
                 return false;
             }
+       
+            // Kolla om den sista chunken har kommit in. Om den sista laggts till sätt bool på FileItem till true, annars låt den vara false. 
+            var lastChunk = await DoesAllChunksExist(DC.FileItemId);
+            if (lastChunk)
+            {
+                var fi = await GetFileByIdUsingAPI(DC.FileItemId);
+                //TODO:
+                //Sätta fi.iscomplete = true;
+               
+                bool addChange = await Add(fi);
+                if (!addChange)
+                {
+                    return false;
+                }
+            }
             return true;
-
         }
 
         // Read (All) METADATA

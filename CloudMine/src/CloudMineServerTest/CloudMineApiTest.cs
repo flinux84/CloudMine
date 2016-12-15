@@ -256,6 +256,22 @@ namespace CloudMineServer.Classes
             }
         }
 
+        // TODO: test om datachunken som sparas är den sista.
+        public async Task AddFileUsingAPI_chunk_to_add_is_last_change_FiliItem_bool_prop_to_true()
+        {
+            //Arrange
+            //skapa fi
+            //Lägg till chunks
+            //skapa en chunk som ska vara den sista i sekvens
+
+            //Act
+
+            //Assert
+            //kolla att fileitem bool ändrats
+            //kolla att antal cunks stämmer
+            //kolla att assert är true
+        }
+
         // Read (All). Hämta användarens alla FileItems
         [Fact]
         public async Task GetAllFilesUsingAPI_get_all_the_users_files_get_a_FileItemSet()
@@ -360,6 +376,8 @@ namespace CloudMineServer.Classes
                 Assert.Equal("name", context.FileItems.FirstOrDefault(x => x.Id == 11).FileName);
             }
         }
+
+        //TODO: test för att ändra fi som har chunks
 
         // Delete
         [Fact]

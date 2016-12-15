@@ -193,9 +193,7 @@ namespace CloudMineServer.API_server.Controllers
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
             }
-
-            //Kolla dataChunk checksum om den redan finns, finns den så returnera ett error som javascriptet kan se och fortsätta på nästa chunk.
-            //returna isåfall statuscode 409
+        
             for (int i = 0; i < Request.Form.Files.Count; i++)
             {
                 var file = Request.Form.Files[i];
