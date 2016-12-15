@@ -42,19 +42,12 @@ var HTMLappender = function (element) {
     HTMLappender.prototype.deleteRow = function (fileitemId) {
         $('#' + 'r' + fileitemId).remove();
     }
+
+    HTMLappender.prototype.userAccountInfo = function (result) {
+
+        $(".submenu #userInfo").append('<p id="apa">' + result.userName + '</p>');
+
+    }
 }
 
-function UserAccountInfo() {
-    $.ajax({
-        type: "POST",
-        url: '../api/v1.0/Users/UserInfo',
-        contentType: false,
-        processData: false,
-        data: FD,
-        success: function (result) {
 
-        }
-
-    });
-    };
-    

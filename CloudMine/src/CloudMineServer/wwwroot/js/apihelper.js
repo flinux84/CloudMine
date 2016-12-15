@@ -51,5 +51,23 @@ function DeleteFileItem(fileitemId) {
 
 }
 
+function getUserAccountInfo() {
+    $.ajax({
+        url: '../api/v1.0/Users/UserInfo',
+        contentType: 'application/json',
+        success: function (result) {
+            console.log(result);
+            Datatype: "json";
+            append.userAccountInfo(result);
+        },
+        error: function (e) {
+            console.log(e.status);
+        }
+
+    });
+}
+
+
+
 
 //Put todo

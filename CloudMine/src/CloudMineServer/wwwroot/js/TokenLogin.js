@@ -89,6 +89,8 @@ $(document).ready(function () {
             $("#idSignOutButton").addClass("hidden");
             $("#idLogInButton").removeClass("hidden");
             $(".registerUser").removeClass("hidden");
+            $("#userInfo").addClass("hidden");
+            
 
             if (userPushButtonToSignOut) {
                 // om användaren loggar in; ta bort tbody och ersätt den med en tom tbody.. 
@@ -98,6 +100,7 @@ $(document).ready(function () {
             $("#idSignOutButton").removeClass("hidden");
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
+            $("#userInfo").removeClass("hidden");
         }
     }
 
@@ -172,6 +175,7 @@ $(document).ready(function () {
         }).done(function () {
             console.log("ajax call - success")
             UserIsSignIn = true;
+            getUserAccountInfo(); // <--------------------------------------------- hämtar userinfo
         })
   .fail(function () {
       UserIsSignIn = false;
@@ -194,9 +198,11 @@ $(document).ready(function () {
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
+            $("#userInfo").removeClass("hidden");
             $("#box").addClass("hidden");
             // kalla global metod för att ladda listan
             GetFileItems();
+            getUserAccountInfo();
             return false;
         }
             // nåt gick snett

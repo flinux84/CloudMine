@@ -104,5 +104,11 @@ input[type="file"] {
     border: 1px solid black;
     background-color: white;
 }
-
+#userInfo{
+    color: white;
+    float: left;
+}
+#idSignOutButton{
+    float: right;
+}
 
