@@ -45,10 +45,14 @@
             contentType: 'application/json',
             dataType: 'json',
             data: theFileItem,
-            error: function (e) {
+            error: function (e, jqHXR) {
                 console.log(e);
-                if (e.error = 409) {
+                if (e.status == 409) {
                     alert("The file already exists");
+                    return;
+                }
+                if (e.status == 401) {
+                    alert("Please login");
                     return;
                 }
             },
@@ -114,12 +118,12 @@
                 data: FD,
                 error: function (e) {
                     console.log(e);
-                    if (e.error = 409) {
+                    if (e.status == 409) {
                         SendNextPart(ChunkArray, PartCount);
                         var percent = Math.round((PartCount / TotalCount) * 100)
                         progress.updateProgress(percent, actualFile.name);
                     }
-                    if (e.error = 422) {
+                    if (e.status == 422) {
                         alert("Please re-upload the file"+ actualFile.name);
                     }
                    
