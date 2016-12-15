@@ -68,6 +68,7 @@
     //Laddar upp chunksen
     function UploadChunks(result) {
         FileID = result.id;
+        GetFileItem(FileID);
         var EndPos = MaxFileSizeMB * (1024 * 1024);
         var BufferChunkSize = MaxFileSizeMB * (1024 * 1024);
         var Size = actualFile.size;

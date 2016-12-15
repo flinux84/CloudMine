@@ -1,0 +1,47 @@
+﻿@model IEnumerable<CloudMineServer.API_server.Controllers.UserInfo>
+
+<table class="table">
+    <thead>
+<tr>
+            <th>Username</th>
+        
+            <th>Number of files</th>
+        
+            <th>Used storage</th>
+    
+            <th>Total storage</th>
+ </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+
+            <tr>
+                
+                <td>
+                    @Html.DisplayFor(x => user.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => user.NumberFiles)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => user.UsedStorage)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => user.StorageSize)
+                </td>
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="">| Edit user details | </a>*@
+                    <a asp-action="Edit" asp-route-id="@user.UserName">| Edit storage | </a>
+                    <a asp-action="Delete" asp-route-id="@user.UserName">Delete |</a>
+                    
+                </td>
+                    
+            </tr>
+
+        }
+
+    </tbody>
+
+</table>

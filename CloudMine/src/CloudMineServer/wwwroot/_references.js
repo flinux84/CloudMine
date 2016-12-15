@@ -1,4 +1,5 @@
 ﻿/// <autosync enabled="true" />
+/// <reference path="js/admin.js" />
 /// <reference path="js/apihelper.js" />
 /// <reference path="js/appendhtml.js" />
 /// <reference path="js/checksum.js" />
