@@ -1,6 +1,6 @@
 ﻿var table;
 var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
-//var deletebutton = '<span class=\"glyphicon glyphicon-remove-sign\" onClick=\"DeleteFileItem()"></span>';
+
 
 var HTMLappender = function (element) {
     table = element;
@@ -43,10 +43,24 @@ var HTMLappender = function (element) {
         $('#' + 'r' + fileitemId).remove();
     }
 
-    HTMLappender.prototype.replaceRow = function (fileitemId) {
-        //TODO replace-funktion för en rad.
-        $('#' + 'r' + fileitemId).replaceWith(newRowOfSomeKind)
+    HTMLappender.prototype.replaceRow = function (result) {
+        $('#' + 'r' + result.id).replaceWith(standardRow(result))
     }
+    
+    function standardRow(result) {
+        var table = '<tr id=' + 'r' + result.id + '><td>' + result.fileName
+        + '</td><td>' + result.fileSize
+        + '</td><td>' + result.uploaded.split('T')[0]
+        + '</td><td>' + result.dataType
+        + '</td><td>' + result.description
+        + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result.id + '\">'
+        + downloadbutton + '</a>'
+        + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result.id + '" '
+        + 'onClick="DeleteFileItem('
+        + result.id + ')">' + '</span>' + '</td></tr>'
+        return table;
+    }
+
 }
 
 function UserAccountInfo() {
