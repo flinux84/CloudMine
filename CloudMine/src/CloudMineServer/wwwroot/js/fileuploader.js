@@ -7,12 +7,13 @@
     var TotalCount;
     var FileItem = {};
     var ChunkArray = [];
-    var FileId;
+    var FileID;
     var actualFile;
 
     TheFileUploader.prototype.Upload = function (file) {
         actualFile = file;
         GetSHA1();
+        return FileID;
     }
 
     //Läser checksum för filen som sedan skickas iväg som metadata.
@@ -44,13 +45,21 @@
             contentType: 'application/json',
             dataType: 'json',
             data: theFileItem,
-            error: function (e) {
+            error: function (e, jqHXR) {
                 console.log(e);
+                if (e.status == 409) {
+                    alert("The file already exists");
+                    return;
+                }
+                if (e.status == 401) {
+                    alert("Please login");
+                    return;
+                }
             },
             //Är det ok, så påbörjar vi metoden med att skicka datachunks av filen.
             success: function (result, status, jqHXR) {
                 Datatype: "json",
-                console.log("Första");
+                console.log("File metadata sent");
                 UploadChunks(result);
             }
         });
@@ -76,7 +85,9 @@
     //skickar nästa chunk efter att ha genererat checksum för chunken
     function SendNextPart(ChunkArray, PartCount) {
         var chunk = ChunkArray.shift();
-        if (chunk == null) { return; }
+        if (chunk == null) {
+            GetFileItem(FileID);            
+            return;}
         PartCount++;
 
         blob = new Blob([chunk], { type: 'application/octet-binary' });
@@ -107,6 +118,15 @@
                 data: FD,
                 error: function (e) {
                     console.log(e);
+                    if (e.status == 409) {
+                        SendNextPart(ChunkArray, PartCount);
+                        var percent = Math.round((PartCount / TotalCount) * 100)
+                        progress.updateProgress(percent, actualFile.name);
+                    }
+                    if (e.status == 422) {
+                        alert("Please re-upload the file"+ actualFile.name);
+                    }
+                   
                 },
                 success: function (result) {
                     var jsonUpdateData = result;
@@ -114,6 +134,7 @@
                     SendNextPart(ChunkArray, PartCount)
                     var percent = Math.round((PartCount / TotalCount) * 100)
                     progress.updateProgress(percent, actualFile.name);
+                    console.log("Uploaded " + FilePartName)
                 }
             });
         });
@@ -124,8 +145,12 @@
             var reader = new FileReader();
             reader.onload = function (event) {
                 var binary = event.target.result;
+                console.log("hej");
+                
+                console.log(binary);
+                console.log("hejdå");
                 var hashCode2 = $.sha1(binary);
-                var theObject = { hashCode2};
+                var theObject = {hashCode2};
                 resolve(theObject);
             };
             reader.readAsArrayBuffer(blob);

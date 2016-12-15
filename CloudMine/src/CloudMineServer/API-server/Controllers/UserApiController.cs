@@ -9,6 +9,7 @@ using CloudMineServer.Models;
 using CloudMineServer.Interface;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Encodings.Web;
+using CloudMineServer.API_server.Services;
 
 namespace CloudMineServer.API_server.Controllers
 {
@@ -61,7 +62,7 @@ namespace CloudMineServer.API_server.Controllers
             var user = await _userManager.FindByEmailAsync(userEmail);
             if(user == null)
                 return BadRequest($"User {userEmail} not found");
-            return Ok(await GetUserInfo(user));
+            return Ok(await GetUserInfoAsync(user));
         }
 
         [Authorize]
@@ -73,7 +74,7 @@ namespace CloudMineServer.API_server.Controllers
 
             foreach (var user in users)
             {
-                var userInfo = await GetUserInfo(user);
+                var userInfo = await GetUserInfoAsync(user);
                 allUserInfos.Add(userInfo);
             }
             return allUserInfos;
@@ -86,7 +87,7 @@ namespace CloudMineServer.API_server.Controllers
         public async Task<IActionResult> PutUserInfo([FromRoute]string userEmail, [FromBody]UserInfo userInfo)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
-            var oldUserInfo = await GetUserInfo(user);
+            var oldUserInfo = await GetUserInfoAsync(user);
 
             if (oldUserInfo.UsedStorage > userInfo.StorageSize)
                 return BadRequest("Cant shrink storage to less than your used storage!");
@@ -110,6 +111,16 @@ namespace CloudMineServer.API_server.Controllers
         #endregion
 
         #region NonAdminActions
+
+        [Authorize]
+        [HttpGet]
+        [Route("UserInfo")]
+        public async Task<UserInfo> GetLoggedInUserInfo()
+        {
+            var user = await _userManager.FindByIdAsync(User.GetUserId());
+            var userInfo = await GetUserInfoAsync(user);
+            return userInfo;
+        }
 
         [Route("Logout")]
         [Authorize]
@@ -144,7 +155,7 @@ namespace CloudMineServer.API_server.Controllers
         
         #endregion
 
-        private async Task<UserInfo> GetUserInfo(ApplicationUser user)
+        private async Task<UserInfo> GetUserInfoAsync(ApplicationUser user)
         {
             var userInfo = new UserInfo();
 

@@ -66,7 +66,7 @@ namespace CloudMineServer.Classes
             return false;
         }
 
-        // Kolla om chunken finns redan
+        // Kolla om chunken finns redan på dataChunks genom att kolla på checksum. 
         public async Task<bool> CheckChecksum(string userId, string checksum)
         {
             var ListFileItems = await _context.FileItems.Include(fi => fi.DataChunks).Where(x => x.UserId == userId).Select(x => x.DataChunks).ToListAsync();
@@ -74,7 +74,7 @@ namespace CloudMineServer.Classes
 
             if (checkSums == null)
                 return false;
-            foreach(var c in checkSums)
+            foreach (var c in checkSums)
             {
                 if (c == checksum)
                     return true;
@@ -82,6 +82,43 @@ namespace CloudMineServer.Classes
             return false;
         }
 
+        // Kolla om chunken finns redan på FileItem 
+        // TODO: test
+        public async Task<bool> CheckChecksumOnFileItem(string userId, string checksum)
+        {
+            var ListFileItems = await _context.FileItems.Where(x => x.UserId == userId).ToListAsync();
+            var checkSums = ListFileItems.Any(y => y.Checksum == checksum);
+
+            if (!checkSums)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        //TODO: om fileitem redan finns, kolla first default på cunken, ta ut part name. kolla om det finns så många chunks som den säger ska finnas. retunera bool. 
+        // TODO: Test
+        public async Task<bool> DoesAllChunksExist(int fileItemID)
+        {
+            var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(y => y.FileItemId == fileItemID);
+
+            var NumberOfChunksInSequence = firstDataChunk.NumberOfChunksInSequence();
+
+            //lista med datachunks som tillhör ett fileitem
+            //var ListFileItems = await _context.FileItems.Include(t => t.DataChunks).Where(x => x.Id == fileItemID).Select(x => x.DataChunks).ToListAsync();
+            //var acdc = ListFileItems.Count();
+
+            var fi = _context.FileItems.Include(w => w.DataChunks).FirstOrDefault(z => z.Id == fileItemID);
+            var actualChunksInFileItem = fi.DataChunks.Count();
+
+            if (actualChunksInFileItem == NumberOfChunksInSequence)
+            {
+                // Antalet chunks stämmer med antalet som ska finnas 
+                return true;
+            }
+            // Antalet chunks som ska finnas och antalet som faktiskt finns stämmer inte
+            return false;
+        }
         // Create Add DataChunk
         public async Task<bool> AddFileUsingAPI(DataChunk DC)
         {
@@ -90,8 +127,21 @@ namespace CloudMineServer.Classes
             {
                 return false;
             }
-            return true;
 
+            // Kolla om den sista chunken har kommit in. Om den sista laggts till sätt bool på FileItem till true, annars låt den vara false. 
+            var lastChunk = await DoesAllChunksExist(DC.FileItemId);
+            if (lastChunk)
+            {
+                var fi = await GetFileByIdUsingAPI(DC.FileItemId);
+
+                fi.IsComplete = true;
+                bool addChange = await Add(fi);
+                if (!addChange)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         // Read (All) METADATA
@@ -182,7 +232,7 @@ namespace CloudMineServer.Classes
         {
             var anyDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.FileItemId == fileItemId);
             var firstName = anyDataChunk.FirstInSequenceName();
-            var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == firstName);
+            var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == firstName && d.FileItemId == fileItemId);
             return firstDataChunk;
         }
         public async Task<DataChunk> GetNextDataChunk(DataChunk dataChunk)
@@ -190,8 +240,14 @@ namespace CloudMineServer.Classes
             var nextName = dataChunk.NextName();
             if (nextName == null)
                 return null;
-            var nextDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == nextName);
+            var nextDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == nextName && d.FileItemId == dataChunk.FileItemId);
             return nextDataChunk;
+        }
+        public async Task<DataChunk> GetDataChunkAtIndex(DataChunk dataChunk, int index)
+        {
+            var partName = dataChunk.ChunkNameAtIndex(index);
+            var dataChunkAtIndex = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == partName && d.FileItemId == dataChunk.FileItemId);
+            return dataChunkAtIndex;
         }
         #endregion
 
