@@ -77,13 +77,13 @@ function BuildEditForm(id) {
         editFileItem = response;
         var editForm =  $('#edit-form');
         editForm.append('<div class="form-group">' +
-                                    '<label for="edit-filename">Filename</label>' +
-                                    '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="'+ response['fileName'] +'">' +
-                                '</div>');
+                            '<label for="edit-filename">Filename</label>' +
+                            '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="'+ response['fileName'] +'">' +
+                        '</div>');
         editForm.append('<div class="form-group">' +
-                                    '<label for="edit-description">Description</label>' +
-                                    '<textarea type="text" class="form-control" id="edit-description" placeholder="Description">'+ response['description'] +'</textarea>' +
-                                '</div>');
+                            '<label for="edit-description">Description</label>' +
+                            '<textarea type="text" class="form-control" id="edit-description" placeholder="Description">'+ response['description'] +'</textarea>' +
+                        '</div>');
         editForm.append('<input type="hidden" id="edit-id" value="' + response['id'] + '">');
         $('#edit-dialog').dialog("open");
         }
