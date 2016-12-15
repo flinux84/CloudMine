@@ -55,19 +55,26 @@
                     alert("Please login");
                     return;
                 }
+                //if (e.status == 422) {
+                //    alert("Missing some chunks, continuing upload of " + actualFile.name);
+                //    progress.updateProgress(1, "Uploading");
+                //    UploadChunks(result);
+                //}
             },
             //Är det ok, så påbörjar vi metoden med att skicka datachunks av filen.
             success: function (result, status, jqHXR) {
                 Datatype: "json",
                 console.log("File metadata sent");
+                progress.updateProgress(1, "Uploading");
                 UploadChunks(result);
             }
-        });
+        })
     };
 
     //Laddar upp chunksen
     function UploadChunks(result) {
         FileID = result.id;
+        GetFileItem(FileID);
         var EndPos = MaxFileSizeMB * (1024 * 1024);
         var BufferChunkSize = MaxFileSizeMB * (1024 * 1024);
         var Size = actualFile.size;
@@ -119,22 +126,24 @@
                 error: function (e) {
                     console.log(e);
                     if (e.status == 409) {
-                        SendNextPart(ChunkArray, PartCount);
                         var percent = Math.round((PartCount / TotalCount) * 100)
                         progress.updateProgress(percent, actualFile.name);
+                        console.log("Uploaded " + FilePartName)
+                        SendNextPart(ChunkArray, PartCount);
                     }
-                    if (e.status == 422) {
-                        alert("Please re-upload the file"+ actualFile.name);
+                    else {
+                        console.log("annat fel");
                     }
+                    
                    
                 },
                 success: function (result) {
                     var jsonUpdateData = result;
                     Datatype: false;
-                    SendNextPart(ChunkArray, PartCount)
                     var percent = Math.round((PartCount / TotalCount) * 100)
                     progress.updateProgress(percent, actualFile.name);
                     console.log("Uploaded " + FilePartName)
+                    SendNextPart(ChunkArray, PartCount)
                 }
             });
         });
@@ -145,10 +154,6 @@
             var reader = new FileReader();
             reader.onload = function (event) {
                 var binary = event.target.result;
-                console.log("hej");
-                
-                console.log(binary);
-                console.log("hejdå");
                 var hashCode2 = $.sha1(binary);
                 var theObject = {hashCode2};
                 resolve(theObject);

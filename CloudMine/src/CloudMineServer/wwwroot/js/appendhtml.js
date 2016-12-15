@@ -42,6 +42,11 @@ var HTMLappender = function (element) {
     HTMLappender.prototype.deleteRow = function (fileitemId) {
         $('#' + 'r' + fileitemId).remove();
     }
+
+    HTMLappender.prototype.replaceRow = function (fileitemId) {
+        //TODO replace-funktion för en rad.
+        $('#' + 'r' + fileitemId).replaceWith(newRowOfSomeKind)
+    }
 }
 
 function UserAccountInfo() {
