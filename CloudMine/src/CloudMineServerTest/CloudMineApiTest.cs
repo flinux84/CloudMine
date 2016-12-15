@@ -70,7 +70,7 @@ namespace CloudMineServer.Classes
             {
                 Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
                 string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
-                context.FileItems.Add(new FileItem { Id = 1, UserId = userGuid, DataChunks = null, IsComplete = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
+                context.FileItems.Add(new FileItem { Id = 1, UserId = userGuid, DataChunks = null, IsComplete = false, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
                 context.SaveChanges();
             }
         }
@@ -211,7 +211,7 @@ namespace CloudMineServer.Classes
             AddInitFileItemToDb(options);
             Guid myGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
 
-            var ds = new DataChunk() { Id = 0, FileItemId = 1, Data = new byte[10], PartName = "1" };
+            var ds = new DataChunk() { Id = 0, FileItemId = 1, Data = new byte[10], PartName = "name.png.part_1.1" };
 
             using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
@@ -256,20 +256,29 @@ namespace CloudMineServer.Classes
             }
         }
 
-        // TODO: test om datachunken som sparas är den sista.
-        public async Task AddFileUsingAPI_chunk_to_add_is_last_change_FiliItem_bool_prop_to_true()
+        // test om datachunken som sparas är den sista.
+        [Fact]
+        public async Task AddFileUsingAPI_chunk_to_add_is_last__then_change_FiliItem_bool_prop_to_true()
         {
             //Arrange
-            //skapa fi
-            //Lägg till chunks
-            //skapa en chunk som ska vara den sista i sekvens
+            var appDbOptions = CreateNewApplicationDbContextOptions();
+            var options = CreateNewContextOptions();
+            AddInitFileItemToDb(options);
+            var DC = new DataChunk() { Id = 11,Checksum="", FileItemId = 1, Data = new byte[10], PartName = "AudioInterface.png.part_1.1" };
 
-            //Act
+            using (var appDbContext = new ApplicationDbContext(appDbOptions))
+            using (var context = new CloudDbRepository(options))
+            {
+                var service = new CloudMineDbService(context, appDbContext);
 
-            //Assert
-            //kolla att fileitem bool ändrats
-            //kolla att antal cunks stämmer
-            //kolla att assert är true
+                //Act  
+                var result = await service.AddFileUsingAPI(DC);
+
+                //Assert
+                Assert.True(context.FileItems.FirstOrDefault(x => x.Id == 1).IsComplete);
+                var viewResult = Assert.IsType<bool>(result);
+                Assert.True(result);
+            }
         }
 
         // Read (All). Hämta användarens alla FileItems
