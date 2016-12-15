@@ -47,11 +47,11 @@
             data: theFileItem,
             error: function (e, jqHXR) {
                 console.log(e);
-                if (e.status == 409) {
+                if (e.status === 409) {
                     alert("The file already exists");
                     return;
                 }
-                if (e.status == 401) {
+                if (e.status === 401) {
                     alert("Please login");
                     return;
                 }

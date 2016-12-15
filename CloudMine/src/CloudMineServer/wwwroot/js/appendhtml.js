@@ -47,7 +47,7 @@ var HTMLappender = function (element) {
 function UserAccountInfo() {
     $.ajax({
         type: "POST",
-        url: '../api/v1.0/FileItems/' + FileID,
+        url: '../api/v1.0/Users/UserInfo',
         contentType: false,
         processData: false,
         data: FD,
