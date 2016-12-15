@@ -1,15 +1,15 @@
-﻿$(document).ready(function () {
+﻿var UserIsSignIn = false;
+
+$(document).ready(function () {
 
     /*JS Sign in*/
 
-    var UserIsSignIn = false;
     var userName = "";
     var userPassword = "";
     var userSecondPassword = "";
     var message = "";
     var $btn;
-
-    var userPushButtonToSignOut = false; // TODO: del av fullösning # 1/3
+    var userPushButtonToSignOut = false;
 
     // validera mail
     function validateEmail(email) {
@@ -25,18 +25,7 @@
 
     // just for testing 
     function UseAjaxGetToken() {
-        $.ajax({
-            // TODO:   https://localhost:44336/api/TestAuth                                      
-            url: "../api/TestAuth",
-            contentType: 'application/json',
-            error: function (e) {
-                console.log(e);
-            },
-            success: function (result, status) {
-                console.log(result);
-                console.log(status);
-            }
-        });
+        console.log("knapp urkopplad");
     }
     $("#getToken").click(UseAjaxGetToken);
     // just for testing end
@@ -73,7 +62,7 @@
 
     // knapp för att logga ut
     $('#idSignOutButton').click(function () {
-        userPushButtonToSignOut = true; // TODO: del av fullösning # 1/3
+        userPushButtonToSignOut = true;
         userSignOut();
     });
     function userSignOut() {
@@ -102,7 +91,8 @@
             $(".registerUser").removeClass("hidden");
 
             if (userPushButtonToSignOut) {
-                location.reload();                                          // TODO:    <------fullösning-----<<< #1/3. Om användaren loggar ut. Ladda om sidan om användaren loggar ut, för att listan inte ska synas.
+                // om användaren loggar in; ta bort tbody och ersätt den med en tom tbody.. 
+                $("tbody").replaceWith("<tbody></tbody>");
             }
         } else {
             $("#idSignOutButton").removeClass("hidden");
@@ -205,7 +195,8 @@
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
             $("#box").addClass("hidden");
-            location.reload();                                          // TODO:    <------fullösning-----<<< #2/3 Om användaren loggar in, ladda om sidan för att se filer.
+            // kalla global metod för att ladda listan
+            GetFileItems();
             return false;
         }
             // nåt gick snett
@@ -319,7 +310,8 @@
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
             $("#boxRegister").addClass("hidden");
-            location.reload();                                          // TODO:    <------fullösning-----<<< #3/2 Om användaren loggar in efter registering, ladda om sidan för att se filer. 
+            // kalla global metod för att ladda listan
+            GetFileItems();
         } else if (!UserIsSignIn) {
             //sätt felmeddelande på error popup
             $(".result").text(message);
