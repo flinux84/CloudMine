@@ -155,7 +155,7 @@ namespace CloudMineServer.API_server.Controllers
             if (checksumExists)
             {
                 // kollar om alla antalet chunks som ska finnas finns 
-                var IsAllChunks = await _context.DoesAllChunksExist(fileItem.Id);
+                var IsAllChunks = await _context.CheckIsComplete(fileItem.Id);
                 if (!IsAllChunks)
                 {
                     // Antalet Chunks som ska finnas stämmer inte med hur många chunks som faktiskt finns.
