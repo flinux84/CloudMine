@@ -17,7 +17,7 @@ var ProgressBar = function (divDOM, barDOM, fileDOM) {
             barDOM.css('width', width + '%');
             barDOM.text(width + '%');
             console.log("finished upload of " + filename);
-            setTimeout(clear, 1000)
+            setTimeout(clear, 2000)
         } else {
             barDOM.css('width', width + '%');
             barDOM.text(width + '%');

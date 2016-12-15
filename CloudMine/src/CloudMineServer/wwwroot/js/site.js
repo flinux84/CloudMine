@@ -52,8 +52,8 @@ $(document).ready(function () {
                 sortUrl = sortUrl.concat(searchString.val());
                 GetSortedFileItemsList(sortUrl);
             } else {
-               // GetSortedFileItemsList("../api/v1.0/FileItems");
-                GetFileItems();
+                GetSortedFileItemsList("../api/v1.0/FileItems");
+               // GetFileItems();
             }
         } else {
             console.log("sign in to search");
