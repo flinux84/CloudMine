@@ -135,8 +135,8 @@ namespace CloudMineServer.API_server.Controllers
 
             bool updated = await _context.UpDateByIdUsingAPI(id, fileItem);
 
-            if (updated)
-                return NoContent();
+            if( updated )
+                return Ok(fileItem);
             else
                 return BadRequest("Data was not received properly.");
         }
