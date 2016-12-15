@@ -34,6 +34,7 @@
         FileItem.fileName = actualFile.name;
         FileItem.dataType = actualFile.name.split('.').pop();;
         FileItem.fileSize = actualFile.size;
+        FileItem.description = "";
         theFileItem = JSON.stringify(FileItem);
         SendMetaData(theFileItem);
     };
