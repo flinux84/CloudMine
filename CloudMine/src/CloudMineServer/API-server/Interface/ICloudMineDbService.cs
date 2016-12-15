@@ -25,6 +25,7 @@ namespace CloudMineServer.Interface
         Task<DataChunk> GetSpecifikDataChunk(int FileItemId, int datachunkIndex);
         Task<DataChunk> GetFirstDataChunk(int fileItemId);
         Task<DataChunk> GetNextDataChunk(DataChunk dataChunk);
+        Task<DataChunk> GetDataChunkAtIndex(DataChunk dataChunk, int index);
         #endregion
 
     }

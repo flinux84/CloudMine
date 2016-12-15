@@ -182,7 +182,7 @@ namespace CloudMineServer.Classes
         {
             var anyDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.FileItemId == fileItemId);
             var firstName = anyDataChunk.FirstInSequenceName();
-            var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == firstName);
+            var firstDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == firstName && d.FileItemId == fileItemId);
             return firstDataChunk;
         }
         public async Task<DataChunk> GetNextDataChunk(DataChunk dataChunk)
@@ -190,8 +190,14 @@ namespace CloudMineServer.Classes
             var nextName = dataChunk.NextName();
             if (nextName == null)
                 return null;
-            var nextDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == nextName);
+            var nextDataChunk = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == nextName && d.FileItemId == dataChunk.FileItemId);
             return nextDataChunk;
+        }
+        public async Task<DataChunk> GetDataChunkAtIndex(DataChunk dataChunk, int index)
+        {
+            var partName = dataChunk.ChunkNameAtIndex(index);
+            var dataChunkAtIndex = await _context.DataChunks.FirstOrDefaultAsync(d => d.PartName == partName && d.FileItemId == dataChunk.FileItemId);
+            return dataChunkAtIndex;
         }
         #endregion
 
