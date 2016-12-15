@@ -5,6 +5,8 @@ var filetable;
 var append;
 var uploader;
 var probar;
+var searchString;
+var buttonSearch;
 var sortAscending;
 
 $(document).ready(function () {
@@ -14,6 +16,8 @@ $(document).ready(function () {
     progressBar = $("#progressBar");
     progressFileLabel = $("#filelabel");
     filetable = $("#filetable");
+    searchString = $("#searchString");
+    buttonSearch = $("#buttonSearch")
     sortAscending = true;
     
     //create progressbar
@@ -37,6 +41,23 @@ $(document).ready(function () {
             console.log("sign in to upload!");
         }
     })
+
+    buttonSearch.click(function () {
+        if (UserIsSignIn) {
+            console.log(searchString.val());
+            if (!searchString.val() == "") {
+                var sortUrl = "../api/v1.0/FileItems?filename=";
+                sortUrl = sortUrl.concat(searchString.val());
+                GetSortedFileItemsList(sortUrl);
+            } else {
+               // GetSortedFileItemsList("../api/v1.0/FileItems");
+                GetFileItems();
+            }
+        } else {
+            console.log("sign in to search");
+        }
+
+    });
 
     //Sort List
     $(".orderFileList").click(function () {
