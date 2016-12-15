@@ -16,6 +16,8 @@ namespace CloudMineServer.Interface
         Task<bool> UpDateByIdUsingAPI(int num, FileItem item);
         Task<bool> DeleteByIdUsingAPI(int num);
         Task<bool> CheckChecksum( string userId, string checksum );
+        Task<bool> CheckChecksumOnFileItem(string userId, string checksum);
+        Task<bool> DoesAllChunksExist(int fileItemID);
         #endregion
 
         #region get FileItem & Chunks
