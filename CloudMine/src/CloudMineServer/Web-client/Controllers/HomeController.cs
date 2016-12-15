@@ -73,7 +73,18 @@ namespace CloudMineServer.Controllers
         
      public async Task<ActionResult> Delete([FromRoute]string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var user = await _userManager.FindByEmailAsync(id);
+
+            if (user == null)
+            {
+
+                return NotFound();
+            }
 
             return View(user);
 
@@ -102,7 +113,7 @@ namespace CloudMineServer.Controllers
 
         }
 
-        public async Task<IActionResult> EditUser(string id,[FromBody] UserInfo userInfo)
+        public async Task<IActionResult> EditUser(string id,[FromBody] ApplicationUser userInfo)
         {
             var user = await _userManager.FindByEmailAsync(id);
             var oldUserInfo = await GetUserInfo(user);
