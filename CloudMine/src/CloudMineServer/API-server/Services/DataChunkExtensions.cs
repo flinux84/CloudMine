@@ -31,6 +31,8 @@ namespace CloudMineServer.API_server.Services
 
         public static string LastInSequenceName(this DataChunk dataChunk) =>
             ReplacePartNumberWith(dataChunk.PartName, GetTotalCount(dataChunk.PartName));
+        public static string ChunkNameAtIndex(this DataChunk dataChunk, int index) => 
+            ReplacePartNumberWith(dataChunk.PartName, index+1);
 
         public static int Index(this DataChunk dataChunk) =>
             GetPartNumber(dataChunk.PartName) - 1;
