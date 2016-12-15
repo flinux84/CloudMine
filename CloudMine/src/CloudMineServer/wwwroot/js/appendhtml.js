@@ -76,10 +76,11 @@ function BuildEditForm(id) {
     $.getJSON('/api/v1.0/FileItems/' + id).done(function(response){
         editFileItem = response;
         var editForm =  $('#edit-form');
-        editForm.append('<div class="form-group">' +
-                            '<label for="edit-filename">Filename</label>' +
-                            '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="'+ response['fileName'] +'">' +
-                        '</div>');
+        //Vi kanske inte vill ändra filename
+        //editForm.append('<div class="form-group">' +
+        //                    '<label for="edit-filename">Filename</label>' +
+        //                    '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="'+ response['fileName'] +'">' +
+        //                '</div>');
         editForm.append('<div class="form-group">' +
                             '<label for="edit-description">Description</label>' +
                             '<textarea type="text" class="form-control" id="edit-description" placeholder="Description">'+ response['description'] +'</textarea>' +
