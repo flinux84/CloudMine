@@ -74,7 +74,6 @@ namespace CloudMineServer.API_server.Controllers
             var dataChunk = await _context.GetFirstDataChunk(id);
             StringValues resumeBytes;
             int startByte = 0;
-            int.TryParse(resumeBytes.First(), out startByte);
             if (Request.Headers.TryGetValue("Range", out resumeBytes))
             {
                 Response.StatusCode = 206;
