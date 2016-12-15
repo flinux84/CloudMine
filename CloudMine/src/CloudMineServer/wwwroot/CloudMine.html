@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -111,7 +111,7 @@
                             <th><a href="#" id="orderDate" class="orderFileList">Date</a></th>
                             <th><a href="#" id="orderType" class="orderFileList">Type</a></th>
                             <th><a href="#" id="orderDescription" class="orderFileList">Description</a></th>
-                            <th>A</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -130,8 +130,10 @@
         <div id="filelabel"></div>
     </div>
     <br />
-
-
+    <!--Loading-div som visas när man fetchar ny data från servern-->
+    <div id="loading">
+        <h4>Loading...</h4>
+    </div>
     <!-- edit dialog-->
     <div id="edit-dialog" title="Update a file">
         <form id="edit-form">
