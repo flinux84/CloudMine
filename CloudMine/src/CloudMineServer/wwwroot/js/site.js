@@ -37,8 +37,6 @@ $(document).ready(function () {
     })
 
     //list all files
-    if (UserIsSignIn) {
-        GetFileItems();
-    }
+    GetFileItems();
 
 });

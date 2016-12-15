@@ -267,10 +267,10 @@ namespace CloudMineServer.Classes
         }
 
 
-        public async Task<int> GetFileItemIdbyChecksum(string checksum)
+        public async Task<FileItem> GetFileItemByChecksum(string checksum)
         {
             var fi = await _context.FileItems.FirstOrDefaultAsync(f => f.Checksum == checksum);
-            return fi.Id;
+            return fi;
         }
 
 

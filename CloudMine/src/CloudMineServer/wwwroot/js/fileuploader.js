@@ -55,11 +55,11 @@
                     alert("Please login");
                     return;
                 }
-                if (e.status == 422) {
-                    alert("Missing some chunks, continuing upload of " + actualFile.name);
-                    progress.updateProgress(1, "Uploading");
-                    UploadChunks(result);
-                }
+                //if (e.status == 422) {
+                //    alert("Missing some chunks, continuing upload of " + actualFile.name);
+                //    progress.updateProgress(1, "Uploading");
+                //    UploadChunks(result);
+                //}
             },
             //Är det ok, så påbörjar vi metoden med att skicka datachunks av filen.
             success: function (result, status, jqHXR) {

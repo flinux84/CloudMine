@@ -157,11 +157,11 @@ namespace CloudMineServer.API_server.Controllers
             bool checksumExists = await _context.CheckChecksumOnFileItem(User.GetUserId(), fileItem.Checksum);
             if (checksumExists)
             {
+                var realFileItem =  await _context.GetFileItemByChecksum(fileItem.Checksum);
                 // kollar om alla antalet chunks som ska finnas finns 
-                if (!fileItem.IsComplete)
+                if (!realFileItem.IsComplete)
                 {
-                    int fileid = await _context.GetFileItemIdbyChecksum(fileItem.Checksum);
-                    fileItem.Id = fileid;
+                    fileItem.Id = realFileItem.Id;
                     // Antalet Chunks som ska finnas stämmer inte med hur många chunks som faktiskt finns.
                     return AcceptedAtAction("GetFileItem", new { id = fileItem.Id }, fileItem);
                 }
@@ -196,22 +196,15 @@ namespace CloudMineServer.API_server.Controllers
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
             }
         
-            for (int i = 0; i < Request.Form.Files.Count; i++)
-            {
-                var file = Request.Form.Files[i];
-                dataChunk.Data = StreamToArray(file.OpenReadStream());
-            }
-
-            //if( !ModelState.IsValid) {
-            //    return BadRequest( ModelState );
-            //}
+            var file = Request.Form.Files[0];
+            dataChunk.Data = StreamToArray(file.OpenReadStream());
 
             if (id != dataChunk.FileItemId)
                 return BadRequest("Id from route wasn't the same as fileItemId in DataChunk.");
 
             if (await _context.AddFileUsingAPI(dataChunk))
             {
-                return CreatedAtAction("GetFileItem", new { id = dataChunk.Id }, dataChunk);
+                return CreatedAtAction("GetFileItem", new { id = id }, null);
             }
             else
                 return BadRequest("Error adding datachunks.");
