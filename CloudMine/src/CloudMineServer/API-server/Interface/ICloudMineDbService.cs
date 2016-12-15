@@ -18,6 +18,7 @@ namespace CloudMineServer.Interface
         Task<bool> CheckChecksum( string userId, string checksum );
         Task<bool> CheckChecksumOnFileItem(string userId, string checksum);
         Task<bool> DoesAllChunksExist(int fileItemID);
+        Task<bool> CheckIsComplete(int fileItemID);
         #endregion
 
         #region get FileItem & Chunks
