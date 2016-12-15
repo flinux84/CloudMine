@@ -29,8 +29,12 @@ $(document).ready(function () {
 
     //upload a file
     uploadform.change(function () {
+        if (UserIsSignIn) {
         var fid = uploader.Upload(uploadform[0].files[0]);
         GetFileItem(fid);
+        } else {
+            console.log("sign in to upload!");
+        }
     })
 
     //list all files

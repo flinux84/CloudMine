@@ -8,9 +8,10 @@ using CloudMineServer.Models;
 namespace CloudMineServer.Migrations.CloudDbRepositoryMigrations
 {
     [DbContext(typeof(CloudDbRepository))]
-    partial class CloudDbRepositoryModelSnapshot : ModelSnapshot
+    [Migration("20161215082818_IsComplete")]
+    partial class IsComplete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
