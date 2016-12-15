@@ -94,7 +94,8 @@ $(document).ready(function () {
 
             if (userPushButtonToSignOut) {
                 // om användaren loggar in; ta bort tbody och ersätt den med en tom tbody.. 
-                $("tbody").replaceWith("<tbody></tbody>");
+                //$("tbody").replaceWith("<tbody></tbody>");
+                ClearDataTable();
             }
         } else {
             $("#idSignOutButton").removeClass("hidden");
