@@ -1,6 +1,7 @@
 var table;
 var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
-var grey = {"color":"grey","pointer-events":"none","cursor":"default"};
+var grey = { "color": "grey" };
+var disabled = { "display":"none" };
 
 var HTMLappender = function (element) {
     table = element;
@@ -23,11 +24,11 @@ var HTMLappender = function (element) {
                 + 'onClick="DeleteFileItem('
                 + result[i].id + ')">' + '</span>' + '</td></tr>');
                 if (result[i].isComplete === false) {
-                    $('#' + 'r' + result.id).css(grey);
+                    $('#' + 'r' + result[i].id).css(grey);
+                    $('#' + 'r' + result[i].id).children().children('a').css(disabled);
                 }
             }
         }
-
         else {
             table.append(standardRow(result));
         }
@@ -53,13 +54,11 @@ var HTMLappender = function (element) {
         }
         else {
             table.append(standardRow(result));
-            if (result.isComplete === false) {
-                $('#' + 'r' + result.id).css(grey);
-            }
         }
 
         if (result.isComplete === false) {            
             $('#' + 'r' + result.id).css(grey);
+            $('#' + 'r' + result.id).children().children('a').css(disabled);
         }
        
     }
@@ -71,7 +70,7 @@ var HTMLappender = function (element) {
         + '</td><td>' + result.dataType
         + '</td><td>' + result.description
         + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result.id + '\">'
-        + downloadbutton + '</a>'
+        + downloadbutton + '</a><a href="#" class="glyphicon glyphicon-pencil edit-button"></a> '
         + '<span class=\"glyphicon glyphicon-remove-sign\" style="cursor: pointer" ' + 'id=' + result.id + '" '
         + 'onClick="DeleteFileItem('
         + result.id + ')">' + '</span>' + '</td></tr>'
@@ -99,10 +98,10 @@ function BuildEditForm(id) {
         editFileItem = response;
         var editForm =  $('#edit-form');
         //Vi kanske inte vill ändra filename
-        //editForm.append('<div class="form-group">' +
-        //                    '<label for="edit-filename">Filename</label>' +
-        //                    '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="'+ response['fileName'] +'">' +
-        //                '</div>');
+        editForm.append('<div class="form-group">' +
+                            '<label for="edit-filename">Filename</label>' +
+                            '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="'+ response['fileName'] +'">' +
+                        '</div>');
         editForm.append('<div class="form-group">' +
                             '<label for="edit-description">Description</label>' +
                             '<textarea type="text" class="form-control" id="edit-description" placeholder="Description">'+ response['description'] +'</textarea>' +

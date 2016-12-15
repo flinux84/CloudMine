@@ -105,10 +105,16 @@ input[type="file"] {
     background-color: white;
 }
 
-.grey {
-    color: grey;
-}
-
-.grey > a {
-    display: none;
+#loading {
+    border: 1px solid black;
+    border-radius: 20px;
+    width:160px;
+    height:60px;
+    padding: 10px;
+    position:absolute;
+    left:50%;
+    top:50%;
+    margin: 0 auto;
+    background-color: aliceblue;
+    text-align: center;
 }

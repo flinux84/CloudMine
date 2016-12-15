@@ -12,7 +12,7 @@
 
     TheFileUploader.prototype.Upload = function (file) {
         actualFile = file;
-        progress.updateProgress(1, "Uploading");
+        ShowLoading();
         GetSHA1();
         return FileID;
     }
@@ -48,7 +48,7 @@
             data: theFileItem,
             error: function (e, jqHXR) {
                 console.log(e);
-                if (e.status == 409) {
+                if (e.status == 409) {                    
                     alert("The file already exists");
                     return;
                 }
@@ -56,7 +56,7 @@
                     alert("Please login");
                     return;
                 }
-                progress.clearBar();
+                HideLoading();
             },
             //Är det ok, så påbörjar vi metoden med att skicka datachunks av filen.
             success: function (result, status, jqHXR) {
@@ -72,6 +72,7 @@
 
     //Laddar upp chunksen
     function UploadChunks(result) {
+        ShowLoading();
         FileID = result.id;
         GetFileItem(FileID);
         var EndPos = MaxFileSizeMB * (1024 * 1024);
@@ -85,6 +86,8 @@
         }
         TotalCount = ChunkArray.length;
         var PartCount = 0;
+        HideLoading();
+        progress.updateProgress(1, result.fileName);
         SendNextPart(ChunkArray, PartCount);
     };
 
