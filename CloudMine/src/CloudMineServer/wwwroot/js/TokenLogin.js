@@ -52,7 +52,8 @@ $(document).ready(function () {
     AjaxUserIsLoggedIn();
 
     // Knapp för att logga in
-    $('#idLogInButton').click(function () {
+    //$('#idLogInButton').click(function () {
+    $('.LogInButtonClass').click(function () {
         $("#box").removeClass("hidden");
         $('#overlay').fadeIn(200, function () {
             $('#box').animate({ 'top': '200px' }, 200);
@@ -61,7 +62,8 @@ $(document).ready(function () {
     });
 
     // knapp för att logga ut
-    $('#idSignOutButton').click(function () {
+    //$('#idSignOutButton').click(function () {
+    $('.SignOutButton').click(function () {
         userPushButtonToSignOut = true;
         userSignOut();
     });

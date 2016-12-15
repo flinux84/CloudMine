@@ -1,6 +1,6 @@
 ﻿var table;
 var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
-//var deletebutton = '<span class=\"glyphicon glyphicon-remove-sign\" onClick=\"DeleteFileItem()"></span>';
+
 
 var HTMLappender = function (element) {
     table = element;
@@ -43,11 +43,37 @@ var HTMLappender = function (element) {
         $('#' + 'r' + fileitemId).remove();
     }
 
-    HTMLappender.prototype.userAccountInfo = function (result) {
-
-        $(".submenu #userInfo").append('<p id="apa">' + result.userName + '</p>');
-
+    HTMLappender.prototype.replaceRow = function (result) {
+        $('#' + 'r' + result.id).replaceWith(standardRow(result))
     }
+    
+    function standardRow(result) {
+        var table = '<tr id=' + 'r' + result.id + '><td>' + result.fileName
+        + '</td><td>' + result.fileSize
+        + '</td><td>' + result.uploaded.split('T')[0]
+        + '</td><td>' + result.dataType
+        + '</td><td>' + result.description
+        + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result.id + '\">'
+        + downloadbutton + '</a>'
+        + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result.id + '" '
+        + 'onClick="DeleteFileItem('
+        + result.id + ')">' + '</span>' + '</td></tr>'
+        return table;
+    }
+
 }
 
+function UserAccountInfo() {
+    $.ajax({
+        type: "POST",
+        url: '../api/v1.0/FileItems/' + FileID,
+        contentType: false,
+        processData: false,
+        data: FD,
+        success: function (result) {
 
+        }
+
+    });
+    };
+    
