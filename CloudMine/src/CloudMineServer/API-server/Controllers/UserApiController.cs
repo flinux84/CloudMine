@@ -50,7 +50,11 @@ namespace CloudMineServer.API_server.Controllers
         }
 
         #region AdminActions
-
+        /// <summary>
+        /// Hejsan
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpGet("{userEmail}")]
         public async Task<IActionResult> GetUserInfo([FromRoute]string userEmail)

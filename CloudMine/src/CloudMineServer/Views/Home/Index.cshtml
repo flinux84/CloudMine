@@ -1,10 +1,12 @@
-﻿@{
+﻿@model IEnumerable<CloudMineServer.API_server.Controllers.UserInfo>
+@{
     ViewData["Title"] = "Home Page";
+
 }
 
 <div class="row">
     <h4>Admin-portal - no fancy views here</h4>
-    
+    <input type="submit" value="Lista användare" onclick="location.href='@Url.Action("AdminIndex", "Home")'" />
 </div>
 
 @*<div>
