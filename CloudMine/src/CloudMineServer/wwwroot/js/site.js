@@ -91,6 +91,7 @@ $(document).ready(function () {
 
     //Create edit-dialog and auto-hide it
     var dialog = $("#edit-dialog").dialog({
+        classes: {'ui-dialog-titlebar-close': 'hidden'},
         autoOpen: false,
         height: 400,
         width: 400,
