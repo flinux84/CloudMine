@@ -66,8 +66,7 @@ namespace CloudMineServer.Classes
             return false;
         }
 
-      
-        // Create Add DataChunk
+             // Create Add DataChunk
         public async Task<bool> AddFileUsingAPI(DataChunk DC)
         {
             bool add = await Add(DC);
@@ -267,20 +266,19 @@ namespace CloudMineServer.Classes
             return false;
         }
 
+
+        public async Task<FileItem> GetFileItemByChecksum(string checksum)
+        {
+            var fi = await _context.FileItems.FirstOrDefaultAsync(f => f.Checksum == checksum);
+            return fi;
+        }
+
+
         // Kolla om chunken finns redan på dataChunks genom att kolla på checksum. 
         public async Task<bool> CheckChecksum(string userId, string checksum)
         {
-            var ListFileItems = await _context.FileItems.Include(fi => fi.DataChunks).Where(x => x.UserId == userId).Select(x => x.DataChunks).ToListAsync();
-            var checkSums = ListFileItems.SelectMany(fi => fi).Select(dc => dc.Checksum);
-
-            if (checkSums == null)
-                return false;
-            foreach (var c in checkSums)
-            {
-                if (c == checksum)
-                    return true;
-            }
-            return false;
+            var exists = await _context.DataChunks.AnyAsync(c => c.Checksum == checksum);
+            return exists;
         }
 
         // Kolla om chunken finns redan på FileItem 
