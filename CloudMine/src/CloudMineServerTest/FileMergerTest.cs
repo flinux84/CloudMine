@@ -35,7 +35,7 @@ namespace CloudMineServerTest
                 Description = "En bild",
                 FileName = "banan.png",
                 FileSize = 50000,
-                Private = true,
+                IsComplete = true,
                 Uploaded = new DateTime(2016, 12, 5),
                 UserId = "2C898E3F-F909-4F23-AA4F-72320431A604",
                 DataChunks = new List<DataChunk>() { chunk1, chunk2 }            

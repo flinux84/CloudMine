@@ -1,13 +1,15 @@
-﻿$(document).ready(function () {
+﻿var UserIsSignIn = false;
+
+$(document).ready(function () {
 
     /*JS Sign in*/
 
-    var UserIsSignIn = false;
     var userName = "";
     var userPassword = "";
     var userSecondPassword = "";
     var message = "";
     var $btn;
+    var userPushButtonToSignOut = false;
 
     // validera mail
     function validateEmail(email) {
@@ -23,18 +25,7 @@
 
     // just for testing 
     function UseAjaxGetToken() {
-        $.ajax({
-            // TODO:   https://localhost:44336/api/TestAuth                                      <------adress-----<<<
-            url: "../api/TestAuth",
-            contentType: 'application/json',
-            error: function (e) {
-                console.log(e);
-            },
-            success: function (result, status) {
-                console.log(result);
-                console.log(status);
-            }
-        });
+        console.log("knapp urkopplad");
     }
     $("#getToken").click(UseAjaxGetToken);
     // just for testing end
@@ -46,22 +37,23 @@
             url: "../api/v1.0/Users/IsLoggedIn",
             contentType: 'application/json',
 
-            error: function (e) {
-                console.log("error Authenticated check");
-            },
-            success: function (result, status) {
-                console.log("Authenticated check: " + result)
-                UserIsSignIn = result;
-            }
-        }).done(function () {
-            console.log("user auto check done!")
-            UserSignOutStatus();
-        });
+        }).done(function (result) {
+            console.log("is user signin: " + result)
+            UserIsSignIn = result;
+        })
+  .fail(function () {
+      console.log("error Authenticated check");
+  })
+  .always(function () {
+      UserSignOutStatus();
+  });
+
     }
     AjaxUserIsLoggedIn();
 
     // Knapp för att logga in
-    $('#idLogInButton').click(function () {
+    //$('#idLogInButton').click(function () {
+    $('.LogInButtonClass').click(function () {
         $("#box").removeClass("hidden");
         $('#overlay').fadeIn(200, function () {
             $('#box').animate({ 'top': '200px' }, 200);
@@ -70,37 +62,40 @@
     });
 
     // knapp för att logga ut
-    $('#idSignOutButton').click(function () {
+    //$('#idSignOutButton').click(function () {
+    $('.SignOutButton').click(function () {
+        userPushButtonToSignOut = true;
         userSignOut();
     });
     function userSignOut() {
         $.ajax({
-            type: "POST",
+            //  type: "POST",
             //TODO: "https://localhost:44336/api/v1.0/Users/Logout"                                       <------adress-----<<<
             url: "../api/v1.0/Users/Logout",
             contentType: 'application/json',
 
-            error: function (e) {
-                console.log("error sign out: " + e);
+        }).done(function () {
+            console.log("signout done")
+            UserIsSignIn = false;
+        })
+            .fail(function (e) {
+                console.log("signout fail.")
                 UserIsSignIn = true;
-            },
-            success: function (result, status) {
-                console.log("success signout: " + result)
-                UserIsSignIn = false;
-            }
-        });
-        //.done(function () {
-        //    UserSignOutStatus();
-        //});
-        // tvek att egentligen vänta på ajax
-        UserIsSignIn = false;
-        UserSignOutStatus();
+            })
+            .always(function () {
+                UserSignOutStatus();
+            });
     }
     function UserSignOutStatus() {
         if (!UserIsSignIn) {
             $("#idSignOutButton").addClass("hidden");
             $("#idLogInButton").removeClass("hidden");
             $(".registerUser").removeClass("hidden");
+
+            if (userPushButtonToSignOut) {
+                // om användaren loggar in; ta bort tbody och ersätt den med en tom tbody.. 
+                $("tbody").replaceWith("<tbody></tbody>");
+            }
         } else {
             $("#idSignOutButton").removeClass("hidden");
             $("#idLogInButton").addClass("hidden");
@@ -130,35 +125,11 @@
         return false;
     });
 
-    // knapp för att kryssa inloggnings-lådan
-    $('#boxclose').click(function () {
-        $('#box').animate({ 'top': '-200px' }, 500, function () {
-            $('#overlay').fadeOut('fast');
-            $("#box").addClass("hidden");
-        });
-    });
-    // knapp för att kryssa regristrerings-lådan
-    $('#boxRegisterclose').click(function () {
-        $('#boxRegister').animate({ 'top': '-200px' }, 500, function () {
-            $('#overlay').fadeOut('fast');
-            $("#boxRegister").addClass("hidden");
-        });
-    });
-    // knapp för att kryssa regristrerings-error-lådan
-    $('#boxErrorclose').click(function () {
-        $('#boxErrorRegister').animate({ 'top': '-200px' }, 500, function () {
-            $('#overlay').fadeOut('fast');
-        });
-        $("#boxRegister").addClass("hidden");
-        $("#boxErrorRegister").addClass("hidden");
-    });
-    // knapp för att kryssa inloggnings-error-lådan
-    $('#boxErrorLoginclose').click(function () {
-        $('#boxErrorLogin').animate({ 'top': '-200px' }, 500, function () {
-            $('#overlay').fadeOut('fast');
-        });
-        $("#box").addClass("hidden");
-        $("#boxErrorLogin").addClass("hidden");
+    //one x to x them all. Kryssknappen 
+    $('.boxclose').click(function () {
+        $('.box').animate({ 'top': '-200px' }, 500);
+        $('#overlay').fadeOut('fast');
+        $(".box").addClass("hidden");
     });
 
     // submit-funktion för inloggning
@@ -200,20 +171,17 @@
             data: { "username": userName, "password": userPassword },
             dataType: 'json',
 
-            error: function (e) {
-                UserIsSignIn = false;
-                console.log("ajax call error " + e);
-                message = "ajax call error. ";
-                UserSigninStatus();
-            },
-            success: function (result, status) {
-                console.log("ajax call - success")
-                console.log(result);
-                UserIsSignIn = true;
-            }
         }).done(function () {
-            UserSigninStatus();
-        });
+            console.log("ajax call - success")
+            UserIsSignIn = true;
+        })
+  .fail(function () {
+      UserIsSignIn = false;
+      message = "ajax call error. ";
+  })
+            .always(function () {
+                UserSigninStatus();
+            });
     }
 
     function UserSigninStatus() {
@@ -229,6 +197,8 @@
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
             $("#box").addClass("hidden");
+            // kalla global metod för att ladda listan
+            GetFileItems();
             return false;
         }
             // nåt gick snett
@@ -236,7 +206,6 @@
             $(".result").text(message);
             $('#box').animate({ 'top': '-200px' }, 500, function () {
                 $('#boxErrorLogin').animate({ 'top': '200px' }, 200);
-              
             });
             $("#box").addClass("hidden");
             $("#boxErrorLogin").removeClass("hidden");
@@ -297,43 +266,37 @@
             data: theInput,
             dataType: 'json',
 
-            error: function (e) {
-                console.log("Error register: " + e);
-                message = "Error register.";
-                UserIsSignIn = false;
-                UserRegisterStatus();
-            },
-            success: function (result, status) {
-                console.log(result);
-                UserIsSignIn = true;
-            }
         }).done(function () {
+            UserIsSignIn = true;
             userSignInAfterRegister(userName, userPassword);
+        })
+  .fail(function () {
+      UserIsSignIn = false;
+      message = "Error register. ";
+      UserRegisterStatus();
+  });
 
-        });
     }
 
     function userSignInAfterRegister(userName, userPassword) {
         $.ajax({
             type: "POST",
-            // TODO:   https://localhost:44336/token                                       <------adress-----<<<
+            // TODO:   https://localhost:44336/token                                       <------adress-----<<< 
             url: '../token',
             contentType: 'application/x-www-form-urlencoded',
             data: { "username": userName, "password": userPassword },
             dataType: 'json',
 
-            error: function (e) {
-                UserIsSignIn = false;
-                console.log("ajax call - error sign in after register" + e);
-                message = "ajax call - error sign in after register. ";
-                UserRegisterStatus();
-            },
-            success: function (result, status) {
-                console.log(result);
-            }
         }).done(function () {
+            UserIsSignIn = true;
             UserRegisterStatus();
-        });
+        })
+  .fail(function () {
+      UserIsSignIn = false;
+      message = "ajax call - error sign in after register. ";
+      UserRegisterStatus();
+  });
+
     }
 
     function UserRegisterStatus() {
@@ -348,7 +311,9 @@
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
-            $("#boxRegister").removeClass("hidden");
+            $("#boxRegister").addClass("hidden");
+            // kalla global metod för att ladda listan
+            GetFileItems();
         } else if (!UserIsSignIn) {
             //sätt felmeddelande på error popup
             $(".result").text(message);

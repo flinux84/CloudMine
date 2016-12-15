@@ -1,13 +1,15 @@
-﻿@{
+﻿@model IEnumerable<CloudMineServer.API_server.Controllers.UserInfo>
+@{
     ViewData["Title"] = "Home Page";
+
 }
 
 <div class="row">
     <h4>Admin-portal - no fancy views here</h4>
-    
+    <input type="submit" value="Lista användare" onclick="location.href='@Url.Action("AdminIndex", "Home")'" />
 </div>
 
-<div>
+@*<div>
     <form>
         <input type="file" name="file" id="selectedfile" value="Choose file" />
         <br />
@@ -24,7 +26,7 @@
         <input type="button" id="engage" value="Upload File" />
 
     </form>
-</div>
+</div>*@
 
 <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
         asp-fallback-src="~/lib/jquery/dist/jquery.min.js"

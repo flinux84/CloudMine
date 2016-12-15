@@ -4,26 +4,70 @@
     <title></title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="css/tempLoginCss.css" />
     <link rel="stylesheet" href="css/cloudmine.css" />
 </head>
 <body>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
-    <script src="js/fileuploader.js"></script>
     <script src="js/progressbar.js"></script>
     <script src="js/appendhtml.js"></script>
-    <script src="js/site.js"></script>
+    <script src="js/apihelper.js"></script>
+    <script src="js/TokenLogin.js"></script>
+    <script src="js/checksum.js"></script>
+    <script src="js/fileuploader.js"></script>
     <script src="js/draganddrop.js"></script>
+    <script src="js/site.js"></script>
     <hr />
 
     <div class="container" id="dropzone">
+        <!--div's Signin-->
+        <div class="overlay" id="overlay" style="display:none;"></div>
+
+        <div class="box hidden" id="box">
+            <a class="boxclose" id="boxclose"></a>
+            <h1>Login</h1>
+            <form id="Loginform" enctype="multipart/form-data">
+                <p>Name</p> <input type="text" name="mail" style="color:black" required> <br />
+                <p>Password</p> <input type="password" name="pword" style="color:black" required> <br />
+                <button type="submit" id="InputSigninButton" data-loading-text="Signing in..." class="btn btn-primary" autocomplete="off">Log in</button>
+            </form>
+        </div>
+
+        <div class="box hidden" id="boxRegister">
+            <a class="boxclose" id="boxRegisterclose"></a>
+            <h1>Register new user</h1>
+            <form id="Registerform" enctype="multipart/form-data">
+                <p>Name</p> <input type="text" name="mail" style="color:black" required> <br />
+                <p>Password</p> <input type="password" name="pword" style="color:black" required> <br />
+                <p>Retype password</p> <input type="password" name="repword" style="color:black" required> <br />
+                <button type="submit" id="InputRegisterButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off">Register</button>
+            </form>
+        </div>
+
+        <div class="box hidden" id="boxErrorRegister">
+            <a class="boxclose" id="boxErrorclose"></a>
+            <h1>Error register new user</h1>
+            <br />
+            <p class="result"></p>
+            <a href="#" id="" class="registerUser">Try register again</a>
+        </div>
+
+        <div class="box hidden" id="boxErrorLogin">
+            <a class="boxclose" id="boxErrorLoginclose"></a>
+            <h1>Error log in</h1>
+            <br />
+            <p class="result"></p>
+            <a href="#" id="" class="signinuseragain">Try sign in again</a>
+        </div>
+        <!--END div's signin-->
         <div class="navbar">
             <div class="col-lg-2">
                 <form enctype="multipart/form-data">
                     <label for="uploadFile" class="uploadbutton">
                         Upload
                     </label>
-                    <input id="uploadFile" type="file" multiple="multiple" onchange="this.form.submit()" />
+                    <input id="uploadFile" type="file" multiple="multiple" />
                 </form>
             </div>
             <div class="col-lg-7">
@@ -35,7 +79,14 @@
                 </div>
             </div>
             <div class="col-lg-3">
-                <a href="#"><h4>Login/Username</h4></a>
+                <!--<a href="#"><h4>Login/Username</h4></a>-->
+                <!--knappar till inlogg-->
+                <div class="row col-md-12">
+                    <a href="#" id="idLogInButton" class="noclass LogInButtonClass">Login</a>
+                    <a href="#" id="idSignOutButton" class="hidden SignOutButton">Sign Out</a>
+                    <a href="#" id="" class="registerUser">Register</a>
+                </div>
+                <!--knappar till inlogg end-->
             </div>
         </div>
 
@@ -53,11 +104,11 @@
                 <table id="filetable">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Size</th>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Description</th>
+                            <th><a href="#" id="orderName" class="orderFileList">Name</a></th>
+                            <th><a href="#" id="orderSize" class="orderFileList">Size</a></th>
+                            <th><a href="#" id="orderDate" class="orderFileList">Date</a></th>
+                            <th><a href="#" id="orderType" class="orderFileList">Type</a></th>
+                            <th><a href="#" id="orderDescription" class="orderFileList">Description</a></th>
                             <th>A</th>
                         </tr>
                     </thead>
@@ -67,7 +118,7 @@
             </section>
         </div>
     </div>
-    
+
     <!--Progress-div som visas när en upload startar-->
     <div id="progressDiv">
         <div class="progress">

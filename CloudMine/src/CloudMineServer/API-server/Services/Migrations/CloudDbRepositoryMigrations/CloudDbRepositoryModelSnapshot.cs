@@ -51,7 +51,7 @@ namespace CloudMineServer.Migrations.CloudDbRepositoryMigrations
 
                     b.Property<int>("FileSize");
 
-                    b.Property<bool>("Private");
+                    b.Property<bool>("IsComplete");
 
                     b.Property<DateTime>("Uploaded");
 

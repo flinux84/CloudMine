@@ -20,8 +20,8 @@ namespace CloudMineServer.Models
         //Tidstämpel då filen laddades upp
         public DateTime Uploaded { get; set; }
 
-        //Privat eller delad?
-        public bool Private { get; set; }
+        //Är filen komplett med alla chunks eller ej
+        public bool IsComplete { get; set; }
 
         //Datatyp, plockas ut från filnamnet?
         public string DataType { get; set; }

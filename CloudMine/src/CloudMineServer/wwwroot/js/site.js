@@ -1,12 +1,10 @@
 ﻿var progressFileLabel;
-var uploadbutton;
-var uploadzone;
 var progressBar;
 var progressDiv;
-var arrayOfFileItems;
 var filetable;
 var append;
-var sha;
+var uploader;
+var probar;
 
 $(document).ready(function () {
     dropzone = $("#dropzone");
@@ -15,31 +13,30 @@ $(document).ready(function () {
     progressBar = $("#progressBar");
     progressFileLabel = $("#filelabel");
     filetable = $("#filetable");
-    jQuery.sha1 = sha;
-    //enable drag and drop functionality
-    dragAndDrop(dropzone);
 
-    //create progressbar (and do a testrun)
-    var probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
-    probar.DoATestRun();
+    //create progressbar
+    probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
+
+    //enable drag and drop functionality
+    dragAndDrop(dropzone, probar);
+
 
     //setup fileuploader.js
-    //var uploader = new Uploader(uploadform, sha);
-    //var fileuploader = new fileuploader(probar, targetfile[]);
+    uploader = new TheFileUploader(probar);
 
     //create html-appender
-    var append = new HTMLappender(filetable);
+    append = new HTMLappender(filetable);
 
-    //list all files
-    $.ajax({
-        type: "GET",
-        url: '../api/v1.0/FileItems/',
-        error: function (e) {
-            console.log(e);
-        },
-        success: function (result) {
-            append.appendTable(result);
-            Datatype: "json";
+    //upload a file
+    uploadform.change(function () {
+        if (UserIsSignIn) {
+        var fid = uploader.Upload(uploadform[0].files[0]);
+        } else {
+            console.log("sign in to upload!");
         }
     })
+
+    //list all files
+    GetFileItems();
+
 });
