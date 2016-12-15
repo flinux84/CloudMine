@@ -7,7 +7,7 @@ var HTMLappender = function (element) {
     console.log('appending html');
     HTMLappender.prototype.appendTable = function (result) {
 
-        var bool = Object.prototype.toString.call(result) === "[object Array]";        
+        var bool = Object.prototype.toString.call(result) === "[object Array]";
 
         if (bool === true) {
             var i;
@@ -38,8 +38,23 @@ var HTMLappender = function (element) {
         + result.id + ')">' + '</span>' + '</td></tr>');
         }
     }
-    
+
     HTMLappender.prototype.deleteRow = function (fileitemId) {
         $('#' + 'r' + fileitemId).remove();
     }
 }
+
+function UserAccountInfo() {
+    $.ajax({
+        type: "POST",
+        url: '../api/v1.0/FileItems/' + FileID,
+        contentType: false,
+        processData: false,
+        data: FD,
+        success: function (result) {
+
+        }
+
+    });
+    };
+    

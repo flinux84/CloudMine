@@ -56,10 +56,10 @@ namespace CloudMineServer.Classes
         {
             using (var context = new CloudDbRepository(options))
             {
-                context.FileItems.Add(new Models.FileItem { Id = 11, UserId = "User-1a-guid-tostring", Checksum = "aaa111checksum", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 2, Uploaded = new DateTime(2016, 12, 02) });
-                context.FileItems.Add(new Models.FileItem { Id = 22, UserId = "User-2a-guid-tostring", Checksum = "bbb222checksum", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
-                context.FileItems.Add(new Models.FileItem { Id = 33, UserId = "User-3a-guid-tostring", Checksum = "ccc333checksum", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
-                context.FileItems.Add(new Models.FileItem { Id = 44, UserId = "User-4a-guid-tostring", Checksum = "ddd444checksum", DataType = "typ", FileName = "name", Private = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 11, UserId = "User-1a-guid-tostring", Checksum = "aaa111checksum", DataType = "typ", FileName = "name", IsComplete = true, Description = "about", FileSize = 2, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 22, UserId = "User-2a-guid-tostring", Checksum = "bbb222checksum", DataType = "typ", FileName = "name", IsComplete = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 33, UserId = "User-3a-guid-tostring", Checksum = "ccc333checksum", DataType = "typ", FileName = "name", IsComplete = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
+                context.FileItems.Add(new Models.FileItem { Id = 44, UserId = "User-4a-guid-tostring", Checksum = "ddd444checksum", DataType = "typ", FileName = "name", IsComplete = true, Description = "about", FileSize = 1, Uploaded = new DateTime(2016, 12, 02) });
                 context.SaveChanges();
             }
         }
@@ -70,7 +70,7 @@ namespace CloudMineServer.Classes
             {
                 Guid FileItemGuid = new Guid("976cf2f2-c675-4e27-ac7a-9f8e43f64334");
                 string userGuid = "111cf2f2-c675-4e27-ac7a-9f8e43f64334";
-                context.FileItems.Add(new FileItem { Id = 1, UserId = userGuid, DataChunks = null, Private = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
+                context.FileItems.Add(new FileItem { Id = 1, UserId = userGuid, DataChunks = null, IsComplete = true, FileSize = 111, FileName = "TEST", Description = "test", DataType = "jpg" });
                 context.SaveChanges();
             }
         }
@@ -130,7 +130,7 @@ namespace CloudMineServer.Classes
             var appDbOptions = CreateNewApplicationDbContextOptions();
             AddUserToDB(appDbOptions);
 
-            var fis = new FileItem() { UserId = "User-1a-guid-tostring", Private = true, FileSize = 99999999, FileName = "TEST", Description = "test", DataType = "jpg" };
+            var fis = new FileItem() { UserId = "User-1a-guid-tostring", IsComplete = true, FileSize = 99999999, FileName = "TEST", Description = "test", DataType = "jpg" };
 
             using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
@@ -156,7 +156,7 @@ namespace CloudMineServer.Classes
             var appDbOptions = CreateNewApplicationDbContextOptions();
             AddUserToDB(appDbOptions);
 
-            var fis = new FileItem() { UserId = "User-1a-guid-tostring", Private = true, FileSize = 100000001, FileName = "TEST", Description = "test", DataType = "jpg" };
+            var fis = new FileItem() { UserId = "User-1a-guid-tostring", IsComplete = true, FileSize = 100000001, FileName = "TEST", Description = "test", DataType = "jpg" };
 
             using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
@@ -183,7 +183,7 @@ namespace CloudMineServer.Classes
             AddUserToDB(appDbOptions);
             FillTheTempDataBase(options);
 
-            var fis = new FileItem() { UserId = "User-1a-guid-tostring", Private = true, FileSize = 99999999, FileName = "TEST", Description = "test", DataType = "jpg" };
+            var fis = new FileItem() { UserId = "User-1a-guid-tostring", IsComplete = true, FileSize = 99999999, FileName = "TEST", Description = "test", DataType = "jpg" };
 
             using (var appDbContext = new ApplicationDbContext(appDbOptions))
             using (var context = new CloudDbRepository(options))
@@ -256,6 +256,22 @@ namespace CloudMineServer.Classes
             }
         }
 
+        // TODO: test om datachunken som sparas är den sista.
+        public async Task AddFileUsingAPI_chunk_to_add_is_last_change_FiliItem_bool_prop_to_true()
+        {
+            //Arrange
+            //skapa fi
+            //Lägg till chunks
+            //skapa en chunk som ska vara den sista i sekvens
+
+            //Act
+
+            //Assert
+            //kolla att fileitem bool ändrats
+            //kolla att antal cunks stämmer
+            //kolla att assert är true
+        }
+
         // Read (All). Hämta användarens alla FileItems
         [Fact]
         public async Task GetAllFilesUsingAPI_get_all_the_users_files_get_a_FileItemSet()
@@ -315,7 +331,7 @@ namespace CloudMineServer.Classes
             var options = CreateNewContextOptions();
             var appDbOptions = CreateNewApplicationDbContextOptions();
             FillTheTempDataBase(options);
-            var myFileItem = new FileItem() { Id = 11, Private = false, FileSize = 111, FileName = "EDIT", Description = "edit", DataType = "jpg" };
+            var myFileItem = new FileItem() { Id = 11, IsComplete = false, FileSize = 111, FileName = "EDIT", Description = "edit", DataType = "jpg" };
             int FileItemId = 11;
 
             using (var appDbContext = new ApplicationDbContext(appDbOptions))
@@ -342,7 +358,7 @@ namespace CloudMineServer.Classes
             var options = CreateNewContextOptions();
             var appDbOptions = CreateNewApplicationDbContextOptions();
             FillTheTempDataBase(options);
-            var myFileItem = new FileItem() { Id = 11, Private = false, FileSize = 111, FileName = "EDIT", Description = "edit", DataType = "jpg" };
+            var myFileItem = new FileItem() { Id = 11, IsComplete = false, FileSize = 111, FileName = "EDIT", Description = "edit", DataType = "jpg" };
             int FileItemId = 12345;
 
             using (var appDbContext = new ApplicationDbContext(appDbOptions))
@@ -360,6 +376,8 @@ namespace CloudMineServer.Classes
                 Assert.Equal("name", context.FileItems.FirstOrDefault(x => x.Id == 11).FileName);
             }
         }
+
+        //TODO: test för att ändra fi som har chunks
 
         // Delete
         [Fact]
