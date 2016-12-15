@@ -7,6 +7,8 @@ var uploader;
 var probar;
 var searchString;
 var buttonSearch;
+var editFileItem;
+var RemoveFieldsInForm;
 var sortAscending;
 
 $(document).ready(function () {
@@ -108,4 +110,30 @@ $(document).ready(function () {
     //list all files
     GetFileItems();
 
+    //Create edit-dialog and auto-hide it
+    var dialog = $("#edit-dialog").dialog({
+        autoOpen: false,
+        height: 400,
+        width: 400,
+        modal: true,
+        resizable: false,
+        buttons: {
+            "Update": updateFileItem,
+            Cancel: function () {
+                dialog.dialog("close");
+                RemoveFieldsInForm();
+            }
+        },
+        close: function () {
+            RemoveFieldsInForm();
+        }
+    });
+
+    RemoveFieldsInForm = function() {
+        $('#edit-form').children().remove();
+    }
+
+    function updateFileItem() {
+        PutFileItem($('#edit-id').val());
+    }
 });
