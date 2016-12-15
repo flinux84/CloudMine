@@ -1,14 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title></title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="css/tempLoginCss.css" />
     <link rel="stylesheet" href="css/cloudmine.css" />
 </head>
 <body>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
     <script src="js/progressbar.js"></script>
     <script src="js/appendhtml.js"></script>
@@ -128,5 +130,12 @@
         <div id="filelabel"></div>
     </div>
     <br />
+
+
+    <!-- edit dialog-->
+    <div id="edit-dialog" title="Update a file">
+        <form id="edit-form">
+        </form>
+    </div>
 </body>
 </html>

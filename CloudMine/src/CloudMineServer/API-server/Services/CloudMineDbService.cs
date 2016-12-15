@@ -317,7 +317,6 @@ namespace CloudMineServer.Classes
             return false;
         }
 
-        // TODO: skriv test
         public async Task<bool> CheckIsComplete(int fileItemID)
         {
 
