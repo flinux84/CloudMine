@@ -72,6 +72,15 @@ namespace CloudMineServerTest
             Assert.Equal("test.jpg.part_10.10", result);
         }
         [Fact]
+        public void ChunkNameAtIndexReturnsPartNameWithIndexPlusOne()
+        {
+            DataChunk dataChunk = new DataChunk { PartName = "test.jpg.part_8.10" };
+            // Act
+            var result = dataChunk.ChunkNameAtIndex(4);
+            // Assert
+            Assert.Equal("test.jpg.part_5.10", result);
+        }
+        [Fact]
         public void IndexReturnsPartNumberMinusOne()
         {
             // Arrange

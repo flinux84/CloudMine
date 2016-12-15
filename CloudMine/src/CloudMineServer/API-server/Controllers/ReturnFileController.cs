@@ -4,12 +4,15 @@ using CloudMineServer.Interface;
 using CloudMineServer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace CloudMineServer.API_server.Controllers
 {
@@ -62,7 +65,28 @@ namespace CloudMineServer.API_server.Controllers
             if (fileItem == null)
                 return BadRequest("File does not exist");
 
+            Response.Headers.Add("Connection", "keep-alive");
+            Response.Headers.Add("Transfer-Encoding", "");
+            Response.Headers.Add("Content-Length", fileItem.FileSize.ToString());
+            Response.Headers.Add("Accept-Ranges", "bytes");
+            
+
             var dataChunk = await _context.GetFirstDataChunk(id);
+            StringValues resumeBytes;
+            int startByte = 0;
+            if (Request.Headers.TryGetValue("Range", out resumeBytes))
+            {
+                Response.StatusCode = 206;
+                if (fileItem.FileSize < dataChunk.Data.Count())
+                    dataChunk.Data = dataChunk.Data.Skip(startByte).ToArray();
+                else
+                {
+                    int startIndex = (startByte / fileItem.FileSize) * dataChunk.NumberOfChunksInSequence();
+                    dataChunk = await _context.GetDataChunkAtIndex(dataChunk, startIndex);
+                    dataChunk.Data = dataChunk.Data.Skip(startByte - startIndex * dataChunk.NumberOfChunksInSequence()).ToArray();
+                }
+
+            }
 
             return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), async (outputStream, _) =>
             {
