@@ -1,4 +1,4 @@
-﻿//ajax-anrop för varje API-metod så vi kan använda "globalt".
+//ajax-anrop för varje API-metod så vi kan använda "globalt".
 
 //Get Specific FileData
 function GetFileItem(fileitemId) {
@@ -73,3 +73,22 @@ function ClearDataTable() {
 
 
 //Put todo
+function PutFileItem(fileItemId) {
+    $.getJSON('/api/v1.0/FileItems/' + fileItemId).done(function (response) {
+        response.fileName = $('#edit-filename').val();
+        response.description = $('#edit-description').val();
+        $.ajax({
+            url: '/api/v1.0/FileItems/' + response.id,
+            type: 'PUT',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(response)
+        }).done(CloseDialogAndUpdateRow(response));
+    });    
+}
+
+function CloseDialogAndUpdateRow(updatedFileItem) {
+    $("#edit-dialog").dialog("close");
+    RemoveFieldsInForm();
+    append.replaceRow(updatedFileItem.id);
+}
