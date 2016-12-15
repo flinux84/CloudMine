@@ -127,7 +127,15 @@ namespace CloudMineServer.API_server.Controllers
         [HttpGet]
         public IActionResult LogoutUser()
         {
-            var cookieValue = HtmlEncoder.Default.Encode(Request.Cookies["access_token"]);
+            string cookieValue = string.Empty;
+            try
+            {
+                cookieValue = HtmlEncoder.Default.Encode(Request.Cookies["access_token"]);
+            }
+            catch(Exception ex)
+            {
+
+            }
             Response.Cookies.Append(
                 "access_token",
                 cookieValue,
@@ -137,7 +145,8 @@ namespace CloudMineServer.API_server.Controllers
                     HttpOnly = true,
                     Secure = true,
                     Expires = DateTime.Now.AddYears(-1)
-                });
+                }
+            );
             return Ok();
         }
 

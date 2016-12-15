@@ -13,6 +13,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Text.RegularExpressions;
 
 namespace CloudMineServer.API_server.Controllers
 {
@@ -72,18 +74,30 @@ namespace CloudMineServer.API_server.Controllers
             
 
             var dataChunk = await _context.GetFirstDataChunk(id);
+            int chunkSize = dataChunk.Data.Count();
             StringValues resumeBytes;
             int startByte = 0;
             if (Request.Headers.TryGetValue("Range", out resumeBytes))
             {
                 Response.StatusCode = 206;
+                
+                var resultString = Regex.Match(resumeBytes.First(), @"\d+").Value;
+                var success = int.TryParse(resultString, out startByte);
+                
+                Response.Headers.Remove("Content-Length");
+                Response.Headers.Add("Content-Length", (fileItem.FileSize - startByte).ToString());
+
                 if (fileItem.FileSize < dataChunk.Data.Count())
                     dataChunk.Data = dataChunk.Data.Skip(startByte).ToArray();
                 else
                 {
-                    int startIndex = (startByte / fileItem.FileSize) * dataChunk.NumberOfChunksInSequence();
+                    int startIndex = (int)(Math.Floor(((float)startByte / (float)fileItem.FileSize) * (float)dataChunk.NumberOfChunksInSequence()));
                     dataChunk = await _context.GetDataChunkAtIndex(dataChunk, startIndex);
-                    dataChunk.Data = dataChunk.Data.Skip(startByte - startIndex * dataChunk.NumberOfChunksInSequence()).ToArray();
+
+                    dataChunk.Data = dataChunk.Data.Skip(startByte - startIndex * chunkSize).ToArray();
+
+                    if (dataChunk.Data.Count() == 0)
+                        dataChunk = await _context.GetNextDataChunk(dataChunk);
                 }
 
             }
