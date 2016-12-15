@@ -33,6 +33,21 @@ function GetFileItems() {
     })
 }
 
+function GetSortedFileItemsList(sortUrl) {
+    $.ajax({
+        type: "GET",
+        url: sortUrl,
+    }).done(function (result) {
+        Datatype: "json";
+        ClearDataTable();
+        append.appendTable(result);
+    }).fail(function (e) {
+        console.log(e);
+    }).always(function () {
+
+    })
+}
+
 //Delete file
 function DeleteFileItem(fileitemId) {
     console.log("trying to delete a file");
@@ -49,6 +64,11 @@ function DeleteFileItem(fileitemId) {
         //Todo: stuff
     })
 
+}
+
+// Clear out the list of files
+function ClearDataTable() {
+    $("tbody").replaceWith("<tbody></tbody>");
 }
 
 
