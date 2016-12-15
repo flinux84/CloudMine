@@ -75,7 +75,7 @@ function ClearDataTable() {
 //Put todo
 function PutFileItem(fileItemId) {
     $.getJSON('/api/v1.0/FileItems/' + fileItemId).done(function (response) {
-        response.fileName = $('#edit-filename').val();
+        //response.fileName = $('#edit-filename').val();
         response.description = $('#edit-description').val();
         $.ajax({
             url: '/api/v1.0/FileItems/' + response.id,
