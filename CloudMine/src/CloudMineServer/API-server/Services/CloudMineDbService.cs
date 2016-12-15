@@ -83,7 +83,7 @@ namespace CloudMineServer.Classes
                 var fi = await GetFileByIdUsingAPI(DC.FileItemId);
 
                 fi.IsComplete = true;
-                bool addChange = await Add(fi);
+                bool addChange = await Update(fi);
                 if (!addChange)
                 {
                     return false;
