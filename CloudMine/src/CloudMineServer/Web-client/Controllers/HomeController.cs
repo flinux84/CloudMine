@@ -17,6 +17,7 @@ using CloudMineServer.Interface;
 
 namespace CloudMineServer.Controllers
 {
+    
     public class HomeController : Controller
     {
         private UserManager<ApplicationUser> _userManager;
@@ -45,6 +46,7 @@ namespace CloudMineServer.Controllers
             _cloudMineDbService = cloudMineDbService;
         }
 
+       
         public IActionResult Index()
         {
             
@@ -52,9 +54,10 @@ namespace CloudMineServer.Controllers
             
         }
 
+
+        [Authorize(Roles ="admin")]
         public async Task<ActionResult> AdminIndex()
         {
-
 
             var users = _userManager.Users.ToList();
 
@@ -105,21 +108,24 @@ namespace CloudMineServer.Controllers
         }
 
        
-        public async Task<IActionResult> Edit(string id)
-        {        
-            var user = await _userManager.FindByEmailAsync(id);
+        public async Task<IActionResult> Edit([FromRoute]string id)
+        {
+
+            var ApplUser = await _userManager.FindByEmailAsync(id);
+            var user = await GetUserInfo(ApplUser);
+
 
             return View(user);
 
         }
-
-        public async Task<IActionResult> EditUser(string id,[FromBody] ApplicationUser userInfo)
+        [HttpPost][ActionName("Edit")]
+        public async Task<IActionResult> EditUser(string id,UserInfo userInfo)
         {
             var user = await _userManager.FindByEmailAsync(id);
             var oldUserInfo = await GetUserInfo(user);
-
+           
             if (oldUserInfo.UsedStorage > userInfo.StorageSize)
-                return BadRequest("Cant shrink storage to less than your used storage!");
+                return BadRequest("Can't shrink storage to less than your used storage!");
 
             user.StorageSize = userInfo.StorageSize;
             await _userManager.UpdateAsync(user);
@@ -129,13 +135,4 @@ namespace CloudMineServer.Controllers
         }
 
     }
-
-
-
-
-
-
-
-
-
-    }
+}

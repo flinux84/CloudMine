@@ -3,10 +3,27 @@
     ViewData["Title"] = "Home Page";
 
 }
+@*<script>
+    $.ajax({
+        type: "GET",
+        url: '../api/v1.0/Users/IsLoggedIn',
+    }).done(function (result) {
+        Datatype: "json";
+        if (result) {
 
-<div class="row">
+
+
+        }
+    }).fail(function (e) {
+        console.log(e);
+    }).always(function () {
+
+    })
+
+</script>*@
+<div class="row" @*style="display:none"*@>
     <h4>Admin-portal - no fancy views here</h4>
-    <input type="submit" value="Lista användare" onclick="location.href='@Url.Action("AdminIndex", "Home")'" />
+    <input type="submit" value="Hantera användare" onclick="location.href='@Url.Action("AdminIndex", "Home")'" />
 </div>
 
 @*<div>
