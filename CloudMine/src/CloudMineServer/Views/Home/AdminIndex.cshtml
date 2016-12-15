@@ -1,117 +1,47 @@
-﻿
+﻿@model IEnumerable<CloudMineServer.API_server.Controllers.UserInfo>
 
-<h2>AdminPage</h2>
-
-<script src="~/js/appendhtml.js"></script>
-<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
-<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
-
-
-
-<form id="loginForm" method="post">
-    <label for="userName">user name:</label>
-    <input type="text" id="mail" name="userName" />
-    <label for="password">password:</label>
-    <input type="password" id="pword" name="password" />
-    <button type="submit">Login</button>
-</form>
-
-<div id="id01"></div>
-<div id="id02"></div>
-
-
-@section Scripts {
-<script>
-
- $('form#loginForm').on('submit', function (e) {
-                e.preventDefault();
-                var usermail = document.forms["loginForm"]["mail"].value;
-                var userpassword = document.forms["loginForm"]["pword"].value;
-                console.log(usermail + " " + userpassword);
-
-                $.ajax({
-                    type: "POST",
-                    url: '../token',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: { "username": usermail, "password": userpassword },
-                    dataType: 'json',
-
-                    error: function (e) {
-                        console.log(e);
-                    },
-                    success: function (result, status, jqHXR) {
-                        Datatype: "json",
-                        console.log(result.access_token);
-                        return result.access_token;
-                    }
-                });
-               
-                var append = new HTMLappender(filetable);
+<table class="table">
+    <thead>
+<tr>
+            <th>Username</th>
         
-                $.ajax({
-                    type: "GET",
-                    url: '../api/v1.0/Users/',
-                    error: function (e) {
-                        console.log(e);
-                    },
-                    success: function (result) {
-                        append.appendTable(result);
-                        Datatype: "json";
-                    }
-                })
+            <th>Number of files</th>
+        
+            <th>Used storage</th>
+    
+            <th>Total storage</th>
+ </tr>
 
- });
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
 
-
-
-                //$.ajax({
+            <tr>
+                
+                <td>
+                    @Html.DisplayFor(x => user.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => user.NumberFiles)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => user.UsedStorage)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => user.StorageSize)
+                </td>
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="">| Edit user details | </a>*@
+                    <a asp-action="Edit" asp-route-id="@user.UserName">| Edit storage | </a>
+                    <a asp-action="Delete" asp-route-id="@user.UserName">Delete |</a>
                     
-                //    type: "GET",
-                //    url: '../api/v1.0/Users',
-                //    dataType: 'json',
-                //    contentType: 'application/json; charset=utf-8',
+                </td>
+                    
+            </tr>
 
-                //    error: function (er) {
-                //        console.log(er)
+        }
 
-                //    },
-                   
-                //    success: function (result) {
+    </tbody>
 
-                //        $.each(result, function (i, field){
-
-                //            $("#id01").append("<div>" + field.userName + " " + field.storageSize + " "+ field.usedStorage +" "+field.numberFiles+ "</div>")
-                        
-                //        });
-
-                //        {
-                //            console.log(result);
-                        
-                //        }
-
-                //    }
-
-                //});
-
-
- });
- 
-
-
-
-</script>
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
+</table>

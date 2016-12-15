@@ -1,4 +1,5 @@
 ﻿/// <autosync enabled="true" />
+/// <reference path="js/admin.js" />
 /// <reference path="js/appendhtml.js" />
 /// <reference path="js/chat.js" />
 /// <reference path="js/checksum.js" />
