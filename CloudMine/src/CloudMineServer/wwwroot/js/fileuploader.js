@@ -12,6 +12,7 @@
 
     TheFileUploader.prototype.Upload = function (file) {
         actualFile = file;
+        progress.updateProgress(1, "Uploading");
         GetSHA1();
         return FileID;
     }
@@ -55,17 +56,15 @@
                     alert("Please login");
                     return;
                 }
-                //if (e.status == 422) {
-                //    alert("Missing some chunks, continuing upload of " + actualFile.name);
-                //    progress.updateProgress(1, "Uploading");
-                //    UploadChunks(result);
-                //}
+                progress.clearBar();
             },
             //Är det ok, så påbörjar vi metoden med att skicka datachunks av filen.
             success: function (result, status, jqHXR) {
                 Datatype: "json",
                 console.log("File metadata sent");
-                progress.updateProgress(1, "Uploading");
+                if(jqHXR.status == 202) {
+                console.log("Partial file, resuming upload.");
+                }
                 UploadChunks(result);
             }
         })

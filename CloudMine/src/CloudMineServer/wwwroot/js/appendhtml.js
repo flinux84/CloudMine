@@ -1,6 +1,6 @@
 ﻿var table;
 var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
-
+var grey = {"color":"grey","pointer-events":"none","cursor":"default"};
 
 var HTMLappender = function (element) {
     table = element;
@@ -19,23 +19,17 @@ var HTMLappender = function (element) {
                 + '</td><td>' + result[i].description
                 + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\">'
                 + downloadbutton + '</a>'
-                + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result[i].id + '" '
+                + '<span class=\"glyphicon glyphicon-remove-sign\" style="cursor: pointer" ' + 'id=' + result[i].id + '" '
                 + 'onClick="DeleteFileItem('
                 + result[i].id + ')">' + '</span>' + '</td></tr>');
+                if (result[i].isComplete === false) {
+                    $('#' + 'r' + result.id).css(grey);
+                }
             }
         }
 
         else {
-            table.append('<tr id=' + 'r' + result.id + '><td>' + result.fileName
-        + '</td><td>' + result.fileSize
-        + '</td><td>' + result.uploaded.split('T')[0]
-        + '</td><td>' + result.dataType
-        + '</td><td>' + result.description
-        + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result.id + '\">'
-        + downloadbutton + '</a>'
-        + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result.id + '" '
-        + 'onClick="DeleteFileItem('
-        + result.id + ')">' + '</span>' + '</td></tr>');
+            table.append(standardRow(result));
         }
     }
 
@@ -43,22 +37,36 @@ var HTMLappender = function (element) {
         $('#' + 'r' + fileitemId).remove();
     }
 
-    HTMLappender.prototype.replaceRow = function (result) {
-        $('#' + 'r' + result.id).replaceWith(standardRow(result))
+    HTMLappender.prototype.addOrReplaceRow = function (result) {
+        
+        if ($('#' + 'r' + result.id).length > 0) {
+            $('#' + 'r' + result.id).replaceWith(standardRow(result))
+        }
+        else {
+            table.append(standardRow(result));
+            if (result.isComplete === false) {
+                $('#' + 'r' + result.id).css(grey);
+            }
+        }
+
+        if (result.isComplete === false) {            
+            $('#' + 'r' + result.id).css(grey);
+        }
+       
     }
     
     function standardRow(result) {
-        var table = '<tr id=' + 'r' + result.id + '><td>' + result.fileName
+        var tablerow = '<tr id=' + 'r' + result.id + '><td>' + result.fileName
         + '</td><td>' + result.fileSize
         + '</td><td>' + result.uploaded.split('T')[0]
         + '</td><td>' + result.dataType
         + '</td><td>' + result.description
         + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result.id + '\">'
         + downloadbutton + '</a>'
-        + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result.id + '" '
+        + '<span class=\"glyphicon glyphicon-remove-sign\" style="cursor: pointer" ' + 'id=' + result.id + '" '
         + 'onClick="DeleteFileItem('
         + result.id + ')">' + '</span>' + '</td></tr>'
-        return table;
+        return tablerow;
     }
 
 }

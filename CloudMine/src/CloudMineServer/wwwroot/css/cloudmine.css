@@ -105,4 +105,10 @@ input[type="file"] {
     background-color: white;
 }
 
+.grey {
+    color: grey;
+}
 
+.grey > a {
+    display: none;
+}

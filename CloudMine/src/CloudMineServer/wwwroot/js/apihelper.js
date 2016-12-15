@@ -7,10 +7,9 @@ function GetFileItem(fileitemId) {
         url: '../api/v1.0/FileItems/' + fileitemId
     }).done(function (result) {
         Datatype: "json";
-        console.log("test");
+        console.log("Get FileItem Meta");
         console.log(result);
-        append.appendTable(result);
-        
+        append.addOrReplaceRow(result);
     }).fail(function (e) {
         console.log(e);
     }).always(function () {

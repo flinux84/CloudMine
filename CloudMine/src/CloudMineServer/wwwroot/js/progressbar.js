@@ -24,6 +24,8 @@ var ProgressBar = function (divDOM, barDOM, fileDOM) {
         }     
     }
 
+    ProgressBar.prototype.clearBar = clear();
+
 function clear() {
         width = 0;
         divDOM.css('display', 'none');
