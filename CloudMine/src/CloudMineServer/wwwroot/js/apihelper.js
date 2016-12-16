@@ -39,10 +39,20 @@ function GetSortedFileItemsList(sortUrl) {
     $.ajax({
         type: "GET",
         url: sortUrl,
-    }).done(function (result) {
+    }).done(function (result, status, jqXHR) {
+        
+        var headerInfo = $.parseJSON(jqXHR.getResponseHeader("X-PageInfo"));
+        var numPag = headerInfo.totalPages;
+        // TODO: göra nåt smart med detta
+        //tillfälligt
+        if (numPag > 1) {
+            $(".paginationDiv").removeClass("hidden");
+        }
+        //
+
         Datatype: "json";
         ClearDataTable();
-        append.appendTable(result);
+       append.appendTable(result);
     }).fail(function (e) {
         console.log(e);
     }).always(function () {

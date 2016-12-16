@@ -1,7 +1,7 @@
 var table;
 var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
 var grey = { "color": "grey" };
-var disabled = { "display":"none" };
+var disabled = { "display": "none" };
 
 var HTMLappender = function (element) {
     table = element;
@@ -48,7 +48,7 @@ var HTMLappender = function (element) {
     }
 
     HTMLappender.prototype.addOrReplaceRow = function (result) {
-        
+
         if ($('#' + 'r' + result.id).length > 0) {
             $('#' + 'r' + result.id).replaceWith(standardRow(result))
         }
@@ -56,13 +56,13 @@ var HTMLappender = function (element) {
             table.append(standardRow(result));
         }
 
-        if (result.isComplete === false) {            
+        if (result.isComplete === false) {
             $('#' + 'r' + result.id).css(grey);
             $('#' + 'r' + result.id).children().children('a').css(disabled);
         }
-       
+
     }
-    
+
     function standardRow(result) {
         var tablerow = '<tr id=' + 'r' + result.id + '><td>' + result.fileName
         + '</td><td>' + result.fileSize
@@ -91,23 +91,23 @@ function UserAccountInfo() {
         }
 
     });
-    };
-    
+};
+
 function BuildEditForm(id) {
-    $.getJSON('/api/v1.0/FileItems/' + id).done(function(response){
+    $.getJSON('/api/v1.0/FileItems/' + id).done(function (response) {
         editFileItem = response;
-        var editForm =  $('#edit-form');
+        var editForm = $('#edit-form');
         //Vi kanske inte vill ändra filename
         editForm.append('<div class="form-group">' +
                             '<label for="edit-filename">Filename</label>' +
-                            '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="'+ response['fileName'] +'">' +
+                            '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="' + response['fileName'] + '">' +
                         '</div>');
         editForm.append('<div class="form-group">' +
                             '<label for="edit-description">Description</label>' +
-                            '<textarea type="text" class="form-control" id="edit-description" placeholder="Description">'+ response['description'] +'</textarea>' +
+                            '<textarea type="text" class="form-control" id="edit-description" placeholder="Description">' + response['description'] + '</textarea>' +
                         '</div>');
         editForm.append('<input type="hidden" id="edit-id" value="' + response['id'] + '">');
         $('#edit-dialog').dialog("open");
-        }
+    }
     );
 }

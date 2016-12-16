@@ -4,13 +4,14 @@
     padding: 20px 10px 10px 10px;
     border-radius: 25px;
     color: white;
-    background-color:#001a33;
+    background-color: #001a33;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 h4 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
 span {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
@@ -21,13 +22,13 @@ textarea {
     max-width: 280px;
 }
 
-input[type="file"] {
-    display: none;
-}
+    input[type="file"] {
+        display: none;
+    }
 
 .uploadbutton {
     background-color: aliceblue;
-    border-radius:20px;
+    border-radius: 20px;
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
@@ -37,45 +38,47 @@ input[type="file"] {
     font-size: 16px;
     box-shadow: lightgrey 2px 2px;
 }
+
 .submenu {
     padding: 10px;
-    background-color:aliceblue;
+    background-color: aliceblue;
     color: black;
     border-radius: 20px;
 }
 
 .filelist {
     padding: 10px;
-    background-color:aliceblue;
+    background-color: aliceblue;
     border-radius: 20px;
-    color:black;
+    color: black;
 }
 
 #filetable {
     min-width: 550px;
-    width:100%;
+    width: 100%;
 }
 
-#filetable th {
-    width: auto;
-    padding-right: 10px;
-    cursor: default;
-    font-size:1.2em;
-    color:black;
-    background-color:aliceblue;
-}
+    #filetable th {
+        width: auto;
+        padding-right: 10px;
+        cursor: default;
+        font-size: 1.2em;
+        color: black;
+        background-color: aliceblue;
+    }
 
-#filetable tr:nth-child(odd) {
-    height:35px;
-    background-color:#001a33;
-    color:white;
-    border-radius:20px;
-}
-#filetable tr:nth-child(even) {
-    height:35px;
-    background-color:lightcyan;
-    border-radius:20px;
-}
+    #filetable tr:nth-child(odd) {
+        height: 35px;
+        background-color: #001a33;
+        color: white;
+        border-radius: 20px;
+    }
+
+    #filetable tr:nth-child(even) {
+        height: 35px;
+        background-color: lightcyan;
+        border-radius: 20px;
+    }
 
 .custom-file-upload {
     background-color: #008CBA;
@@ -90,17 +93,17 @@ input[type="file"] {
 }
 
 #search {
-    display:inline;
+    display: inline;
 }
 
 #progressDiv {
     position: fixed;
     width: 250px;
     height: 80px;
-    margin-top:10px;
+    margin-top: 10px;
     right: 30px;
     bottom: 30px;
-    text-align:center;
+    text-align: center;
     border: 1px solid black;
     background-color: white;
 }
@@ -108,13 +111,18 @@ input[type="file"] {
 #loading {
     border: 1px solid black;
     border-radius: 20px;
-    width:160px;
-    height:60px;
+    width: 160px;
+    height: 60px;
     padding: 10px;
-    position:absolute;
-    left:50%;
-    top:50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
     margin: 0 auto;
     background-color: aliceblue;
+    text-align: center;
+}
+
+.paginationDiv {
+    position: relative;
     text-align: center;
 }
