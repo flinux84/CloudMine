@@ -26,7 +26,7 @@ namespace CloudMineServer.API_server.Controllers
         private readonly ICloudMineDbService _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUrlHelper _urlHelper;
-        private const int maxPageSize = 20;
+        private const int maxPageSize = 2;
 
         public FileItemsController(ICloudMineDbService context, UserManager<ApplicationUser> userManager, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor)
         {

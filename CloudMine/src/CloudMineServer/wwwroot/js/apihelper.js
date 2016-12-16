@@ -24,7 +24,9 @@ function GetFileItems() {
     $.ajax({
         type: "GET",
         url: '../api/v1.0/FileItems/',
-    }).done(function (result) {
+    }).done(function (result, status, jqXHR) {
+        var headerInfo = $.parseJSON(jqXHR.getResponseHeader("X-PageInfo"));
+        BuildPaging(headerInfo);
         Datatype: "json";
         append.appendTable(result);
     }).fail(function (e) {
@@ -39,7 +41,9 @@ function GetSortedFileItemsList(sortUrl) {
     $.ajax({
         type: "GET",
         url: sortUrl,
-    }).done(function (result) {
+    }).done(function (result, status, jqXHR) {
+        var headerInfo = $.parseJSON(jqXHR.getResponseHeader("X-PageInfo"));
+        BuildPaging(headerInfo);
         Datatype: "json";
         ClearDataTable();
         append.appendTable(result);
@@ -94,4 +98,41 @@ function CloseDialogAndUpdateRow(updatedFileItem) {
     $("#edit-dialog").dialog("close");
     RemoveFieldsInForm();
     append.addOrReplaceRow(updatedFileItem);
+}
+
+function BuildPaging(pagingInfo) {
+    var ul = $('.pagination');
+    ul.children().remove();
+
+    //Previous button 
+    if (pagingInfo.prevPageLink !== "") {
+        ul.append('<li><a href="#" id="prevPageLink">Previous page</a></li>');
+    }
+
+    //Individual buttons for each page 
+    if (pagingInfo.totalPages > 1) {
+        for (var i = 0; i < pagingInfo.totalPages; i++) {
+            ul.append('<li><a href="#" class="pageIndex">'+(i+1)+'</a></li>');
+        }
+    }
+
+    //Next button
+    if (pagingInfo.nextPageLink !== "") {
+        ul.append('<li><a href="#" id="nextPageLink">Next page</a></li>');
+    }
+
+    //Click events for Next and Previous Buttons
+    $('#nextPageLink, #prevPageLink').click(function (e) {
+        e.preventDefault;
+        if ($(this).is('#prevPageLink'))
+            GetSortedFileItemsList(pagingInfo.prevPageLink);
+        else
+            GetSortedFileItemsList(pagingInfo.nextPageLink);
+    });
+
+    //Click events for individual page buttons
+    $('.pageIndex').click(function (e) {
+        e.preventDefault;
+        GetSortedFileItemsList('/api/v1.0/FileItems?pageNo=' + $(this).text());
+    });
 }
