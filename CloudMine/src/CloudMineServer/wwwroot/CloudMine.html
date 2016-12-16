@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -74,8 +74,8 @@
             </div>
             <div class="col-lg-7">
                 <div class="input-group" id="search">
-                    <input type="text" class="form-control" placeholder="Search by filename...">
-                    <button type="button" class="btn btn-default">
+                    <input type="text" id="searchString" class="form-control" placeholder="Search by filename...">
+                    <button type="button" id="buttonSearch" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
                     </button>
                 </div>
@@ -84,7 +84,7 @@
                 <!--<a href="#"><h4>Login/Username</h4></a>-->
                 <!--knappar till inlogg-->
                 <div class="row col-md-12">
-                    <a href="#" id="idLogInButton" class="noclass LogInButtonClass">Login</a>
+                    <a href="#" id="idLogInButton" class="LogInButtonClass">Login</a>
                     <a href="#" id="idSignOutButton" class="hidden SignOutButton">Sign Out</a>
                     <a href="#" id="" class="registerUser">Register</a>
                 </div>
@@ -111,7 +111,7 @@
                             <th><a href="#" id="orderDate" class="orderFileList">Date</a></th>
                             <th><a href="#" id="orderType" class="orderFileList">Type</a></th>
                             <th><a href="#" id="orderDescription" class="orderFileList">Description</a></th>
-                            <th>A</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -119,6 +119,19 @@
                 <br />
             </section>
         </div>
+
+        <div>
+            <ul class="pagination">
+                <!-- <li><a href="#">&laquo;</a></li>-->
+                <li><a href="#" id="p1" class="orderFileList">1</a></li>
+                <li><a href="#" id="p2" class="orderFileList">2</a></li>
+                <li><a href="#" id="p3" class="orderFileList">3</a></li>
+                <li><a href="#" id="p4" class="orderFileList">4</a></li>
+                <li><a href="#" id="p5" class="orderFileList">5</a></li>
+                <!-- <li><a href="#">&raquo;</a></li> -->
+            </ul>
+        </div>
+
     </div>
 
     <!--Progress-div som visas när en upload startar-->
@@ -130,12 +143,13 @@
         <div id="filelabel"></div>
     </div>
     <br />
-
-
+    <!--Loading-div som visas när man fetchar ny data från servern-->
+    <div id="loading">
+        <h4>Loading...</h4>
+    </div>
     <!-- edit dialog-->
     <div id="edit-dialog" title="Update a file">
-        <form id="edit-form">
-        </form>
+        <form id="edit-form"></form>
     </div>
 </body>
 </html>
