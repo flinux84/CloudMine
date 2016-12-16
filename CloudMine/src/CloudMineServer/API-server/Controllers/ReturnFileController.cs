@@ -89,8 +89,8 @@ namespace CloudMineServer.API_server.Controllers
             else
             {
                 Response.Headers.Add("Content-Length", fileItem.FileSize.ToString());
-                Response.Headers.Add("Accept-Ranges", "bytes");
             }
+            Response.Headers.Add("Accept-Ranges", "bytes");
             Response.Headers.Add("Connection", "keep-alive");
             Response.Headers.Add("Transfer-Encoding", "");
 
