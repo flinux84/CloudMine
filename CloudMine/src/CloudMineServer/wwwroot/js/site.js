@@ -21,7 +21,11 @@ $(document).ready(function () {
     searchString = $("#searchString");
     buttonSearch = $("#buttonSearch")
     sortAscending = true;
-    
+    var thisIDsorting = "";
+    var currentPageIndex = "1";
+    var ascOrDesc = "";
+    var headerToSort = "";
+
     //create progressbar
     probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
 
@@ -38,7 +42,7 @@ $(document).ready(function () {
     //upload a file
     uploadform.change(function () {
         if (UserIsSignIn) {
-        var fid = uploader.Upload(uploadform[0].files[0]);
+            var fid = uploader.Upload(uploadform[0].files[0]);
         } else {
             console.log("sign in to upload!");
         }
@@ -53,7 +57,7 @@ $(document).ready(function () {
                 GetSortedFileItemsList(sortUrl);
             } else {
                 GetSortedFileItemsList("../api/v1.0/FileItems");
-               // GetFileItems();
+                // GetFileItems();
             }
         } else {
             console.log("sign in to search");
@@ -65,43 +69,70 @@ $(document).ready(function () {
     $(".orderFileList").click(function () {
         if (UserIsSignIn) {
 
+            var currentElementId = this.id;
+            var pagePush = currentElementId.startsWith("p");
+
             var sort = "?sort=";
             var order = "&order=";
+            var pageNo = "&pageNo=";
             var sortUrl = "../api/v1.0/FileItems";
-         
-            if (sortAscending)
-            {
-                sortAscending = false;
-                order = order.concat("asc");
+
+            if (pagePush) {
+                console.log("page push");
+                console.log(this.id);
+                currentPageIndex = currentElementId.slice(-1);
+                console.log("current page index: " + currentPageIndex);
+            }
+
+            if (thisIDsorting == this.id && !pagePush) {
+                console.log("går in i asc desc");
+                if (sortAscending) {
+                    sortAscending = false;
+                    ascOrDesc = "asc"
+                }
+                else {
+                    sortAscending = true;
+                    ascOrDesc = "desc"
+                }
             }
             else {
-                sortAscending = true;
-                order = order.concat("desc");
+                ascOrDesc = "asc"
+                sortAscending = false;
             }
 
             switch (this.id) {
                 case "orderName":
-                    sort = sort.concat("FileName")
+                    headerToSort = "FileName";
+                    thisIDsorting = this.id;
                     break;
                 case "orderSize":
-                    sort = sort.concat("FileSize")
+                    headerToSort = "FileSize";
+                    thisIDsorting = this.id;
                     break;
                 case "orderDate":
-                    sort = sort.concat("Uploaded")
+                    headerToSort = "Uploaded";
+                    thisIDsorting = this.id;
                     break;
                 case "orderType":
-                    sort = sort.concat("DataType")
+                    headerToSort = "DataType";
+                    thisIDsorting = this.id;
                     break;
                 case "orderDescription":
-                    sort = sort.concat("Description")
+                    headerToSort = "Description";
+                    thisIDsorting = this.id;
                     break;
                 default:
-                    sort = sort.concat("id")
+                    headerToSort = "id";
+                    thisIDsorting = this.id;
             }
 
-            sortUrl = sortUrl.concat(sort, order);
+            sort = sort.concat(headerToSort)
+            order = order.concat(ascOrDesc);
+            pageNo = pageNo.concat(currentPageIndex);
+            sortUrl = sortUrl.concat(sort, order, pageNo);
 
             GetSortedFileItemsList(sortUrl);
+
         } else {
             console.log("sign in to sort!");
         }
@@ -112,7 +143,7 @@ $(document).ready(function () {
 
     //Create edit-dialog and auto-hide it
     var dialog = $("#edit-dialog").dialog({
-        classes: {'ui-dialog-titlebar-close': 'hidden'},
+        classes: { 'ui-dialog-titlebar-close': 'hidden' },
         autoOpen: false,
         height: 400,
         width: 400,
@@ -130,7 +161,7 @@ $(document).ready(function () {
         }
     });
 
-    RemoveFieldsInForm = function() {
+    RemoveFieldsInForm = function () {
         $('#edit-form').children().remove();
     }
 
