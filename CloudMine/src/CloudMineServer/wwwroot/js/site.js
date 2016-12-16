@@ -1,10 +1,12 @@
-var progressFileLabel;
+﻿var progressFileLabel;
 var progressBar;
 var progressDiv;
 var filetable;
 var append;
 var uploader;
 var probar;
+var searchString;
+var buttonSearch;
 var editFileItem;
 var RemoveFieldsInForm;
 var sortAscending;
@@ -16,6 +18,8 @@ $(document).ready(function () {
     progressBar = $("#progressBar");
     progressFileLabel = $("#filelabel");
     filetable = $("#filetable");
+    searchString = $("#searchString");
+    buttonSearch = $("#buttonSearch")
     sortAscending = true;
     
     //create progressbar
@@ -39,6 +43,23 @@ $(document).ready(function () {
             console.log("sign in to upload!");
         }
     })
+
+    buttonSearch.click(function () {
+        if (UserIsSignIn) {
+            console.log(searchString.val());
+            if (!searchString.val() == "") {
+                var sortUrl = "../api/v1.0/FileItems?filename=";
+                sortUrl = sortUrl.concat(searchString.val());
+                GetSortedFileItemsList(sortUrl);
+            } else {
+                GetSortedFileItemsList("../api/v1.0/FileItems");
+               // GetFileItems();
+            }
+        } else {
+            console.log("sign in to search");
+        }
+
+    });
 
     //Sort List
     $(".orderFileList").click(function () {
@@ -91,6 +112,7 @@ $(document).ready(function () {
 
     //Create edit-dialog and auto-hide it
     var dialog = $("#edit-dialog").dialog({
+        classes: {'ui-dialog-titlebar-close': 'hidden'},
         autoOpen: false,
         height: 400,
         width: 400,

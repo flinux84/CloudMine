@@ -1,6 +1,7 @@
 var table;
 var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
-
+var grey = { "color": "grey" };
+var disabled = { "display":"none" };
 
 var HTMLappender = function (element) {
     table = element;
@@ -19,23 +20,17 @@ var HTMLappender = function (element) {
                 + '</td><td>' + result[i].description
                 + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\">'
                 + downloadbutton + '</a><a href="#" class="glyphicon glyphicon-pencil edit-button"></a> '
-                + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result[i].id + '" '
+                + '<span class=\"glyphicon glyphicon-remove-sign\" style="cursor: pointer" ' + 'id=' + result[i].id + '" '
                 + 'onClick="DeleteFileItem('
                 + result[i].id + ')">' + '</span>' + '</td></tr>');
+                if (result[i].isComplete === false) {
+                    $('#' + 'r' + result[i].id).css(grey);
+                    $('#' + 'r' + result[i].id).children().children('a').css(disabled);
+                }
             }
         }
-
         else {
-            table.append('<tr id=' + 'r' + result.id + '><td>' + result.fileName
-        + '</td><td>' + result.fileSize
-        + '</td><td>' + result.uploaded.split('T')[0]
-        + '</td><td>' + result.dataType
-        + '</td><td>' + result.description
-        + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result.id + '\">'
-        + downloadbutton + '</a>'
-        + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result.id + '" '
-        + 'onClick="DeleteFileItem('
-        + result.id + ')">' + '</span>' + '</td></tr>');
+            table.append(standardRow(result));
         }
 
         //adding click events to edit buttons after they are created
@@ -52,22 +47,34 @@ var HTMLappender = function (element) {
         $('#' + 'r' + fileitemId).remove();
     }
 
-    HTMLappender.prototype.replaceRow = function (result) {
-        $('#' + 'r' + result.id).replaceWith(standardRow(result))
+    HTMLappender.prototype.addOrReplaceRow = function (result) {
+        
+        if ($('#' + 'r' + result.id).length > 0) {
+            $('#' + 'r' + result.id).replaceWith(standardRow(result))
+        }
+        else {
+            table.append(standardRow(result));
+        }
+
+        if (result.isComplete === false) {            
+            $('#' + 'r' + result.id).css(grey);
+            $('#' + 'r' + result.id).children().children('a').css(disabled);
+        }
+       
     }
     
     function standardRow(result) {
-        var table = '<tr id=' + 'r' + result.id + '><td>' + result.fileName
+        var tablerow = '<tr id=' + 'r' + result.id + '><td>' + result.fileName
         + '</td><td>' + result.fileSize
         + '</td><td>' + result.uploaded.split('T')[0]
         + '</td><td>' + result.dataType
         + '</td><td>' + result.description
         + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result.id + '\">'
-        + downloadbutton + '</a>'
-        + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result.id + '" '
+        + downloadbutton + '</a><a href="#" class="glyphicon glyphicon-pencil edit-button"></a> '
+        + '<span class=\"glyphicon glyphicon-remove-sign\" style="cursor: pointer" ' + 'id=' + result.id + '" '
         + 'onClick="DeleteFileItem('
         + result.id + ')">' + '</span>' + '</td></tr>'
-        return table;
+        return tablerow;
     }
 
 }
@@ -91,10 +98,10 @@ function BuildEditForm(id) {
         editFileItem = response;
         var editForm =  $('#edit-form');
         //Vi kanske inte vill ändra filename
-        //editForm.append('<div class="form-group">' +
-        //                    '<label for="edit-filename">Filename</label>' +
-        //                    '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="'+ response['fileName'] +'">' +
-        //                '</div>');
+        editForm.append('<div class="form-group">' +
+                            '<label for="edit-filename">Filename</label>' +
+                            '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="'+ response['fileName'] +'">' +
+                        '</div>');
         editForm.append('<div class="form-group">' +
                             '<label for="edit-description">Description</label>' +
                             '<textarea type="text" class="form-control" id="edit-description" placeholder="Description">'+ response['description'] +'</textarea>' +

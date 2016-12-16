@@ -2,24 +2,25 @@
 
 //Get Specific FileData
 function GetFileItem(fileitemId) {
+    ShowLoading();
     $.ajax({
         type: "GET",
         url: '../api/v1.0/FileItems/' + fileitemId
     }).done(function (result) {
         Datatype: "json";
-        console.log("test");
+        console.log("Get FileItem Meta");
         console.log(result);
-        append.appendTable(result);
-        
+        append.addOrReplaceRow(result);
     }).fail(function (e) {
         console.log(e);
     }).always(function () {
-       
+        HideLoading();
     })
 }
 
 //Get massa filer, behöver massivt ändras så den tar inparametrar och kan använda alla funktioner i API'et med sök/sortering/paging
 function GetFileItems() {
+    ShowLoading();
     $.ajax({
         type: "GET",
         url: '../api/v1.0/FileItems/',
@@ -29,11 +30,12 @@ function GetFileItems() {
     }).fail(function (e) {
         console.log(e);
     }).always(function () {
-      
+        HideLoading();
     })
 }
 
 function GetSortedFileItemsList(sortUrl) {
+    ShowLoading();
     $.ajax({
         type: "GET",
         url: sortUrl,
@@ -44,13 +46,14 @@ function GetSortedFileItemsList(sortUrl) {
     }).fail(function (e) {
         console.log(e);
     }).always(function () {
-
+        HideLoading();
     })
 }
 
 //Delete file
 function DeleteFileItem(fileitemId) {
     console.log("trying to delete a file");
+    ShowLoading();
     $.ajax({
         type: "DELETE",
         url: '../api/v1.0/FileItems/' + fileitemId,
@@ -61,7 +64,7 @@ function DeleteFileItem(fileitemId) {
     }).fail(function (e) {
         console.log(e);
     }).always(function () {
-        //Todo: stuff
+        HideLoading();
     })
 
 }
@@ -75,7 +78,7 @@ function ClearDataTable() {
 //Put todo
 function PutFileItem(fileItemId) {
     $.getJSON('/api/v1.0/FileItems/' + fileItemId).done(function (response) {
-        response.fileName = $('#edit-filename').val();
+        //response.fileName = $('#edit-filename').val();
         response.description = $('#edit-description').val();
         $.ajax({
             url: '/api/v1.0/FileItems/' + response.id,
@@ -90,5 +93,5 @@ function PutFileItem(fileItemId) {
 function CloseDialogAndUpdateRow(updatedFileItem) {
     $("#edit-dialog").dialog("close");
     RemoveFieldsInForm();
-    append.replaceRow(updatedFileItem.id);
+    append.addOrReplaceRow(updatedFileItem);
 }
