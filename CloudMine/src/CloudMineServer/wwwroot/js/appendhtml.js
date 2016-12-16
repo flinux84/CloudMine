@@ -18,7 +18,7 @@ var HTMLappender = function (element) {
                 + '</td><td>' + result[i].uploaded.split('T')[0]
                 + '</td><td>' + result[i].dataType
                 + '</td><td>' + result[i].description
-                + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\">'
+                + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\" download >'
                 + downloadbutton + '</a><a href="#" class="glyphicon glyphicon-pencil edit-button"></a> '
                 + '<span class=\"glyphicon glyphicon-remove-sign\" style="cursor: pointer" ' + 'id=' + result[i].id + '" '
                 + 'onClick="DeleteFileItem('
