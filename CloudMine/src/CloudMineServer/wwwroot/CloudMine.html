@@ -4,11 +4,13 @@
     <title></title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="css/tempLoginCss.css" />
     <link rel="stylesheet" href="css/cloudmine.css" />
 </head>
 <body>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
     <script src="js/progressbar.js"></script>
     <script src="js/appendhtml.js"></script>
@@ -72,8 +74,8 @@
             </div>
             <div class="col-lg-7">
                 <div class="input-group" id="search">
-                    <input type="text" class="form-control" placeholder="Search by filename...">
-                    <button type="button" class="btn btn-default">
+                    <input type="text" id="searchString" class="form-control" placeholder="Search by filename...">
+                    <button type="button" id="buttonSearch" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
                     </button>
                 </div>
@@ -82,7 +84,7 @@
                 <!--<a href="#"><h4>Login/Username</h4></a>-->
                 <!--knappar till inlogg-->
                 <div class="row col-md-12">
-                    <a href="#" id="idLogInButton" class="noclass LogInButtonClass">Login</a>
+                    <a href="#" id="idLogInButton" class="LogInButtonClass">Login</a>
                     <a href="#" id="idSignOutButton" class="hidden SignOutButton">Sign Out</a>
                     <a href="#" id="" class="registerUser">Register</a>
                 </div>
@@ -109,7 +111,7 @@
                             <th><a href="#" id="orderDate" class="orderFileList">Date</a></th>
                             <th><a href="#" id="orderType" class="orderFileList">Type</a></th>
                             <th><a href="#" id="orderDescription" class="orderFileList">Description</a></th>
-                            <th>A</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -128,5 +130,14 @@
         <div id="filelabel"></div>
     </div>
     <br />
+    <!--Loading-div som visas när man fetchar ny data från servern-->
+    <div id="loading">
+        <h4>Loading...</h4>
+    </div>
+    <!-- edit dialog-->
+    <div id="edit-dialog" title="Update a file">
+        <form id="edit-form">
+        </form>
+    </div>
 </body>
 </html>
