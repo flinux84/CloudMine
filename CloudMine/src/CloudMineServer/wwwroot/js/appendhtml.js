@@ -1,10 +1,16 @@
-var table;
-var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
-var grey = { "color": "grey" };
-var disabled = { "display": "none" };
+//Globala variabler för paginering. 
+var Currentpage;
+var Nextpage;
+var Prevpage;
+var Pagesize;
+var Totalpages;
+
 
 var HTMLappender = function (element) {
-    table = element;
+    var table = element;
+    var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
+    var grey = { "color": "grey" };
+    var disabled = { "display": "none" };
     console.log('appending html');
     HTMLappender.prototype.appendTable = function (result) {
 
@@ -41,6 +47,22 @@ var HTMLappender = function (element) {
             myId = myId.slice(1, myId.length);
             BuildEditForm(myId);
         })
+    }
+
+    HTMLappender.prototype.makePagination = function (headerInfo) {
+        Currentpage = headerInfo.pageNo;
+        Nextpage = headerInfo.nextPageLink;
+        Prevpage = headerInfo.prevPageLink;
+        Pagesize = headerInfo.pageSize;
+        Totalpages = headerInfo.totalPages;
+
+        var i = 1;
+        for (var i = 1; i < Totalpages; i++) {
+            $(".pagination").append('<li><a href="#" id=' + 'p' + i
+                + ' class="orderFileList">' + i + '</a></li>');
+        }
+        //attach event-handler to pagination-buttons
+        //todo
     }
 
     HTMLappender.prototype.deleteRow = function (fileitemId) {
@@ -111,3 +133,4 @@ function BuildEditForm(id) {
     }
     );
 }
+

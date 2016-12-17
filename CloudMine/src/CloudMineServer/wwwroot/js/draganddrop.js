@@ -38,12 +38,10 @@ $(document).on('drop', function (e) {
 });
 
 
-function dragDropUpload(files, dropzone,progress) {
+function dragDropUpload(files, dropzone, progress) {
     for (var i = 0; i < files.length; i++) {
-
-        console.log("Uploading file " + files[i].name);
-
         var uploader = new TheFileUploader(progress);
+        console.log("Uploading file " + files[i].name);        
         var fid = uploader.Upload(files[i]);
     }
 }
