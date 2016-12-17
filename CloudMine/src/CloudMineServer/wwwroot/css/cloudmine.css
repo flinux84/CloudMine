@@ -25,6 +25,10 @@ textarea {
     input[type="file"] {
         display: none;
     }
+    input[type="number"]{
+        max-width: 40px;
+        display:inline;
+    }
 
 .uploadbutton {
     background-color: aliceblue;

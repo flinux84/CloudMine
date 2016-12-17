@@ -10,6 +10,8 @@ var buttonSearch;
 var editFileItem;
 var RemoveFieldsInForm;
 var sortAscending;
+var headerToSort;
+var Pagesize;
 
 $(document).ready(function () {
     dropzone = $("#dropzone");
@@ -24,7 +26,8 @@ $(document).ready(function () {
     var thisIDsorting = "";
     var currentPageIndex = "1";
     var ascOrDesc = "";
-    var headerToSort = "";
+    headerToSort = 'id';
+    Pagesize = $('#inputpagesize').val();
 
     //create progressbar
     probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
@@ -39,6 +42,9 @@ $(document).ready(function () {
     //create html-appender
     append = new HTMLappender(filetable);
 
+    //list all files when page loads.
+    GetFileItems('../api/v1.0/FileItems?pageNo=1&pageSize=' + Pagesize);
+
     //upload a file
     uploadform.change(function () {
         if (UserIsSignIn) {
@@ -48,15 +54,23 @@ $(document).ready(function () {
         }
     })
 
+    //Pagesize change event
+    $('#inputpagesize').change(function () {
+        Pagesize = $(this).val();
+        GetFileItems('../api/v1.0/FileItems?pageNo=1&pageSize=' + Pagesize);
+    })
+
+
+    //Search-button click-event
     buttonSearch.click(function () {
         if (UserIsSignIn) {
             console.log(searchString.val());
             if (!searchString.val() == "") {
                 var sortUrl = "../api/v1.0/FileItems?filename=";
                 sortUrl = sortUrl.concat(searchString.val());
-                GetSortedFileItemsList(sortUrl);
+                GetFileItems(sortUrl);
             } else {
-                GetSortedFileItemsList("../api/v1.0/FileItems");
+                GetFileItems("../api/v1.0/FileItems");
                 // GetFileItems();
             }
         } else {
@@ -70,34 +84,27 @@ $(document).ready(function () {
         if (UserIsSignIn) {
 
             var currentElementId = this.id;
-            var pagePush = currentElementId.startsWith("p");
 
             var sort = "?sort=";
             var order = "&order=";
             var pageNo = "&pageNo=";
             var sortUrl = "../api/v1.0/FileItems";
+            var size = '&pageSize=';
 
-            if (pagePush) {
-                console.log("page push");
-                console.log(this.id);
-                currentPageIndex = currentElementId.slice(-1);
-                console.log("current page index: " + currentPageIndex);
-            }
-
-            if (thisIDsorting == this.id && !pagePush) {
+            if (thisIDsorting == this.id) {
                 console.log("går in i asc desc");
                 if (sortAscending) {
                     sortAscending = false;
-                    ascOrDesc = "asc"
+                    ascOrDesc = "desc"
                 }
                 else {
                     sortAscending = true;
-                    ascOrDesc = "desc"
+                    ascOrDesc = "asc"
                 }
             }
             else {
-                ascOrDesc = "asc"
                 sortAscending = false;
+                ascOrDesc = "desc"
             }
 
             switch (this.id) {
@@ -129,17 +136,16 @@ $(document).ready(function () {
             sort = sort.concat(headerToSort)
             order = order.concat(ascOrDesc);
             pageNo = pageNo.concat(currentPageIndex);
-            sortUrl = sortUrl.concat(sort, order, pageNo);
+            size = size.concat(Pagesize);
+            sortUrl = sortUrl.concat(sort, order, pageNo, size);
 
-            GetSortedFileItemsList(sortUrl);
+            GetFileItems(sortUrl);
 
         } else {
             console.log("sign in to sort!");
         }
     })
 
-    //list all files
-    GetFileItems();
 
     //Create edit-dialog and auto-hide it
     var dialog = $("#edit-dialog").dialog({

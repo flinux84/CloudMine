@@ -1,10 +1,4 @@
-//Globala variabler för paginering. 
-var Currentpage;
-var Nextpage;
-var Prevpage;
-var Pagesize;
 var Totalpages;
-
 
 var HTMLappender = function (element) {
     var table = element;
@@ -49,20 +43,56 @@ var HTMLappender = function (element) {
         })
     }
 
-    HTMLappender.prototype.makePagination = function (headerInfo) {
-        Currentpage = headerInfo.pageNo;
-        Nextpage = headerInfo.nextPageLink;
-        Prevpage = headerInfo.prevPageLink;
-        Pagesize = headerInfo.pageSize;
-        Totalpages = headerInfo.totalPages;
+    HTMLappender.prototype.makePagination = function (pagingInfo) {
+        Currentpage = pagingInfo.pageNo;
+        Nextpage = pagingInfo.nextPageLink;
+        Prevpage = pagingInfo.prevPageLink;
+        Totalpages = pagingInfo.totalPages;
 
-        var i = 1;
-        for (var i = 1; i < Totalpages; i++) {
-            $(".pagination").append('<li><a href="#" id=' + 'p' + i
-                + ' class="orderFileList">' + i + '</a></li>');
-        }
-        //attach event-handler to pagination-buttons
-        //todo
+            var ul = $('.pagination');
+            ul.children().remove();
+
+            //Previous button 
+            if (pagingInfo.prevPageLink !== "") {
+                ul.append('<li><a href="#" id="prevPageLink">&laquo;</a></li>');
+            }
+
+            //Individual buttons for each page 
+            if (pagingInfo.totalPages > 1) {
+                for (var i = 0; i < pagingInfo.totalPages; i++) {
+                    ul.append('<li><a href="#" class="pageIndex">' + (i + 1) + '</a></li>');
+                }
+            }
+
+            //Next button
+            if (pagingInfo.nextPageLink !== "") {
+                ul.append('<li><a href="#" id="nextPageLink">&raquo;</a></li>');
+            }
+
+            var sortorder = "";
+
+            if (sortAscending) {
+                sortorder = "&order=asc";
+            } else {
+                sortorder = "&order=desc";
+            }
+
+            //Click events for Next and Previous Buttons
+            $('#nextPageLink, #prevPageLink').click(function (e) {
+                //e.preventDefault;
+                if ($(this).is('#prevPageLink'))
+                    GetFileItems(pagingInfo.prevPageLink + '&sort=' + headerToSort + sortorder);
+                else
+                    GetFileItems(pagingInfo.nextPageLink + '&sort=' + headerToSort + sortorder);
+            });
+
+
+
+            //Click events for individual page buttons
+            $('.pageIndex').click(function (e) {
+                e.preventDefault;
+                GetFileItems('../api/v1.0/FileItems/?sort=' + headerToSort + sortorder + '&pageNo=' + $(this).text() + '&pageSize=' + Pagesize);
+            });
     }
 
     HTMLappender.prototype.deleteRow = function (fileitemId) {
