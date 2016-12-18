@@ -61,19 +61,16 @@ var HTMLappender = function (element) {
         return table;
     }
 
+    HTMLappender.prototype.userAccountInfo = function (result) {
+        
+        var storageUsed = Math.round((result.storageSize) / (result.usedStorage));
+        $('#accInfo').text(result.userName);        
+        $('#spaceRemaining').attr('style', 'width:'+ storageUsed +'%');
+        $('.progress-value').text(storageUsed + '%');
+        $('#numberOfFiles').text(" "+result.numberFiles +" "+ 'files');
+    }
+
+    
+
 }
 
-function UserAccountInfo() {
-    $.ajax({
-        type: "POST",
-        url: '../api/v1.0/FileItems/' + FileID,
-        contentType: false,
-        processData: false,
-        data: FD,
-        success: function (result) {
-
-        }
-
-    });
-    };
-    

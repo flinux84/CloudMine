@@ -40,6 +40,7 @@ $(document).ready(function () {
         }).done(function (result) {
             console.log("is user signin: " + result)
             UserIsSignIn = result;
+            getUserAccountInfo();
         })
   .fail(function () {
       console.log("error Authenticated check");
@@ -92,7 +93,9 @@ $(document).ready(function () {
             $("#idLogInButton").removeClass("hidden");
             $(".registerUser").removeClass("hidden");
             $("#userInfo").addClass("hidden");
-            
+            $(".glyphicon-duplicate").addClass("hidden");
+            $(".glyphicon-hdd").addClass("hidden");
+            $(".progress").addClass("hidden");
 
             if (userPushButtonToSignOut) {
                 // om användaren loggar in; ta bort tbody och ersätt den med en tom tbody.. 
@@ -103,6 +106,9 @@ $(document).ready(function () {
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
             $("#userInfo").removeClass("hidden");
+            $(".glyphicon-duplicate").removeClass("hidden");
+            $(".glyphicon-hdd").removeClass("hidden");
+            $(".progress").removeClass("hidden");
         }
     }
 
@@ -201,6 +207,9 @@ $(document).ready(function () {
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
             $("#userInfo").removeClass("hidden");
+            $(".glyphicon-duplicate").removeClass("hidden");
+            $(".glyphicon-hdd").removeClass("hidden");
+            $(".progress").removeClass("hidden");
             $("#box").addClass("hidden");
             // kalla global metod för att ladda listan
             GetFileItems();
