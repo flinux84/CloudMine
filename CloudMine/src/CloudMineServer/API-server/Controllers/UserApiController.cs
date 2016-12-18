@@ -51,7 +51,7 @@ namespace CloudMineServer.API_server.Controllers
 
         #region AdminActions
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpGet("{userEmail}")]
         public async Task<IActionResult> GetUserInfo([FromRoute]string userEmail)
         {
@@ -61,7 +61,7 @@ namespace CloudMineServer.API_server.Controllers
             return Ok(await GetUserInfoAsync(user));
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<List<UserInfo>> GetUsersInfos()
         {
@@ -78,7 +78,7 @@ namespace CloudMineServer.API_server.Controllers
 
 
         // Change user settings, only storage for now
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpPut("{userEmail}")]
         public async Task<IActionResult> PutUserInfo([FromRoute]string userEmail, [FromBody]UserInfo userInfo)
         {
@@ -93,7 +93,7 @@ namespace CloudMineServer.API_server.Controllers
             return Ok(userInfo);
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{userEmail}")]
         public async Task<IActionResult> DeleteUser([FromRoute]string userEmail)
         {
