@@ -94,7 +94,9 @@ namespace CloudMineServer.API_server.Controllers
             Response.Headers.Add("Connection", "keep-alive");
             Response.Headers.Add("Transfer-Encoding", "");
 
-            return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), async (outputStream, _) =>
+            
+            string mimeType = MimeTypes.GetMimeType(fileItem.FileName);
+            return new FileCallbackResult(new MediaTypeHeaderValue(mimeType), async (outputStream, _) =>
             {
                 while (dataChunk != null)
                 {
