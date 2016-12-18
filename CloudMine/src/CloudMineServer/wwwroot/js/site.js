@@ -135,7 +135,8 @@ $(document).ready(function () {
 
             sort = sort.concat(headerToSort)
             order = order.concat(ascOrDesc);
-            pageNo = pageNo.concat(currentPageIndex);
+            //pageNo = pageNo.concat(currentPageIndex); //Currentpage.. Tror det är denna variabeln
+            pageNo = pageNo.concat(Currentpage);
             size = size.concat(Pagesize);
             sortUrl = sortUrl.concat(sort, order, pageNo, size);
 
