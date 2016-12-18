@@ -1,4 +1,6 @@
+//Globala variabler för pagination
 var Totalpages;
+var Currentpage;
 
 var HTMLappender = function (element) {
     var table = element;
@@ -79,7 +81,7 @@ var HTMLappender = function (element) {
 
             //Click events for Next and Previous Buttons
             $('#nextPageLink, #prevPageLink').click(function (e) {
-                //e.preventDefault;
+                e.preventDefault;
                 if ($(this).is('#prevPageLink'))
                     GetFileItems(pagingInfo.prevPageLink + '&sort=' + headerToSort + sortorder);
                 else
