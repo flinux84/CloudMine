@@ -18,28 +18,18 @@ function GetFileItem(fileitemId) {
     })
 }
 
-//Get massa filer, behöver massivt ändras så den tar inparametrar och kan använda alla funktioner i API'et med sök/sortering/paging
-function GetFileItems() {
+//Get lots of fileitems yeah baby
+function GetFileItems(sortUrl) {
     ShowLoading();
+    if (!sortUrl || 0 === sortUrl.length) {
+        sortUrl = '../api/v1.0/FileItems/';
+    }
     $.ajax({
         type: "GET",
-        url: '../api/v1.0/FileItems/',
-    }).done(function (result) {
-        Datatype: "json";
-        append.appendTable(result);
-    }).fail(function (e) {
-        console.log(e);
-    }).always(function () {
-        HideLoading();
-    })
-}
-
-function GetSortedFileItemsList(sortUrl) {
-    ShowLoading();
-    $.ajax({
-        type: "GET",
-        url: sortUrl,
-    }).done(function (result) {
+        url: sortUrl
+    }).done(function (result, status, jqXHR) {        
+        var pagingInfo = $.parseJSON(jqXHR.getResponseHeader("X-PageInfo"));
+        append.makePagination(pagingInfo)
         Datatype: "json";
         ClearDataTable();
         append.appendTable(result);
