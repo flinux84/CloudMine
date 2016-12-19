@@ -523,7 +523,7 @@ namespace CloudMineServer.Classes
             var appDbOptions = CreateNewApplicationDbContextOptions();
             FillTheTempDataBase(options);
             AddDataChunksToExistingFileItemToDB(options);
-            string TestUserID = "User-1a-guid-tostring"; // this user exist and has fileitem with datachunks saved. 
+            int FileItemID = 11; // this user exist and has fileitem with datachunks saved. 
             string TestDatachunkChecksum = "cc33-checksum-fil"; //aa11-checksum-fil & bb22-checksum-fil exist.
 
             using (var appDbContext = new ApplicationDbContext(appDbOptions))
@@ -532,7 +532,7 @@ namespace CloudMineServer.Classes
                 var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
-                var result = await service.CheckChecksum(TestUserID, TestDatachunkChecksum);
+                var result = await service.CheckChecksum(FileItemID, TestDatachunkChecksum);
 
                 //Assert
                 Assert.Equal(2, context.DataChunks.Count());
@@ -551,7 +551,7 @@ namespace CloudMineServer.Classes
             var appDbOptions = CreateNewApplicationDbContextOptions();
             FillTheTempDataBase(options);
             AddDataChunksToExistingFileItemToDB(options);
-            string TestUserID = "User-2a-guid-tostring"; // this user exist and has fileitem but no datachunks saved. 
+            int FileItemID = 11; // this user exist and has fileitem but no datachunks saved. 
             string TestDatachunkChecksum = "aa11-checksum-fil"; //aa11-checksum-fil exsist but in another users datachunk
 
             using (var appDbContext = new ApplicationDbContext(appDbOptions))
@@ -560,7 +560,7 @@ namespace CloudMineServer.Classes
                 var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
-                var result = await service.CheckChecksum(TestUserID, TestDatachunkChecksum);
+                var result = await service.CheckChecksum(FileItemID, TestDatachunkChecksum);
 
                 //Assert
                 Assert.Equal(2, context.DataChunks.Count());
@@ -579,7 +579,7 @@ namespace CloudMineServer.Classes
             var appDbOptions = CreateNewApplicationDbContextOptions();
             FillTheTempDataBase(options);
             AddDataChunksToExistingFileItemToDB(options);
-            string TestUserID = "User-1a-guid-tostring"; // this user exist and has fileitem and datachunks saved. 
+            int FileItemID = 11; // this user exist and has fileitem and datachunks saved. 
             string TestDatachunkChecksum = "aa11-checksum-fil"; //aa11-checksum-fil & bb22-checksum-fil exist.
 
             using (var appDbContext = new ApplicationDbContext(appDbOptions))
@@ -588,7 +588,7 @@ namespace CloudMineServer.Classes
                 var service = new CloudMineDbService(context, appDbContext);
 
                 //Act  
-                var result = await service.CheckChecksum(TestUserID, TestDatachunkChecksum);
+                var result = await service.CheckChecksum(FileItemID, TestDatachunkChecksum);
 
                 //Assert
                 Assert.Equal(2, context.DataChunks.Count());
