@@ -35,13 +35,13 @@ namespace CloudMineServer.API_server.Controllers
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 
-        //GET: api/FileItems/checksum/id
-        [HttpGet("checksum/{id}")]
-        public async Task<bool> CheckCheckSum(string id)
-        {
-            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), id);
-            return checksumExists;
-        }
+        ////GET: api/FileItems/checksum/id
+        //[HttpGet("checksum/{id}")]
+        //public async Task<bool> CheckCheckSum(string id)
+        //{
+        //    bool checksumExists = await _context.CheckChecksum(User.GetUserId(), id);
+        //    return checksumExists;
+        //}
 
         // GET: api/FileItems
         [HttpGet(Name = "GetFileItems")]
@@ -190,7 +190,7 @@ namespace CloudMineServer.API_server.Controllers
         public async Task<IActionResult> PostDataChunk([FromRoute]int id, [FromForm]DataChunk dataChunk)
         {
             // checksum
-            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), dataChunk.Checksum);            
+            bool checksumExists = await _context.CheckChecksum(dataChunk.FileItemId, dataChunk.Checksum);            
             if (checksumExists)
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
