@@ -121,10 +121,14 @@ namespace CloudMineServer.Classes
         }
 
         // Delete 
-        public async Task<bool> DeleteByIdUsingAPI(int num)
+        public async Task<bool> DeleteByIdUsingAPI(int fileItemId)
         {
-            var fi = await _context.FileItems.Include(x => x.DataChunks).FirstOrDefaultAsync(x => x.Id == num);
-            bool check = await Delete(fi);
+            var dataChunks = _context.DataChunks.Where(d => d.FileItemId == fileItemId);
+            bool check = await Delete(dataChunks);
+
+            var fileItem = await _context.FileItems.SingleOrDefaultAsync(f => f.Id == fileItemId);
+            check = await Delete(fileItem) && check;
+
             return check;
         }
 
@@ -305,8 +309,8 @@ namespace CloudMineServer.Classes
             //var ListFileItems = await _context.FileItems.Include(t => t.DataChunks).Where(x => x.Id == fileItemID).Select(x => x.DataChunks).ToListAsync();
             //var acdc = ListFileItems.Count();
 
-            var fi = _context.FileItems.Include(w => w.DataChunks).FirstOrDefault(z => z.Id == fileItemID);
-            var actualChunksInFileItem = fi.DataChunks.Count();
+            var dc = _context.DataChunks.Where(d => d.FileItemId == fileItemID);
+            var actualChunksInFileItem = dc.Count();
 
             if (actualChunksInFileItem == NumberOfChunksInSequence)
             {
