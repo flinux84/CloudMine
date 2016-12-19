@@ -16,11 +16,11 @@ var HTMLappender = function (element) {
             var i;
             for (i = 0; i < result.length; i++) {
                 table.append('<tr id=' + 'r' + result[i].id + '><td>' + result[i].fileName
-                + '</td> <td>' + result[i].fileSize
-                + '</td> <td>' + result[i].uploaded.split('T')[0]
-                + '</td> <td>' + result[i].dataType
-                + '</td> <td>' + result[i].description
-                + '</td> <td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\" download >'
+                + '</td><td>' + result[i].fileSize
+                + '</td><td>' + result[i].uploaded.split('T')[0]
+                + '</td><td>' + result[i].dataType
+                + '</td><td>' + result[i].description
+                + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\" download >'
                 + downloadbutton + '</a><a href="#" class="glyphicon glyphicon-pencil edit-button"></a> '
                 + '<span class=\"glyphicon glyphicon-remove-sign\" style="cursor: pointer" ' + 'id=' + result[i].id + '" '
                 + 'onClick="DeleteFileItem('
@@ -136,7 +136,7 @@ var HTMLappender = function (element) {
         var theStorageSize = Math.round((result.storageSize)/1000000);
         var theStorageUsed =((result.usedStorage) / 1000000).toFixed(1);
 
-        var TotalStorage = Math.round( (theStorageUsed)/(theStorageSize)*100);
+        var TotalStorage = Math.round((theStorageUsed/theStorageSize)*100);
 
 
         $('#accInfo').text(result.userName);        
