@@ -277,7 +277,7 @@ namespace CloudMineServer.Classes
         // Kolla om chunken finns redan på dataChunks genom att kolla på checksum. 
         public async Task<bool> CheckChecksum(int fileItemID, string checksum)
         {
-            var exists = await _context.DataChunks.Where(x => x.FileItemId == fileItemID).AnyAsync(c => c.Checksum == checksum);
+            var exists = await _context.DataChunks.AnyAsync(c => c.Checksum == checksum && c.FileItemId == fileItemID);
             return exists;
         }
 

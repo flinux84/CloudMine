@@ -550,7 +550,7 @@ namespace CloudMineServer.Classes
             var options = CreateNewContextOptions();
             var appDbOptions = CreateNewApplicationDbContextOptions();
             FillTheTempDataBase(options);
-            AddDataChunksToExistingFileItemToDB(options);
+            AddDataChunksToDB(options);
             int FileItemID = 11; // this user exist and has fileitem but no datachunks saved. 
             string TestDatachunkChecksum = "aa11-checksum-fil"; //aa11-checksum-fil exsist but in another users datachunk
 
