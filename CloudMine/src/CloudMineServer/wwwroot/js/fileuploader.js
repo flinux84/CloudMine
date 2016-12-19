@@ -56,7 +56,7 @@
                     HideLoading();
                     return;
                 }
-                if (e.status == 401) {
+                if (e.status === 401) {
                     alert("Please login");
                     HideLoading();
                     return;
