@@ -96,6 +96,7 @@ $(document).ready(function () {
             $(".glyphicon-duplicate").addClass("hidden");
             $(".glyphicon-hdd").addClass("hidden");
             $(".progress").addClass("hidden");
+            $(".compareStorage").addClass("hidden");
 
             if (userPushButtonToSignOut) {
                 // om användaren loggar in; ta bort tbody och ersätt den med en tom tbody.. 
@@ -109,6 +110,7 @@ $(document).ready(function () {
             $(".glyphicon-duplicate").removeClass("hidden");
             $(".glyphicon-hdd").removeClass("hidden");
             $(".progress").removeClass("hidden");
+            $(".compareStorage").removeClass("hidden");
         }
     }
 
@@ -211,6 +213,7 @@ $(document).ready(function () {
             $(".glyphicon-hdd").removeClass("hidden");
             $(".progress").removeClass("hidden");
             $("#box").addClass("hidden");
+            $(".compareStorage").removeClass("hidden");
             // kalla global metod för att ladda listan
             GetFileItems();
             getUserAccountInfo();

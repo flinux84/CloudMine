@@ -63,10 +63,16 @@ var HTMLappender = function (element) {
 
     HTMLappender.prototype.userAccountInfo = function (result) {
         
-        var storageUsed = Math.round((result.storageSize) / (result.usedStorage));
+        var theStorageSize = Math.round((result.storageSize)/1000000);
+        var theStorageUsed =((result.usedStorage) / 1000000).toFixed(1);
+
+        var TotalStorage = Math.round(theStorageSize / theStorageUsed);
+
+
         $('#accInfo').text(result.userName);        
-        $('#spaceRemaining').attr('style', 'width:'+ storageUsed +'%');
-        $('.progress-value').text(storageUsed + '%');
+        $('#spaceRemaining').attr('style', 'width:'+ TotalStorage +'%');
+        $('.progress-value').text(TotalStorage + '%');
+        $('#storageData').text(theStorageUsed + ' Mb of ' + theStorageSize + ' Mb ');
         $('#numberOfFiles').text(" "+result.numberFiles +" "+ 'files');
     }
 
