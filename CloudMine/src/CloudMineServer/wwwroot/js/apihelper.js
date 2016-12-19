@@ -58,17 +58,17 @@ function DeleteFileItem(fileitemId) {
     })
 
 }
+// Clear out the list of files
+function ClearDataTable() {
+    $("tbody").replaceWith("<tbody></tbody>");
+}
+
 
 function getUserAccountInfo() {
     $.ajax({
         url: '../api/v1.0/Users/UserInfo',
         contentType: 'application/json',
         success: function (result) {
-// Clear out the list of files
-function ClearDataTable() {
-    $("tbody").replaceWith("<tbody></tbody>");
-}
-
             console.log(result);
             Datatype: "json";
             append.userAccountInfo(result);

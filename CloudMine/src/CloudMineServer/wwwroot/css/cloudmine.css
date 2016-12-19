@@ -127,10 +127,11 @@ textarea {
 .paginationDiv {
     position: relative;
     text-align: center;
+}
 .progress{
     text-align: center;
 }
-}
+
 .progress-value {
     position:absolute;
     right:0;
