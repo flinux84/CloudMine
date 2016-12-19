@@ -99,7 +99,7 @@ namespace CloudMineServer.API_server.Controllers
             {
                 while (dataChunk != null)
                 {
-                    using (Stream readStream = new MemoryStream(dataChunk.Data))
+                    using (Stream readStream = new MemoryStream(dataChunk.Data)) 
                     {
                         await readStream.CopyToAsync(outputStream);
                     }

@@ -133,7 +133,7 @@ namespace CloudMineServer.API_server.Controllers
                     {
                         Path = "/",
                         HttpOnly = true,
-                        Secure = true,
+                        Secure = false,
                         Expires = DateTime.Now.AddYears(-1)
                     }
                 );
