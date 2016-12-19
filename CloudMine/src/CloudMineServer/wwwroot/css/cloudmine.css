@@ -103,6 +103,7 @@ textarea {
 .progress-bar {
     height: 16px;
 }
+
 #loading {
     border: 1px solid black;
     border-radius: 20px;
@@ -128,8 +129,10 @@ textarea {
     position: relative;
     text-align: center;
 }
+
 .progress{
     text-align: center;
+    height:auto;
 }
 
 .progress-value {

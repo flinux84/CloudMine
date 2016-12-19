@@ -136,7 +136,7 @@ var HTMLappender = function (element) {
         var theStorageSize = Math.round((result.storageSize)/1000000);
         var theStorageUsed =((result.usedStorage) / 1000000).toFixed(1);
 
-        var TotalStorage = Math.round(theStorageSize / theStorageUsed);
+        var TotalStorage = Math.round((theStorageUsed/theStorageSize)*100);
 
 
         $('#accInfo').text(result.userName);        
