@@ -72,7 +72,7 @@
                     <input id="uploadFile" type="file" multiple="multiple" />
                 </form>
             </div>
-            <div class="col-lg-7">
+            <div class="col-lg-6">
                 <div class="input-group" id="search">
                     <input type="text" id="searchString" class="form-control" placeholder="Search by filename...">
                     <button type="button" id="buttonSearch" class="btn btn-default">
@@ -80,11 +80,15 @@
                     </button>
                 </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-4">
                 <!--<a href="#"><h4>Login/Username</h4></a>-->
                 <!--knappar till inlogg-->
                 <div class="row col-md-12">
-                    <a href="#" id="idLogInButton" class="LogInButtonClass">Login</a>
+
+                    <span class="glyphicon glyphicon-user hidden" id="userInfo">
+                        <span id="accInfo"></span>
+                    </span>
+                    <a href="#" id="idLogInButton" class="noclass LogInButtonClass">Login</a>
                     <a href="#" id="idSignOutButton" class="hidden SignOutButton">Sign Out</a>
                     <a href="#" id="" class="registerUser">Register</a>
                 </div>
@@ -95,12 +99,24 @@
 
         <div class="col-lg-2">
             <aside class="submenu">
-                <h4><span class="glyphicon glyphicon-cd"> Function</span></h4>
-                <h4><span class="glyphicon glyphicon-road"> Function</span></h4>
-                <h4><span class="glyphicon glyphicon-time"> Cloud</span></h4>
-                <h4><span class="glyphicon glyphicon-trash"> Cloud</span></h4>
+                <h4><span class="glyphicon glyphicon-hdd hidden"><span> Used space</span></span></h4>
+                <div class="progress hidden">
+                    <span class="progress-value"></span>
+                    <div class="progress-bar" id="spaceRemaining"></div>
+                </div>
+
+                <span class="compareStorage"><span id="storageData"></span></span>
+                <h4><span class="glyphicon glyphicon-duplicate hidden"><span id="numberOfFiles"></span></span></h4>
                 <strong>Pagesize: </strong> <input type="number" max="20" min="1" value="10" id="inputpagesize">
+
             </aside>
+            <br />
+            <br />
+
+            <!--Loading-div som visas när man fetchar ny data från servern-->
+            <div id="loading">
+                <h4>Loading...</h4>
+            </div>
         </div>
         <div class="col-lg-10">
             <section class="filelist">
@@ -120,22 +136,19 @@
                 <br />
             </section>
         </div>
-
+    </div>
         <div class="col-lg-12 paginationDiv">
             <ul class="pagination">
                 <!--ritas upp dynamiskt i appendhtml.js -->
             </ul>
         </div>
 
-    </div>
+    
 
     <!--Progress-bar ritas upp dynamiskt i progressbar.js-->
 
     <br />
-    <!--Loading-div som visas när man fetchar ny data från servern-->
-    <div id="loading">
-        <h4>Loading...</h4>
-    </div>
+    
     <!-- edit dialog-->
     <div id="edit-dialog" title="Update a file">
         <form id="edit-form"></form>

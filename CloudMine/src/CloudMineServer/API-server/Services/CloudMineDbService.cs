@@ -121,11 +121,15 @@ namespace CloudMineServer.Classes
         }
 
         // Delete 
-        public async Task<bool> DeleteByIdUsingAPI(int num)
+        public async Task<bool> DeleteByIdUsingAPI(int fileItemId)
         {
-            var fi = await _context.FileItems.Include(x => x.DataChunks).FirstOrDefaultAsync(x => x.Id == num);
-            bool check = await Delete(fi);
-            return check;
+            var dataChunks = _context.DataChunks.Where(d => d.FileItemId == fileItemId);
+            var checkRange = await DeleteRange(dataChunks);
+
+            var fileItem = await _context.FileItems.SingleOrDefaultAsync(f => f.Id == fileItemId);
+            var check = await Delete(fileItem);
+
+            return check && checkRange;
         }
 
         #endregion
@@ -149,9 +153,7 @@ namespace CloudMineServer.Classes
         // Read One with file with filechunks return FileItem. No Merge on Server
         public async Task<FileItem> GetSpecifikFileItemAndDataChunk(int id, string userId)
         {
-            var IQuerybleFileItem = _context.FileItems.Include(x => x.DataChunks).Where(x => x.UserId == userId);
-            var fi = await IQuerybleFileItem.FirstOrDefaultAsync(x => x.Id == id);
-
+            var fi = await _context.FileItems.Include(x => x.DataChunks).FirstOrDefaultAsync(x => x.Id == id);
             return fi;
         }
 
@@ -234,6 +236,17 @@ namespace CloudMineServer.Classes
             catch
             { return false; }
         }
+        private async Task<bool> DeleteRange(IQueryable<object> delete)
+        {
+            try
+            {
+                _context.RemoveRange(delete);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            { return false; }
+        }
         #endregion
 
         #region Internal Helper
@@ -305,8 +318,8 @@ namespace CloudMineServer.Classes
             //var ListFileItems = await _context.FileItems.Include(t => t.DataChunks).Where(x => x.Id == fileItemID).Select(x => x.DataChunks).ToListAsync();
             //var acdc = ListFileItems.Count();
 
-            var fi = _context.FileItems.Include(w => w.DataChunks).FirstOrDefault(z => z.Id == fileItemID);
-            var actualChunksInFileItem = fi.DataChunks.Count();
+            var dc = _context.DataChunks.Where(d => d.FileItemId == fileItemID);
+            var actualChunksInFileItem = dc.Count();
 
             if (actualChunksInFileItem == NumberOfChunksInSequence)
             {

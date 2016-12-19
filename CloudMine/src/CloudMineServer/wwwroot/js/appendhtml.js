@@ -51,50 +51,50 @@ var HTMLappender = function (element) {
         Prevpage = pagingInfo.prevPageLink;
         Totalpages = pagingInfo.totalPages;
 
-            var ul = $('.pagination');
-            ul.children().remove();
+        var ul = $('.pagination');
+        ul.children().remove();
 
-            //Previous button 
-            if (pagingInfo.prevPageLink !== "") {
-                ul.append('<li><a href="#" id="prevPageLink">&laquo;</a></li>');
+        //Previous button 
+        if (pagingInfo.prevPageLink !== "") {
+            ul.append('<li><a href="#" id="prevPageLink">&laquo;</a></li>');
+        }
+
+        //Individual buttons for each page 
+        if (pagingInfo.totalPages > 1) {
+            for (var i = 0; i < pagingInfo.totalPages; i++) {
+                ul.append('<li><a href="#" class="pageIndex">' + (i + 1) + '</a></li>');
             }
+        }
 
-            //Individual buttons for each page 
-            if (pagingInfo.totalPages > 1) {
-                for (var i = 0; i < pagingInfo.totalPages; i++) {
-                    ul.append('<li><a href="#" class="pageIndex">' + (i + 1) + '</a></li>');
-                }
-            }
+        //Next button
+        if (pagingInfo.nextPageLink !== "") {
+            ul.append('<li><a href="#" id="nextPageLink">&raquo;</a></li>');
+        }
 
-            //Next button
-            if (pagingInfo.nextPageLink !== "") {
-                ul.append('<li><a href="#" id="nextPageLink">&raquo;</a></li>');
-            }
+        var sortorder = "";
 
-            var sortorder = "";
+        if (sortAscending) {
+            sortorder = "&order=asc";
+        } else {
+            sortorder = "&order=desc";
+        }
 
-            if (sortAscending) {
-                sortorder = "&order=asc";
-            } else {
-                sortorder = "&order=desc";
-            }
-
-            //Click events for Next and Previous Buttons
-            $('#nextPageLink, #prevPageLink').click(function (e) {
-                e.preventDefault;
-                if ($(this).is('#prevPageLink'))
-                    GetFileItems(pagingInfo.prevPageLink + '&sort=' + headerToSort + sortorder);
-                else
-                    GetFileItems(pagingInfo.nextPageLink + '&sort=' + headerToSort + sortorder);
-            });
+        //Click events for Next and Previous Buttons
+        $('#nextPageLink, #prevPageLink').click(function (e) {
+            e.preventDefault;
+            if ($(this).is('#prevPageLink'))
+                GetFileItems(pagingInfo.prevPageLink + '&sort=' + headerToSort + sortorder);
+            else
+                GetFileItems(pagingInfo.nextPageLink + '&sort=' + headerToSort + sortorder);
+        });
 
 
 
-            //Click events for individual page buttons
-            $('.pageIndex').click(function (e) {
-                e.preventDefault;
-                GetFileItems('../api/v1.0/FileItems/?sort=' + headerToSort + sortorder + '&pageNo=' + $(this).text() + '&pageSize=' + Pagesize);
-            });
+        //Click events for individual page buttons
+        $('.pageIndex').click(function (e) {
+            e.preventDefault;
+            GetFileItems('../api/v1.0/FileItems/?sort=' + headerToSort + sortorder + '&pageNo=' + $(this).text() + '&pageSize=' + Pagesize);
+        });
     }
 
     HTMLappender.prototype.deleteRow = function (fileitemId) {
@@ -131,21 +131,24 @@ var HTMLappender = function (element) {
         return tablerow;
     }
 
-}
+    HTMLappender.prototype.userAccountInfo = function (result) {
+        
+        var theStorageSize = Math.round((result.storageSize)/1000000);
+        var theStorageUsed =((result.usedStorage) / 1000000).toFixed(1);
 
-function UserAccountInfo() {
-    $.ajax({
-        type: "POST",
-        url: '../api/v1.0/FileItems/' + FileID,
-        contentType: false,
-        processData: false,
-        data: FD,
-        success: function (result) {
+        var TotalStorage = Math.round((theStorageUsed/theStorageSize)*100);
 
-        }
 
-    });
+        $('#accInfo').text(result.userName);        
+        $('#spaceRemaining').attr('style', 'width:'+ TotalStorage +'%');
+        $('.progress-value').text(TotalStorage + '%');
+        $('#storageData').text(theStorageUsed + ' Mb of ' + theStorageSize + ' Mb ');
+        $('#numberOfFiles').text(" "+result.numberFiles +" "+ 'files');
+    }
+
+    
 };
+
 
 function BuildEditForm(id) {
     $.getJSON('/api/v1.0/FileItems/' + id).done(function (response) {

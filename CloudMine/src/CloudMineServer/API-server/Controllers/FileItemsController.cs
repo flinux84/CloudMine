@@ -187,10 +187,10 @@ namespace CloudMineServer.API_server.Controllers
 
         // POST: api/FileItems/5
         [HttpPost("{id:int}")]
-        public async Task<IActionResult> PostDataChunk([FromRoute]int FileItemId, [FromForm]DataChunk dataChunk)
+        public async Task<IActionResult> PostDataChunk([FromRoute]int id, [FromForm]DataChunk dataChunk)
         {
             // checksum
-            bool checksumExists = await _context.CheckChecksum(FileItemId, dataChunk.Checksum);            
+            bool checksumExists = await _context.CheckChecksum(dataChunk.FileItemId, dataChunk.Checksum);            
             if (checksumExists)
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
@@ -199,12 +199,12 @@ namespace CloudMineServer.API_server.Controllers
             var file = Request.Form.Files[0];
             dataChunk.Data = StreamToArray(file.OpenReadStream());
 
-            if (FileItemId != dataChunk.FileItemId)
+            if (id != dataChunk.FileItemId)
                 return BadRequest("Id from route wasn't the same as fileItemId in DataChunk.");
 
             if (await _context.AddFileUsingAPI(dataChunk))
             {
-                return CreatedAtAction("GetFileItem", new { id = FileItemId }, null);
+                return CreatedAtAction("GetFileItem", new { id = id }, null);
             }
             else
                 return BadRequest("Error adding datachunks.");
