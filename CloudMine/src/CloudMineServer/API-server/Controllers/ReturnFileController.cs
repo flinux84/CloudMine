@@ -82,7 +82,7 @@ namespace CloudMineServer.API_server.Controllers
 
                 dataChunk = await GetResumeDataChunk(dataChunk, fileItem, startByteNr);
 
-                Response.StatusCode = 206;
+                Response.StatusCode = StatusCodes.Status206PartialContent;
                 Response.Headers.Add("Content-Length", (fileItem.FileSize - startByteNr).ToString());
                 Response.Headers.Add("Content-Range", $"bytes {startByteNr}-{fileItem.FileSize - 1}/{fileItem.FileSize}");
             }
@@ -93,7 +93,6 @@ namespace CloudMineServer.API_server.Controllers
             Response.Headers.Add("Accept-Ranges", "bytes");
             Response.Headers.Add("Connection", "keep-alive");
             Response.Headers.Add("Transfer-Encoding", "");
-
             
             string mimeType = MimeTypes.GetMimeType(fileItem.FileName);
             return new FileCallbackResult(new MediaTypeHeaderValue(mimeType), async (outputStream, _) =>
