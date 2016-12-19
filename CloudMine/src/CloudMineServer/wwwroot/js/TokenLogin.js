@@ -40,6 +40,7 @@ $(document).ready(function () {
         }).done(function (result) {
             console.log("is user signin: " + result)
             UserIsSignIn = result;
+            getUserAccountInfo();
         })
   .fail(function () {
       console.log("error Authenticated check");
@@ -91,6 +92,11 @@ $(document).ready(function () {
             $("#idSignOutButton").addClass("hidden");
             $("#idLogInButton").removeClass("hidden");
             $(".registerUser").removeClass("hidden");
+            $("#userInfo").addClass("hidden");
+            $(".glyphicon-duplicate").addClass("hidden");
+            $(".glyphicon-hdd").addClass("hidden");
+            $(".progress").addClass("hidden");
+            $(".compareStorage").addClass("hidden");
 
             if (userPushButtonToSignOut) {
                 // om användaren loggar in; ta bort tbody och ersätt den med en tom tbody.. 
@@ -101,6 +107,11 @@ $(document).ready(function () {
             $("#idSignOutButton").removeClass("hidden");
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
+            $("#userInfo").removeClass("hidden");
+            $(".glyphicon-duplicate").removeClass("hidden");
+            $(".glyphicon-hdd").removeClass("hidden");
+            $(".progress").removeClass("hidden");
+            $(".compareStorage").removeClass("hidden");
         }
     }
 
@@ -175,6 +186,7 @@ $(document).ready(function () {
         }).done(function () {
             console.log("ajax call - success")
             UserIsSignIn = true;
+            getUserAccountInfo(); // <--------------------------------------------- hämtar userinfo
         })
   .fail(function () {
       UserIsSignIn = false;
@@ -197,9 +209,15 @@ $(document).ready(function () {
             $("#idLogInButton").addClass("hidden");
             $(".registerUser").addClass("hidden");
             $("#idSignOutButton").removeClass("hidden");
+            $("#userInfo").removeClass("hidden");
+            $(".glyphicon-duplicate").removeClass("hidden");
+            $(".glyphicon-hdd").removeClass("hidden");
+            $(".progress").removeClass("hidden");
             $("#box").addClass("hidden");
+            $(".compareStorage").removeClass("hidden");
             // kalla global metod för att ladda listan
             GetFileItems();
+            getUserAccountInfo();
             return false;
         }
             // nåt gick snett

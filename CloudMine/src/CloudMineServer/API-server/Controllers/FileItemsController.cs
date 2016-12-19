@@ -35,13 +35,13 @@ namespace CloudMineServer.API_server.Controllers
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 
-        ////GET: api/FileItems/checksum/id
-        //[HttpGet("checksum/{id}")]
-        //public async Task<bool> CheckCheckSum(string id)
-        //{
-        //    bool checksumExists = await _context.CheckChecksum(User.GetUserId(), id);
-        //    return checksumExists;
-        //}
+        //GET: api/FileItems/checksum/id
+        [HttpGet("checksum/{id}")]
+        public async Task<bool> CheckCheckSum(int fileItemID, string checksum)
+        {
+            bool checksumExists = await _context.CheckChecksum(fileItemID, checksum);
+            return checksumExists;
+        }
 
         // GET: api/FileItems
         [HttpGet(Name = "GetFileItems")]
