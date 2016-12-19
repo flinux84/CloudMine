@@ -37,9 +37,9 @@ namespace CloudMineServer.API_server.Controllers
 
         //GET: api/FileItems/checksum/id
         [HttpGet("checksum/{id}")]
-        public async Task<bool> CheckCheckSum(string id)
+        public async Task<bool> CheckCheckSum(int fileItemID, string checksum)
         {
-            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), id);
+            bool checksumExists = await _context.CheckChecksum(fileItemID, checksum);
             return checksumExists;
         }
 
@@ -135,8 +135,8 @@ namespace CloudMineServer.API_server.Controllers
 
             bool updated = await _context.UpDateByIdUsingAPI(id, fileItem);
 
-            if (updated)
-                return NoContent();
+            if( updated )
+                return Ok(fileItem);
             else
                 return BadRequest("Data was not received properly.");
         }
@@ -190,7 +190,7 @@ namespace CloudMineServer.API_server.Controllers
         public async Task<IActionResult> PostDataChunk([FromRoute]int id, [FromForm]DataChunk dataChunk)
         {
             // checksum
-            bool checksumExists = await _context.CheckChecksum(User.GetUserId(), dataChunk.Checksum);            
+            bool checksumExists = await _context.CheckChecksum(dataChunk.FileItemId, dataChunk.Checksum);            
             if (checksumExists)
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);

@@ -1,9 +1,12 @@
-﻿var table;
-var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
-
+//Globala variabler för pagination
+var Totalpages;
+var Currentpage;
 
 var HTMLappender = function (element) {
-    table = element;
+    var table = element;
+    var downloadbutton = '<span class=\"glyphicon glyphicon-save\"></span>';
+    var grey = { "color": "grey" };
+    var disabled = { "display": "none" };
     console.log('appending html');
     HTMLappender.prototype.appendTable = function (result) {
 
@@ -17,48 +20,115 @@ var HTMLappender = function (element) {
                 + '</td><td>' + result[i].uploaded.split('T')[0]
                 + '</td><td>' + result[i].dataType
                 + '</td><td>' + result[i].description
-                + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\">'
-                + downloadbutton + '</a>'
-                + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result[i].id + '" '
+                + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result[i].id + '\" download >'
+                + downloadbutton + '</a><a href="#" class="glyphicon glyphicon-pencil edit-button"></a> '
+                + '<span class=\"glyphicon glyphicon-remove-sign\" style="cursor: pointer" ' + 'id=' + result[i].id + '" '
                 + 'onClick="DeleteFileItem('
                 + result[i].id + ')">' + '</span>' + '</td></tr>');
+                if (result[i].isComplete === false) {
+                    $('#' + 'r' + result[i].id).css(grey);
+                    $('#' + 'r' + result[i].id).children().children('a').css(disabled);
+                }
             }
         }
-
         else {
-            table.append('<tr id=' + 'r' + result.id + '><td>' + result.fileName
-        + '</td><td>' + result.fileSize
-        + '</td><td>' + result.uploaded.split('T')[0]
-        + '</td><td>' + result.dataType
-        + '</td><td>' + result.description
-        + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result.id + '\">'
-        + downloadbutton + '</a>'
-        + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result.id + '" '
-        + 'onClick="DeleteFileItem('
-        + result.id + ')">' + '</span>' + '</td></tr>');
+            table.append(standardRow(result));
         }
+
+        //adding click events to edit buttons after they are created
+        $('.edit-button').click(function (e) {
+            e.PreventDefault;
+            var myId = $(this).parent().parent()[0].id;
+            //remove 'r' from id
+            myId = myId.slice(1, myId.length);
+            BuildEditForm(myId);
+        })
+    }
+
+    HTMLappender.prototype.makePagination = function (pagingInfo) {
+        Currentpage = pagingInfo.pageNo;
+        Nextpage = pagingInfo.nextPageLink;
+        Prevpage = pagingInfo.prevPageLink;
+        Totalpages = pagingInfo.totalPages;
+
+            var ul = $('.pagination');
+            ul.children().remove();
+
+            //Previous button 
+            if (pagingInfo.prevPageLink !== "") {
+                ul.append('<li><a href="#" id="prevPageLink">&laquo;</a></li>');
+            }
+
+            //Individual buttons for each page 
+            if (pagingInfo.totalPages > 1) {
+                for (var i = 0; i < pagingInfo.totalPages; i++) {
+                    ul.append('<li><a href="#" class="pageIndex">' + (i + 1) + '</a></li>');
+                }
+            }
+
+            //Next button
+            if (pagingInfo.nextPageLink !== "") {
+                ul.append('<li><a href="#" id="nextPageLink">&raquo;</a></li>');
+            }
+
+            var sortorder = "";
+
+            if (sortAscending) {
+                sortorder = "&order=asc";
+            } else {
+                sortorder = "&order=desc";
+            }
+
+            //Click events for Next and Previous Buttons
+            $('#nextPageLink, #prevPageLink').click(function (e) {
+                e.preventDefault;
+                if ($(this).is('#prevPageLink'))
+                    GetFileItems(pagingInfo.prevPageLink + '&sort=' + headerToSort + sortorder);
+                else
+                    GetFileItems(pagingInfo.nextPageLink + '&sort=' + headerToSort + sortorder);
+            });
+
+
+
+            //Click events for individual page buttons
+            $('.pageIndex').click(function (e) {
+                e.preventDefault;
+                GetFileItems('../api/v1.0/FileItems/?sort=' + headerToSort + sortorder + '&pageNo=' + $(this).text() + '&pageSize=' + Pagesize);
+            });
     }
 
     HTMLappender.prototype.deleteRow = function (fileitemId) {
         $('#' + 'r' + fileitemId).remove();
     }
 
-    HTMLappender.prototype.replaceRow = function (result) {
-        $('#' + 'r' + result.id).replaceWith(standardRow(result))
+    HTMLappender.prototype.addOrReplaceRow = function (result) {
+
+        if ($('#' + 'r' + result.id).length > 0) {
+            $('#' + 'r' + result.id).replaceWith(standardRow(result))
+        }
+        else {
+            table.append(standardRow(result));
+        }
+
+        if (result.isComplete === false) {
+            $('#' + 'r' + result.id).css(grey);
+            $('#' + 'r' + result.id).children().children('a').css(disabled);
+        }
+
     }
-    
+
     function standardRow(result) {
-        var table = '<tr id=' + 'r' + result.id + '><td>' + result.fileName
+        var tablerow = '<tr id=' + 'r' + result.id + '><td>' + result.fileName
         + '</td><td>' + result.fileSize
         + '</td><td>' + result.uploaded.split('T')[0]
         + '</td><td>' + result.dataType
         + '</td><td>' + result.description
         + '</td><td><a href=\"/api/v1.0/GetFile/NoDisk/' + result.id + '\">'
-        + downloadbutton + '</a>'
-        + '<span class=\"glyphicon glyphicon-remove-sign\"' + 'id=' + result.id + '" '
+        + downloadbutton + '</a><a href="#" class="glyphicon glyphicon-pencil edit-button"></a> '
+        + '<span class=\"glyphicon glyphicon-remove-sign\" style="cursor: pointer" ' + 'id=' + result.id + '" '
         + 'onClick="DeleteFileItem('
         + result.id + ')">' + '</span>' + '</td></tr>'
-        return table;
+        return tablerow;
     }
 
     HTMLappender.prototype.userAccountInfo = function (result) {
@@ -77,6 +147,25 @@ var HTMLappender = function (element) {
     }
 
     
+};
+}
 
+function BuildEditForm(id) {
+    $.getJSON('/api/v1.0/FileItems/' + id).done(function (response) {
+        editFileItem = response;
+        var editForm = $('#edit-form');
+        //Vi kanske inte vill ändra filename
+        editForm.append('<div class="form-group">' +
+                            '<label for="edit-filename">Filename</label>' +
+                            '<input type="text" class="form-control" id="edit-filename" placeholder="Filename" value="' + response['fileName'] + '">' +
+                        '</div>');
+        editForm.append('<div class="form-group">' +
+                            '<label for="edit-description">Description</label>' +
+                            '<textarea type="text" class="form-control" id="edit-description" placeholder="Description">' + response['description'] + '</textarea>' +
+                        '</div>');
+        editForm.append('<input type="hidden" id="edit-id" value="' + response['id'] + '">');
+        $('#edit-dialog').dialog("open");
+    }
+    );
 }
 

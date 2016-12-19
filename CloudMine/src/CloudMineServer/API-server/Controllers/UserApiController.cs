@@ -50,12 +50,8 @@ namespace CloudMineServer.API_server.Controllers
         }
 
         #region AdminActions
-        /// <summary>
-        /// Hejsan
-        /// </summary>
-        /// <param name="userEmail"></param>
-        /// <returns></returns>
-        [Authorize]
+
+        [Authorize(Roles = "admin")]
         [HttpGet("{userEmail}")]
         public async Task<IActionResult> GetUserInfo([FromRoute]string userEmail)
         {
@@ -65,7 +61,7 @@ namespace CloudMineServer.API_server.Controllers
             return Ok(await GetUserInfoAsync(user));
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<List<UserInfo>> GetUsersInfos()
         {
@@ -82,7 +78,7 @@ namespace CloudMineServer.API_server.Controllers
 
 
         // Change user settings, only storage for now
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpPut("{userEmail}")]
         public async Task<IActionResult> PutUserInfo([FromRoute]string userEmail, [FromBody]UserInfo userInfo)
         {
@@ -97,7 +93,7 @@ namespace CloudMineServer.API_server.Controllers
             return Ok(userInfo);
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{userEmail}")]
         public async Task<IActionResult> DeleteUser([FromRoute]string userEmail)
         {
@@ -127,18 +123,23 @@ namespace CloudMineServer.API_server.Controllers
         [HttpGet]
         public IActionResult LogoutUser()
         {
-            var cookieValue = HtmlEncoder.Default.Encode(Request.Cookies["access_token"]);
-            Response.Cookies.Append(
-                "access_token",
-                cookieValue,
-                new CookieOptions
-                {
-                    Path = "/",
-                    HttpOnly = true,
-                    Secure = true,
-                    Expires = DateTime.Now.AddYears(-1)
-                });
-            return Ok();
+            if (Request.Cookies.ContainsKey("access_token"))
+            {
+                string cookieValue = HtmlEncoder.Default.Encode(Request.Cookies["access_token"]);
+                Response.Cookies.Append(
+                    "access_token",
+                    cookieValue,
+                    new CookieOptions
+                    {
+                        Path = "/",
+                        HttpOnly = true,
+                        Secure = true,
+                        Expires = DateTime.Now.AddYears(-1)
+                    }
+                );
+                return Ok();
+            }
+            return BadRequest("You must log in before you can logout");
         }
 
         [HttpGet("IsLoggedIn")]

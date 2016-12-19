@@ -4,11 +4,13 @@
     <title></title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="css/tempLoginCss.css" />
     <link rel="stylesheet" href="css/cloudmine.css" />
 </head>
 <body>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
     <script src="js/progressbar.js"></script>
     <script src="js/appendhtml.js"></script>
@@ -72,8 +74,8 @@
             </div>
             <div class="col-lg-6">
                 <div class="input-group" id="search">
-                    <input type="text" class="form-control" placeholder="Search by filename...">
-                    <button type="button" class="btn btn-default">
+                    <input type="text" id="searchString" class="form-control" placeholder="Search by filename...">
+                    <button type="button" id="buttonSearch" class="btn btn-default">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
                     </button>
                 </div>
@@ -82,6 +84,7 @@
                 <!--<a href="#"><h4>Login/Username</h4></a>-->
                 <!--knappar till inlogg-->
                 <div class="row col-md-12">
+                    <a href="#" id="idLogInButton" class="LogInButtonClass">Login</a>
                     <span class="glyphicon glyphicon-user hidden" id="userInfo">
                         <span id="accInfo">Testing:</span>
                     </span>
@@ -101,6 +104,7 @@
                     <span class="progress-value"></span>
                     <div class="progress-bar" id="spaceRemaining"></div>
                 </div>  
+                <strong>Pagesize: </strong> <input type="number" max="20" min="1" value="10" id="inputpagesize">
                 <span class="compareStorage"><span id="storageData"></span></span>            
                 <h4><span class="glyphicon glyphicon-duplicate hidden"><span id="numberOfFiles"></span></span></h4>
                 
@@ -116,7 +120,7 @@
                             <th><a href="#" id="orderDate" class="orderFileList">Date</a></th>
                             <th><a href="#" id="orderType" class="orderFileList">Type</a></th>
                             <th><a href="#" id="orderDescription" class="orderFileList">Description</a></th>
-                            <th>A</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -124,16 +128,25 @@
                 <br />
             </section>
         </div>
+
+        <div class="col-lg-12 paginationDiv">
+            <ul class="pagination">
+                <!--ritas upp dynamiskt i appendhtml.js -->
+            </ul>
+        </div>
+
     </div>
 
-    <!--Progress-div som visas när en upload startar-->
-    <div id="progressDiv">
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar">
-            </div>
-        </div>
-        <div id="filelabel"></div>
-    </div>
+    <!--Progress-bar ritas upp dynamiskt i progressbar.js-->
+
     <br />
+    <!--Loading-div som visas när man fetchar ny data från servern-->
+    <div id="loading">
+        <h4>Loading...</h4>
+    </div>
+    <!-- edit dialog-->
+    <div id="edit-dialog" title="Update a file">
+        <form id="edit-form"></form>
+    </div>
 </body>
 </html>

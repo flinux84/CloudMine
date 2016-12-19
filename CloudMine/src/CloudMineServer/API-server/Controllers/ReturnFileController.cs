@@ -13,6 +13,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Text.RegularExpressions;
+using CloudMineServer.Models;
 
 namespace CloudMineServer.API_server.Controllers
 {
@@ -39,13 +42,14 @@ namespace CloudMineServer.API_server.Controllers
 
             var merger = new FileMerge();
             var uri = merger.MakeFileOnServer(file);
-            
+
             var stream = System.IO.File.OpenRead(uri.AbsolutePath);
 
-            return new FileStreamResult(stream, new MediaTypeHeaderValue("application/octet-stream")) {
+            return new FileStreamResult(stream, new MediaTypeHeaderValue("application/octet-stream"))
+            {
                 FileDownloadName = file.FileName
             };
-            
+
         }
 
         //Martins förslag bygger på att man använder en ny returtyp som ärver FileResult.
@@ -55,7 +59,8 @@ namespace CloudMineServer.API_server.Controllers
         // i länken så skapar han upp en zip-fil "on the fly", men vi får anpassa den isåfall.
 
 
-        // Uploads file without saving on server disk
+        // Uploads file without saving on server disk.
+        // Supports resume if browser/downloader has support
         // GET: api/v{version:apiVersion}/GetFile/NoDisk/id
         [Authorize]
         [HttpGet("NoDisk/{id:int}")]
@@ -65,32 +70,35 @@ namespace CloudMineServer.API_server.Controllers
             if (fileItem == null)
                 return BadRequest("File does not exist");
 
+            var dataChunk = await _context.GetFirstDataChunk(id);
+
+            StringValues rangeValues;
+            // The Range header indicates this is a resume request
+            if (Request.Headers.TryGetValue("Range", out rangeValues))
+            {
+                int startByteNr = 0;
+                var startByteString = Regex.Match(rangeValues.First(), @"\d+").Value;
+                int.TryParse(startByteString, out startByteNr);
+
+                dataChunk = await GetResumeDataChunk(dataChunk, fileItem, startByteNr);
+
+                Response.StatusCode = 206;
+                Response.Headers.Add("Content-Length", (fileItem.FileSize - startByteNr).ToString());
+                Response.Headers.Add("Content-Range", $"bytes {startByteNr}-{fileItem.FileSize - 1}/{fileItem.FileSize}");
+            }
+            else
+            {
+                Response.Headers.Add("Content-Length", fileItem.FileSize.ToString());
+            }
+            Response.Headers.Add("Accept-Ranges", "bytes");
             Response.Headers.Add("Connection", "keep-alive");
             Response.Headers.Add("Transfer-Encoding", "");
-            Response.Headers.Add("Content-Length", fileItem.FileSize.ToString());
-            Response.Headers.Add("Accept-Ranges", "bytes");
+
             
-
-            var dataChunk = await _context.GetFirstDataChunk(id);
-            StringValues resumeBytes;
-            int startByte = 0;
-            if (Request.Headers.TryGetValue("Range", out resumeBytes))
+            string mimeType = MimeTypes.GetMimeType(fileItem.FileName);
+            return new FileCallbackResult(new MediaTypeHeaderValue(mimeType), async (outputStream, _) =>
             {
-                Response.StatusCode = 206;
-                if (fileItem.FileSize < dataChunk.Data.Count())
-                    dataChunk.Data = dataChunk.Data.Skip(startByte).ToArray();
-                else
-                {
-                    int startIndex = (startByte / fileItem.FileSize) * dataChunk.NumberOfChunksInSequence();
-                    dataChunk = await _context.GetDataChunkAtIndex(dataChunk, startIndex);
-                    dataChunk.Data = dataChunk.Data.Skip(startByte - startIndex * dataChunk.NumberOfChunksInSequence()).ToArray();
-                }
-
-            }
-
-            return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), async (outputStream, _) =>
-            {
-                while(dataChunk != null)
+                while (dataChunk != null)
                 {
                     using (Stream readStream = new MemoryStream(dataChunk.Data))
                     {
@@ -140,5 +148,38 @@ namespace CloudMineServer.API_server.Controllers
             //{ FileDownloadName = "TestBytes.txt"};
             #endregion
         }
+
+        // Finds the DataChunk to resume from.
+        // Skips required nr of bytes in that chunk.
+        private async Task<DataChunk> GetResumeDataChunk(
+            DataChunk dataChunk, FileItem fileItem, int startByteNr)
+        {
+            int chunkSize = dataChunk.Data.Count();
+            if (fileItem.FileSize < dataChunk.Data.Count())
+            {
+                dataChunk.Data = 
+                    dataChunk.Data.Skip(startByteNr).ToArray();
+            }
+            else
+            {
+                int indexOfStartChunk = (int)(Math.Floor(
+                    ((float)startByteNr / (float)fileItem.FileSize)
+                    * (float)dataChunk.NumberOfChunksInSequence()));
+
+                // dataChunk to resume from
+                dataChunk = await _context.GetDataChunkAtIndex(dataChunk, indexOfStartChunk);
+
+                // Skip ahead to start byte in dataChunk
+                dataChunk.Data = dataChunk.Data.Skip(
+                    startByteNr - indexOfStartChunk * chunkSize).ToArray();
+
+                // If we skipped all bytes start resume from the begining of next chunk
+                if (dataChunk.Data.Count() == 0)
+                    dataChunk = await _context.GetNextDataChunk(dataChunk);
+            }
+            return dataChunk;
+        }
+
+
     }
 }
