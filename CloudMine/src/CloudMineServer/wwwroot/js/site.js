@@ -4,7 +4,6 @@ var progressDiv;
 var filetable;
 var append;
 var uploader;
-var probar;
 var searchString;
 var buttonSearch;
 var editFileItem;
@@ -16,9 +15,9 @@ var Pagesize;
 $(document).ready(function () {
     dropzone = $("#dropzone");
     uploadform = $("#uploadFile");
-    progressDiv = $("#progressDiv");
-    progressBar = $("#progressBar");
-    progressFileLabel = $("#filelabel");
+    //progressDiv = $("#progressDiv");
+    //progressBar = $("#progressBar");
+    //progressFileLabel = $("#filelabel");
     filetable = $("#filetable");
     searchString = $("#searchString");
     buttonSearch = $("#buttonSearch")
@@ -29,26 +28,25 @@ $(document).ready(function () {
     headerToSort = 'id';
     Pagesize = $('#inputpagesize').val();
 
-    //create progressbar
-    probar = new ProgressBar(progressDiv, progressBar, progressFileLabel);
 
     //enable drag and drop functionality
-    dragAndDrop(dropzone, probar);
-
-
-    //setup fileuploader.js
-    uploader = new TheFileUploader(probar);
+    dragAndDrop(dropzone);
 
     //create html-appender
     append = new HTMLappender(filetable);
 
     //list all files when page loads.
     GetFileItems('../api/v1.0/FileItems?pageNo=1&pageSize=' + Pagesize);
+    
 
     //upload a file
     uploadform.change(function () {
         if (UserIsSignIn) {
-            var fid = uploader.Upload(uploadform[0].files[0]);
+            for (var i = 0; i < uploadform[0].files.length; i++) {
+                var progress = new ProgressBar(i);
+                var uploader = new TheFileUploader(progress);
+                uploader.Upload(uploadform[0].files[i], i);
+            }
         } else {
             console.log("sign in to upload!");
         }
@@ -135,7 +133,6 @@ $(document).ready(function () {
 
             sort = sort.concat(headerToSort)
             order = order.concat(ascOrDesc);
-            //pageNo = pageNo.concat(currentPageIndex); //Currentpage.. Tror det är denna variabeln
             pageNo = pageNo.concat(Currentpage);
             size = size.concat(Pagesize);
             sortUrl = sortUrl.concat(sort, order, pageNo, size);
