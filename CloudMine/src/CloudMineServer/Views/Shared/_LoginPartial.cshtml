@@ -4,13 +4,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<head>
-    <title></title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/cloudmine.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
+
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -25,52 +19,10 @@
         </ul>
     </form>
 }
-else
+@*else
 {
     <ul class="nav navbar-nav navbar-right">
         <li><a href="#" id="" class="registerUser">Register</a></li>
         <li><a href="#" id="idLogInButton" class="noclass">Login</a></li>
     </ul>
-}
-<div class="overlay" id="overlay" style="display:none;"></div>
-
-<div class="box hidden" id="box">
-    <a class="boxclose" id="boxclose"></a>
-    <h1>Login</h1>
-    <form id="Loginform" enctype="multipart/form-data">
-        <p>Name</p> <input type="text" name="mail" style="color:black" required> <br />
-        <p>Password</p> <input type="password" name="pword" style="color:black" required> <br />
-        <button type="submit" id="InputSigninButton" data-loading-text="Signing in..." class="btn btn-primary" autocomplete="off">Log in</button>
-    </form>
-</div>
-
-<div class="box hidden" id="boxRegister">
-    <a class="boxclose" id="boxRegisterclose"></a>
-    <h1>Register new user</h1>
-    <form id="Registerform" enctype="multipart/form-data">
-        <p>Name</p> <input type="text" name="mail" style="color:black" required> <br />
-        <p>Password</p> <input type="password" name="pword" style="color:black" required> <br />
-        <p>Retype password</p> <input type="password" name="repword" style="color:black" required> <br />
-        <button type="submit" id="InputRegisterButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off">Register</button>
-    </form>
-</div>
-
-<div class="box hidden" id="boxErrorRegister">
-    <a class="boxclose" id="boxErrorclose"></a>
-    <h1>Error register new user</h1>
-    <br />
-    <p class="result"></p>
-    <a href="#" id="" class="registerUser">Try register again</a>
-</div>
-
-<div class="box hidden" id="boxErrorLogin">
-    <a class="boxclose" id="boxErrorLoginclose"></a>
-    <h1>Error log in</h1>
-    <br />
-    <p class="result"></p>
-    <a href="#" id="" class="signinuseragain">Try sign in again</a>
-</div>
-@section scripts {
-    <link rel="stylesheet" href="~/css/tempLoginCss.css" asp-append-version="true" />
-    <script src="~/js/TokenLogin.js"></script>
-}
+}*@

@@ -117,6 +117,7 @@ namespace CloudMineServer
             };
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
+                LoginPath = new Microsoft.AspNetCore.Http.PathString("/loginForAdmin.html"),
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
                 AuthenticationScheme = "Cookie",

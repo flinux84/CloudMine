@@ -55,7 +55,7 @@ namespace CloudMineServer.Controllers
         }
 
 
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> AdminIndex()
         {
 
@@ -135,4 +135,27 @@ namespace CloudMineServer.Controllers
         }
 
     }
+
+
+    //public class YourCustomAuthorize : AuthorizeAttribute
+    //{
+    //    public override void OnAuthorization(AuthorizationContext filterContext)
+    //    {
+    //        // If they are authorized, handle accordingly
+    //        if (this.AuthorizeCore(filterContext.HttpContext))
+    //        {
+    //            base.OnAuthorization(filterContext);
+    //        }
+    //        else
+    //        {
+    //            // Otherwise redirect to your specific authorized area
+    //            filterContext.Result = new RedirectResult("~/YourController/Unauthorized");
+    //        }
+    //    }
+    //}
+    // Changes the unauth redirect to our own loginpage
+    //Is it OK to add package to project?
+
+
+
 }

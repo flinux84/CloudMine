@@ -3,51 +3,17 @@
     ViewData["Title"] = "Home Page";
 
 }
-@*<script>
-    $.ajax({
-        type: "GET",
-        url: '../api/v1.0/Users/IsLoggedIn',
-    }).done(function (result) {
-        Datatype: "json";
-        if (result) {
 
+    
 
-
-        }
-    }).fail(function (e) {
-        console.log(e);
-    }).always(function () {
-
-    })
-
-</script>*@
-<div class="row" @*style="display:none"*@>
     <h4>Admin-portal - no fancy views here</h4>
-    <input type="submit" value="Hantera användare" onclick="location.href='@Url.Action("AdminIndex", "Home")'" />
-</div>
+    <div class="row">
 
-@*<div>
-    <form>
-        <input type="file" name="file" id="selectedfile" value="Choose file" />
+        <input type="submit" value="Hantera användare" onclick="location.href='@Url.Action("AdminIndex", "Home")'" />
         <br />
-        <label for="file">Filename</label>
-        <input type="text" name="FileName" id="FileName" />
         <br />
-        
+    </div>
+   
 
-        Private: <input type="radio" name="filesharing" id="priv" checked value="Private" />
-        <br />
-        Public: <input type="radio" name="filesharing" id="publ" value="Public" />
-        <br />
-        <br />
-        <input type="button" id="engage" value="Upload File" />
 
-    </form>
-</div>*@
-
-<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-        asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-        asp-fallback-test="window.jQuery">
-</script>
-<script src="~/js/checksum.js" asp-append-version="true"></script>
-<script src="~/js/fileuploader.js" asp-append-version="true"></script>
+  
