@@ -88,8 +88,8 @@ $(document).ready(function () {
     }
     function UserSignOutStatus() {
         if (!UserIsSignIn) {
-            $("#idSignOutButton").addClass("hidden");
-            $("#idLogInButton").removeClass("hidden");
+            $(".SignOutButton").addClass("hidden");
+            $(".LogInButtonClass").removeClass("hidden");
             $(".registerUser").removeClass("hidden");
 
             if (userPushButtonToSignOut) {
@@ -98,8 +98,8 @@ $(document).ready(function () {
                 ClearDataTable();
             }
         } else {
-            $("#idSignOutButton").removeClass("hidden");
-            $("#idLogInButton").addClass("hidden");
+            $(".SignOutButton").removeClass("hidden");
+            $(".LogInButtonClass").addClass("hidden");
             $(".registerUser").addClass("hidden");
         }
     }

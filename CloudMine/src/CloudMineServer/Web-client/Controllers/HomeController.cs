@@ -14,10 +14,11 @@ using Microsoft.AspNetCore.Identity;
 using CloudMineServer.Models;
 using CloudMineServer.Classes;
 using CloudMineServer.Interface;
+using CloudMineServer.API_server.Services;
 
 namespace CloudMineServer.Controllers
 {
-    
+
     public class HomeController : Controller
     {
         private UserManager<ApplicationUser> _userManager;
@@ -46,12 +47,12 @@ namespace CloudMineServer.Controllers
             _cloudMineDbService = cloudMineDbService;
         }
 
-       
+
         public IActionResult Index()
         {
-            
-           return View(); 
-            
+
+            return View();
+
         }
 
 
@@ -73,8 +74,8 @@ namespace CloudMineServer.Controllers
             return View(allUserInfos);
 
         }
-        
-     public async Task<ActionResult> Delete([FromRoute]string id)
+
+        public async Task<ActionResult> Delete([FromRoute]string id)
         {
             if (id == null)
             {
@@ -93,21 +94,32 @@ namespace CloudMineServer.Controllers
 
         }
 
-        [HttpPost][ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         public async Task<ActionResult> DeleteUser(string id)
         {
+            var asdf = User.GetUserEmail();
+
+            if (id == asdf)
+            {
+
+                return BadRequest($"Could not delete user: {id}");
+
+
+            }
+
             var user = await _userManager.FindByEmailAsync(id);
             var result = await _userManager.DeleteAsync(user);
             if (result == IdentityResult.Success)
+            { 
                 return RedirectToAction("AdminIndex");
-
+            }
 
             return BadRequest($"Could not delete user: {id}");
 
-
         }
 
-       
+
         public async Task<IActionResult> Edit([FromRoute]string id)
         {
 
@@ -118,12 +130,13 @@ namespace CloudMineServer.Controllers
             return View(user);
 
         }
-        [HttpPost][ActionName("Edit")]
-        public async Task<IActionResult> EditUser(string id,UserInfo userInfo)
+        [HttpPost]
+        [ActionName("Edit")]
+        public async Task<IActionResult> EditUser(string id, UserInfo userInfo)
         {
             var user = await _userManager.FindByEmailAsync(id);
             var oldUserInfo = await GetUserInfo(user);
-           
+
             if (oldUserInfo.UsedStorage > userInfo.StorageSize)
                 return BadRequest("Can't shrink storage to less than your used storage!");
 
@@ -133,8 +146,15 @@ namespace CloudMineServer.Controllers
 
 
         }
+        public IActionResult Login()
+        {
+
+            return View();
+        }
 
     }
+
+
 
 
     //public class YourCustomAuthorize : AuthorizeAttribute
