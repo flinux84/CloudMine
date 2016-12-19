@@ -14,9 +14,11 @@ using Microsoft.AspNetCore.Identity;
 using CloudMineServer.Models;
 using CloudMineServer.Classes;
 using CloudMineServer.Interface;
+using CloudMineServer.API_server.Services;
 
 namespace CloudMineServer.Controllers
 {
+
     public class HomeController : Controller
     {
         private UserManager<ApplicationUser> _userManager;
@@ -45,16 +47,18 @@ namespace CloudMineServer.Controllers
             _cloudMineDbService = cloudMineDbService;
         }
 
+
         public IActionResult Index()
         {
-            
-           return View(); 
-            
+
+            return View();
+
         }
 
+
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> AdminIndex()
         {
-
 
             var users = _userManager.Users.ToList();
 
@@ -70,8 +74,8 @@ namespace CloudMineServer.Controllers
             return View(allUserInfos);
 
         }
-        
-     public async Task<ActionResult> Delete([FromRoute]string id)
+
+        public async Task<ActionResult> Delete([FromRoute]string id)
         {
             if (id == null)
             {
@@ -90,36 +94,51 @@ namespace CloudMineServer.Controllers
 
         }
 
-        [HttpPost][ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         public async Task<ActionResult> DeleteUser(string id)
         {
+            var asdf = User.GetUserEmail();
+
+            if (id == asdf)
+            {
+
+                return BadRequest($"Could not delete user: {id}");
+
+
+            }
+
             var user = await _userManager.FindByEmailAsync(id);
             var result = await _userManager.DeleteAsync(user);
             if (result == IdentityResult.Success)
+            { 
                 return RedirectToAction("AdminIndex");
-
+            }
 
             return BadRequest($"Could not delete user: {id}");
 
-
         }
 
-       
-        public async Task<IActionResult> Edit(string id)
-        {        
-            var user = await _userManager.FindByEmailAsync(id);
+
+        public async Task<IActionResult> Edit([FromRoute]string id)
+        {
+
+            var ApplUser = await _userManager.FindByEmailAsync(id);
+            var user = await GetUserInfo(ApplUser);
+
 
             return View(user);
 
         }
-
-        public async Task<IActionResult> EditUser(string id,[FromBody] ApplicationUser userInfo)
+        [HttpPost]
+        [ActionName("Edit")]
+        public async Task<IActionResult> EditUser(string id, UserInfo userInfo)
         {
             var user = await _userManager.FindByEmailAsync(id);
             var oldUserInfo = await GetUserInfo(user);
 
             if (oldUserInfo.UsedStorage > userInfo.StorageSize)
-                return BadRequest("Cant shrink storage to less than your used storage!");
+                return BadRequest("Can't shrink storage to less than your used storage!");
 
             user.StorageSize = userInfo.StorageSize;
             await _userManager.UpdateAsync(user);
@@ -127,15 +146,36 @@ namespace CloudMineServer.Controllers
 
 
         }
+        public IActionResult Login()
+        {
+
+            return View();
+        }
 
     }
 
 
 
 
+    //public class YourCustomAuthorize : AuthorizeAttribute
+    //{
+    //    public override void OnAuthorization(AuthorizationContext filterContext)
+    //    {
+    //        // If they are authorized, handle accordingly
+    //        if (this.AuthorizeCore(filterContext.HttpContext))
+    //        {
+    //            base.OnAuthorization(filterContext);
+    //        }
+    //        else
+    //        {
+    //            // Otherwise redirect to your specific authorized area
+    //            filterContext.Result = new RedirectResult("~/YourController/Unauthorized");
+    //        }
+    //    }
+    //}
+    // Changes the unauth redirect to our own loginpage
+    //Is it OK to add package to project?
 
 
 
-
-
-    }
+}

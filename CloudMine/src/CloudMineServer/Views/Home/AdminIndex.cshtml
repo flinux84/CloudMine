@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<CloudMineServer.API_server.Controllers.UserInfo>
 
+
+
+
+
 <table class="table">
     <thead>
 <tr>
@@ -32,7 +36,7 @@
                     @Html.DisplayFor(x => user.StorageSize)
                 </td>
                 <td>
-                    @*<a asp-action="Edit" asp-route-id="">| Edit user details | </a>*@
+                   
                     <a asp-action="Edit" asp-route-id="@user.UserName">| Edit storage | </a>
                     <a asp-action="Delete" asp-route-id="@user.UserName">Delete |</a>
                     
