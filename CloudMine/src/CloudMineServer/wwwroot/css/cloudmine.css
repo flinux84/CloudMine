@@ -6,6 +6,7 @@
     color: white;
     background-color: #001a33;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    min-height: 450px;
 }
 
 h4 {
@@ -107,14 +108,15 @@ textarea {
     border: 1px solid black;
     border-radius: 20px;
     width: 160px;
-    height: 60px;
+    /*height: 60px;*/
     padding: 10px;
-    position: absolute;
+    /*position: absolute;*/
     left: 50%;
     top: 50%;
     margin: 0 auto;
     background-color: aliceblue;
     text-align: center;
+    color: black;
 }
 #userInfo{
     color: white;
@@ -130,6 +132,7 @@ textarea {
 }
 .progress{
     text-align: center;
+    height: auto;
 }
 
 .progress-value {
@@ -140,4 +143,8 @@ textarea {
 
 #storageData{
     font-weight: bold;
+}
+
+td{
+    padding-left: 5px;
 }

@@ -11,6 +11,7 @@ function GetFileItem(fileitemId) {
         console.log("Get FileItem Meta");
         console.log(result);
         append.addOrReplaceRow(result);
+        getUserAccountInfo();
     }).fail(function (e) {
         console.log(e);
     }).always(function () {
@@ -33,6 +34,7 @@ function GetFileItems(sortUrl) {
         Datatype: "json";
         ClearDataTable();
         append.appendTable(result);
+        getUserAccountInfo();
     }).fail(function (e) {
         console.log(e);
     }).always(function () {
@@ -51,6 +53,7 @@ function DeleteFileItem(fileitemId) {
         Datatype: "json";
         console.log("successfully deleted a file, refresh")
         append.deleteRow(fileitemId)
+        getUserAccountInfo();
     }).fail(function (e) {
         console.log(e);
     }).always(function () {

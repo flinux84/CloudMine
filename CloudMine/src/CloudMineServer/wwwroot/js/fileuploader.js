@@ -92,7 +92,6 @@
         TotalCount = ChunkArray.length;
         var PartCount = 0;
         HideLoading();
-        progress.updateProgress(1, result.fileName, ind);
         SendNextPart(ChunkArray, PartCount);
     };
 
@@ -140,9 +139,7 @@
                     }
                     else {
                         console.log("annat fel");
-                    }
-                    
-                   
+                    }                  
                 },
                 success: function (result) {
                     var jsonUpdateData = result;
