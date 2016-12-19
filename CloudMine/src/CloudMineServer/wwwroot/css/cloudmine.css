@@ -116,8 +116,28 @@ textarea {
     background-color: aliceblue;
     text-align: center;
 }
+#userInfo{
+    color: white;
+    float: left;
+}
+#idSignOutButton{
+    float: right;
+}
 
 .paginationDiv {
     position: relative;
     text-align: center;
+}
+.progress{
+    text-align: center;
+}
+
+.progress-value {
+    position:absolute;
+    right:0;
+    left:0;
+}
+
+#storageData{
+    font-weight: bold;
 }
