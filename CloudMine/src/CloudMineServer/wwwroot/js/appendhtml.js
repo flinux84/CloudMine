@@ -115,6 +115,15 @@ var HTMLappender = function (element) {
             $('#' + 'r' + result.id).children().children('a').css(disabled);
         }
 
+        //adding click events to edit buttons after they are created
+        $('.edit-button').click(function (e) {
+            e.PreventDefault;
+            var myId = $(this).parent().parent()[0].id;
+            //remove 'r' from id
+            myId = myId.slice(1, myId.length);
+            BuildEditForm(myId);
+        })
+
     }
 
     function standardRow(result) {
