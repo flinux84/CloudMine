@@ -50,6 +50,7 @@ $(document).ready(function () {
         } else {
             console.log("sign in to upload!");
         }
+        uploadform.val("");
     })
 
     //Pagesize change event
