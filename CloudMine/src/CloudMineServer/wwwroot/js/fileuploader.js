@@ -9,9 +9,11 @@
     var ChunkArray = [];
     var FileID;
     var actualFile;
+    var ind;
 
-    TheFileUploader.prototype.Upload = function (file) {
+    TheFileUploader.prototype.Upload = function (file, index) {
         actualFile = file;
+        ind = index;
         ShowLoading();
         GetSHA1();
         return FileID;
@@ -51,10 +53,12 @@
                 console.log(e);
                 if (e.status == 409) {                    
                     alert("The file already exists");
+                    HideLoading();
                     return;
                 }
                 if (e.status == 401) {
                     alert("Please login");
+                    HideLoading();
                     return;
                 }
                 HideLoading();
@@ -88,7 +92,7 @@
         TotalCount = ChunkArray.length;
         var PartCount = 0;
         HideLoading();
-        progress.updateProgress(1, result.fileName);
+        progress.updateProgress(1, result.fileName, ind);
         SendNextPart(ChunkArray, PartCount);
     };
 
@@ -130,7 +134,7 @@
                     console.log(e);
                     if (e.status == 409) {
                         var percent = Math.round((PartCount / TotalCount) * 100)
-                        progress.updateProgress(percent, actualFile.name);
+                        progress.updateProgress(percent, actualFile.name, ind);
                         console.log("Uploaded " + FilePartName)
                         SendNextPart(ChunkArray, PartCount);
                     }
@@ -144,7 +148,7 @@
                     var jsonUpdateData = result;
                     Datatype: false;
                     var percent = Math.round((PartCount / TotalCount) * 100)
-                    progress.updateProgress(percent, actualFile.name);
+                    progress.updateProgress(percent, actualFile.name, ind);
                     console.log("Uploaded " + FilePartName)
                     SendNextPart(ChunkArray, PartCount)
                 }
