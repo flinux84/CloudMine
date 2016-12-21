@@ -5,8 +5,7 @@ var ProgressBar = function (index) {
     var barId = 'progressBar' + index;
     var fileId = 'filelabel' + index;
 
-    //TODO kolla om progressDiv redan finns, isåfall lägg till ++ på index och se om den finns osv till ingen finns = skapa progressbar.
-    var generateprogress = '<div id="' + divId
+    var generateprogress = '<div class="hidden" id="' + divId
     + '"><div class="progress-bar progress-bar-striped active" role="progressbar" id="' + barId
     + '"></div><div id="' + fileId
     + '"></div></div>';

@@ -15,12 +15,9 @@ var Pagesize;
 $(document).ready(function () {
     dropzone = $("#dropzone");
     uploadform = $("#uploadFile");
-    //progressDiv = $("#progressDiv");
-    //progressBar = $("#progressBar");
-    //progressFileLabel = $("#filelabel");
     filetable = $("#filetable");
     searchString = $("#searchString");
-    buttonSearch = $("#buttonSearch")
+    buttonSearch = $("#buttonSearch");
     sortAscending = true;
     var thisIDsorting = "";
     var currentPageIndex = "1";
@@ -70,7 +67,6 @@ $(document).ready(function () {
                 GetFileItems(sortUrl);
             } else {
                 GetFileItems("../api/v1.0/FileItems");
-                // GetFileItems();
             }
         } else {
             console.log("sign in to search");
